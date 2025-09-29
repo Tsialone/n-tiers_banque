@@ -1,0 +1,11 @@
+# Download and install PostgreSQL driver
+curl -L -o /tmp/postgresql-42.6.0.jar https://jdbc.postgresql.org/download/postgresql-42.6.0.jar
+
+# Install the driver module
+module add --name=org.postgresql --resources=/tmp/postgresql-42.6.0.jar --dependencies=jakarta.api,jakarta.transaction.api
+
+# Install JDBC driver
+/subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql,driver-module-name=org.postgresql,driver-class-name=org.postgresql.Driver)
+
+# Test the data source
+/subsystem=datasources/data-source=PostgresEJBDS:test-connection-in-pool
