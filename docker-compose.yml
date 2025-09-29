@@ -1,0 +1,93 @@
+version: "3.8"
+
+services:
+  wildfly:
+    build: ./server_ejb
+    container_name: ejb-server
+    ports:
+      - "8080:8080"
+    volumes:
+    - ./server_ejb/target:/opt/jboss/wildfly/standalone/deployments
+    restart: unless-stopped
+
+  dotnet-api-pret:
+    # build: ./pret
+    # container_name: pret
+    # ports:
+    #   - "5000:80"
+    # restart: unless-stopped
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    container_name: pret
+    ports:
+      - "5000:80"
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres-pret;Database=pret_db;Username=postgres;Password=postgres"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    volumes:
+      - ./pret:/src
+    working_dir: /src
+    command: dotnet watch run --urls http://+:80
+    depends_on:
+      - postgres-pret
+    restart: unless-stopped
+
+  dotnet-api-epargne:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    container_name: epargne
+    ports:
+      - "6000:90"
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres-epargne;Database=epargne_db;Username=postgres;Password=postgres"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    volumes:
+      - ./epargne:/src
+    working_dir: /src
+    command: dotnet watch run --urls http://+:90
+    depends_on:
+      - postgres-epargne
+    restart: unless-stopped
+
+
+  postgres-epargne:
+    image: postgres:16
+    container_name: postgres-epargne
+    environment:
+      POSTGRES_DB: epargne_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_epargne:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  postgres-pret:
+    image: postgres:16
+    container_name: postgres-pret
+    environment:
+      POSTGRES_DB: pret_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_pret:/var/lib/postgresql/data
+    restart: unless-stopped
+  postgres-ejb:
+    image: postgres:16
+    container_name: postgres-ejb
+    environment:
+      POSTGRES_DB: ejb_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata_ejb:/var/lib/postgresql/data
+    restart: unless-stopped
+
+
+volumes:
+  pgdata_epargne:
+  pgdata_pret:
+  pgdata_ejb:

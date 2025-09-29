@@ -1,0 +1,11 @@
+                           List of relations
+ Schema |                  Name                   |   Type   |  Owner   
+--------+-----------------------------------------+----------+----------
+ public | clients_courant                         | table    | postgres
+ public | clients_courant_id_client_seq           | sequence | postgres
+ public | comptes_courant                         | table    | postgres
+ public | comptes_courant_id_compte_seq           | sequence | postgres
+ public | transactions_courant                    | table    | postgres
+ public | transactions_courant_id_transaction_seq | sequence | postgres
+(6 rows)
+
