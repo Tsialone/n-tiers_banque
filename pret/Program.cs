@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(80); // écoute sur le port 90 dans le container
+    options.ListenAnyIP(80);
 });
 
 // EF Core PostgreSQL
@@ -18,7 +18,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // DI
-builder.Services.AddScoped<UtilisateurService>();
+builder.Services.AddScoped<AmortissementService>();
+builder.Services.AddScoped<ComptePretService>();
+
+
 
 // Controllers + Swagger
 builder.Services.AddControllers();

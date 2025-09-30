@@ -1,0 +1,29 @@
+meta {
+  name: saveTransactionByEpargneAndCourant Copy
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:6000/api/TransactionEpargne/solde?idClient=1&idCompteEpargne=1
+  body: json
+  auth: inherit
+}
+
+params:query {
+  idClient: 1
+  idCompteEpargne: 1
+}
+
+body:json {
+  {
+      "idCompte":1,
+      "libelle":"depot",
+      "montant":100,
+      "sens":"credit"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
