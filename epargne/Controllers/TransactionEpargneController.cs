@@ -31,24 +31,44 @@ namespace Epargne.Controllers
             _apiTransactionCourant = apiTransactionCourant;
 
         }
-        // Exemple d'appel pour créer une transaction courante via l'API Java
-        [HttpPost("create-transaction-courant")]
-        public async Task<IActionResult> CreateTransactionCourant([FromBody] TransactionCourantDto dto)
+        // getSolde d'epargne
+        [HttpGet("solde")]
+        public async Task<IActionResult> fetchSoldeByClientAndEpargneAndDate(
+            [FromQuery] int idClient,
+            [FromQuery] int idCompteEpargne,
+            [FromQuery] DateOnly? date
+            )
         {
-            if (dto == null)
-                return BadRequest("TransactionCourantDto est null");
-
             try
             {
                 // Appel vers l'API Java
-                var created = await _apiTransactionCourant.CreateAsync(dto);
-                return Ok(created);
+                 var effectiveDate = date ?? DateUtils.Today();
+                var solde = await _service.getSoldeByClientAndEpargneAndDate(idClient, idCompteEpargne, effectiveDate);
+                return Ok(solde);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+        // Exemple d'appel pour créer une transaction courante via l'API Java
+        // [HttpPost("create-transaction-courant")]
+        // public async Task<IActionResult> CreateTransactionCourant([FromBody] TransactionCourantDto dto)
+        // {
+        //     if (dto == null)
+        //         return BadRequest("TransactionCourantDto est null");
+
+        //     try
+        //     {
+        //         // Appel vers l'API Java
+        //         var created = await _apiTransactionCourant.CreateAsync(dto);
+        //         return Ok(created);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return StatusCode(500, new { error = ex.Message });
+        //     }
+        // }
 
 
 

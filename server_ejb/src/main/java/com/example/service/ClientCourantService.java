@@ -15,8 +15,7 @@ public class ClientCourantService {
     private ClientCourantRepository repository;
 
     // getSoldeByIdClientAndIdCompte
-    public double getSoldeByIdClientAndIdCompte(Integer idCompte, Integer idClient,
-            LocalDate dateTransaction) {
+    public double getSoldeByIdClientAndIdCompte(Integer idCompte, Integer idClient,LocalDate dateTransaction) {
         return repository.findSoldeByIdClientAndIdCompte(idCompte, idClient, dateTransaction);
     }
 

@@ -28,5 +28,6 @@ namespace Epargne.Models
         // Navigation property vers les transactions
         public ICollection<TransactionEpargne> Transactions { get; set; }
     }
+    
    
 }

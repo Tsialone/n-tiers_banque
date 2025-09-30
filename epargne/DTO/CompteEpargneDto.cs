@@ -16,4 +16,5 @@ namespace Epargne.DTO
 
         public List<TransactionEpargneDto> Transactions { get; set; }
     }
+    
 }

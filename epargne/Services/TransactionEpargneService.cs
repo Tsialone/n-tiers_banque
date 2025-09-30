@@ -18,6 +18,18 @@ namespace Epargne.Services
             _context = context;
         }
         public AppDbContext Context => _context;
+
+        public async Task<double> getSoldeByClientAndEpargneAndDate(int idClient, int idCompteEpargne, DateOnly date)
+        {
+            
+            var solde = await _context.TransactionsEpargne
+                .Where(t => t.IdCompte == idCompteEpargne
+                         && t.Compte.IdClient == idClient
+                         && t.DateTransaction <= date) 
+                .SumAsync(t => t.Sens == "credit" ? t.Montant : -t.Montant);
+
+            return (double)solde;
+        }
         public async Task<List<TransactionEpargneDto>> GetByIdClientAndIdCompteAsync(int idClient, int idCompte)
         {
             var transactions = await _context.TransactionsEpargne

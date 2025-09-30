@@ -19,6 +19,7 @@ namespace Epargne.Services
 
 
 
+
         // Récupère tous les comptes avec DTO
         public async Task<List<CompteEpargneDto>> GetAllDtoAsync()
         {
@@ -52,7 +53,7 @@ namespace Epargne.Services
                 .ToListAsync();
 
         public async Task<CompteEpargne> GetByIdAsync(int idCompte) =>
-            await _context.ComptesEpargne
+            await  _context.ComptesEpargne
                 .Include(c => c.Client)
                 .Include(c => c.Transactions)
                 .FirstOrDefaultAsync(c => c.IdCompte == idCompte);
@@ -60,6 +61,11 @@ namespace Epargne.Services
         public async Task<List<CompteEpargne>> GetByClientIdAsync(int idClient) =>
             await _context.ComptesEpargne
                 .Where(c => c.IdClient == idClient)
+                .Include(c => c.Transactions)
+                .ToListAsync();
+        public async Task<List<CompteEpargne>> GetByClientIdAndCompteIdAsync(int idClient , int  idCompte) =>
+            await _context.ComptesEpargne
+                .Where(c => c.IdClient == idClient && c.IdCompte == idCompte)
                 .Include(c => c.Transactions)
                 .ToListAsync();
 
