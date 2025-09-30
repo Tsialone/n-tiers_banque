@@ -1,0 +1,28 @@
+meta {
+  name: saveTransactionByEpargneAndCourant
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:6000/api/TransactionEpargne?idCompteCourant=1
+  body: json
+  auth: inherit
+}
+
+params:query {
+  idCompteCourant: 1
+}
+
+body:json {
+  {
+      "idCompte":1,
+      "libelle":"depot",
+      "montant":100,
+      "sens":"credit"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

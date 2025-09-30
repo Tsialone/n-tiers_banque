@@ -1,0 +1,20 @@
+using System;
+
+namespace Pret.DTO
+{
+    public class ComptePretDto
+    {
+        public int IdCompte { get; set; }
+        public int IdClient { get; set; }
+
+        public string ClientNom { get; set; }
+        public string ClientPrenom { get; set; }
+
+        public DateOnly DateOuverture { get; set; }
+        public decimal Montant { get; set; }
+        public decimal TauxInteret { get; set; }
+        public int DureeMois { get; set; }
+        public DateOnly DateEcheance { get; set; }
+        public string Statut { get; set; }
+    }
+}

@@ -1,0 +1,24 @@
+meta {
+  name: addTransactionCourantClient
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/server-ejb/api/transactions-courant
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "idCompte":1,
+      "libelle":"frais bus",
+      "montant":600,
+      "sens":"debit"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

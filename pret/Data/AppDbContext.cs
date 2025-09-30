@@ -1,7 +1,5 @@
-using System;
+using Pret.Models;  // pour Person
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Pret.Models;
 
 namespace Pret.Data
 {
@@ -9,14 +7,19 @@ namespace Pret.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Utilisateur> Utilisateurs { get; set; }
+        public DbSet<Amortissement> Amortissements { get; set; }
+        public DbSet<ClientPret> ClientPrets { get; set; }
+        public DbSet<ComptePret> ComptePrets { get; set; }
+        public DbSet<TransactionPret> TransactionPrets { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Utilisateur>().ToTable("utilisateurs");
-            modelBuilder.Entity<Utilisateur>()
-                 .Property(u => u.DateNaissance)
-                 .HasColumnType("timestamp");            
-        }
+
+
+        // protected override void OnModelCreating(ModelBuilder modelBuilder)
+        // {
+        //     modelBuilder.Entity<Person>().ToTable("persons");
+        //     modelBuilder.Entity<ClientEpargne>().ToTable("clients_epargne");
+        //     modelBuilder.Entity<CompteEpargne>().ToTable("comptes_epargne");
+        //     modelBuilder.Entity<TransactionEpargne>().ToTable("transactions_epargne");
+        // }
     }
 }
