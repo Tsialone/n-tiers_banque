@@ -81,8 +81,8 @@ public class TransactionCourantController {
 
     // Récupérer toutes les transactions d'un compte
     @GET
-    @Path("/compte/{idCompte}")
-    public Response getTransactionsByCompte(@PathParam("idCompte") Integer idCompte) {
+    @Path("/compte")
+    public Response getTransactionsByCompte(@QueryParam("idCompte") Integer idCompte) {
         List<TransactionCourant> transactions = service.getTransactionsByCompte(idCompte);
         return Response.ok(transactions).build();
     }

@@ -22,7 +22,7 @@ CREATE TABLE comptes_epargne (
 CREATE TABLE transactions_epargne (
     id_transaction SERIAL PRIMARY KEY,
     id_compte INT NOT NULL REFERENCES comptes_epargne(id_compte) ON DELETE CASCADE,
-    date_transaction TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    date_transaction DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     libelle VARCHAR(100) NOT NULL,
     montant NUMERIC(15,2) NOT NULL,
     sens VARCHAR(6) NOT NULL CHECK (sens IN ('debit','credit'))
@@ -43,8 +43,8 @@ INSERT INTO comptes_epargne (id_client, date_ouverture, taux_interet) VALUES
 
 -- Données exemples transactions
 INSERT INTO transactions_epargne (id_compte, date_transaction, libelle, montant, sens) VALUES
-(1, '2025-01-10 10:00:00', 'Dépôt initial', 1000.00, 'credit'),
-(1, '2025-02-15 15:30:00', 'Retrait', 200.00, 'debit'),
-(2, '2025-05-12 09:45:00', 'Dépôt', 500.00, 'credit'),
-(3, '2025-03-20 14:00:00', 'Dépôt initial', 1500.00, 'credit'),
-(4, '2025-04-01 16:20:00', 'Retrait', 300.00, 'debit');
+(1, '2025-01-10', 'Dépôt initial', 1000.00, 'credit'),
+(1, '2025-02-15', 'Retrait', 200.00, 'debit'),
+(2, '2025-05-12', 'Dépôt', 500.00, 'credit'),
+(3, '2025-03-20', 'Dépôt initial', 1500.00, 'credit'),
+(4, '2025-04-01', 'Retrait', 300.00, 'debit');
