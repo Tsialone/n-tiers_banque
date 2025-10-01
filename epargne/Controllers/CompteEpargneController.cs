@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Epargne.DTO;
 using Epargne.Mappers;
+using Epargne.ExternalApi.Services;
 namespace Epargne.Controllers
 {
     [ApiController]
@@ -13,10 +14,13 @@ namespace Epargne.Controllers
     public class CompteEpargneController : ControllerBase
     {
         private readonly CompteEpargneService _service;
+        private readonly TransactionCourantApiClient _transactionCourantApiClient;
 
-        public CompteEpargneController(CompteEpargneService service)
+
+        public CompteEpargneController(CompteEpargneService service, TransactionCourantApiClient transactionCourantApiClient)
         {
             _service = service;
+            _transactionCourantApiClient = transactionCourantApiClient;
         }
         // GET api/compteEpargne
         [HttpGet]
@@ -39,9 +43,9 @@ namespace Epargne.Controllers
             return Ok(compte_mapped);
         }
         [HttpGet("byClientAndCompte")]
-        public async Task<IActionResult> GetByClientId([FromQuery] int idClient  ,  [FromQuery] int idCompte)
+        public async Task<IActionResult> GetByClientId([FromQuery] int idClient, [FromQuery] int idCompte)
         {
-            var comptes = await _service.GetByClientIdAndCompteIdAsync(idClient , idCompte);
+            var comptes = await _service.GetByClientIdAndCompteIdAsync(idClient, idCompte);
             if (comptes == null || !comptes.Any()) return NotFound();
             var comptesDto = comptes.Select(c => c.ToDto()).ToList();
             return Ok(comptesDto);
@@ -58,10 +62,36 @@ namespace Epargne.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CompteEpargne compte)
+        public async Task<IActionResult> Add([FromBody] CompteEpargneCreateDto dto , [FromQuery] int idCompteCourant)
         {
-            await _service.AddAsync(compte);
-            return Ok();
+            if (dto == null) return NotFound();
+            await using var dbTransaction = await _service.Context.Database.BeginTransactionAsync();
+            try
+            {
+                var compte_epargne_created = await _service.AddAsync(dto);
+                var transaction_courant_created = await _transactionCourantApiClient.CreateAsync(
+                     new TransactionCourantDto
+                     {
+                         IdCompte =  idCompteCourant ,
+                         DateTransaction = dto.DateOuverture,
+                         Libelle = "depot initial de: " + dto.Libelle,
+                         Montant = dto.CapitalEpargne,
+                         Sens = "credit"
+                     }
+                );
+                await dbTransaction.CommitAsync();
+                // await dbTransaction.RollbackAsync();
+
+                return Ok( new   { success =  "Creation du compte epargne et transaction compte couant reussi"});
+
+            }
+            catch (Exception ex)
+            {
+                await dbTransaction.RollbackAsync();
+                return StatusCode(500, new { error = ex.Message });
+
+            }
+
         }
 
         [HttpPut("{idCompte}")]
