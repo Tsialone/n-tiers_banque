@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using Pret.Utils;
 namespace Pret.Models
 {
     [Table("transactions_pret")]
@@ -20,7 +20,7 @@ namespace Pret.Models
 
         [Required]
         [Column("date_transaction")]
-        public DateTime DateTransaction { get; set; } = DateTime.Now;
+        public DateOnly DateTransaction { get; set; } = DateUtils.Today();
 
         [Required]
         [Column("libelle")]

@@ -12,6 +12,8 @@ namespace Pret.DTO
         public decimal Interet { get; set; }
         public decimal Capital { get; set; }
         public decimal ResteDu { get; set; }
+        public DateOnly CreatedAt { get; set; }
+
         public string Statut { get; set; }
 
         public int CompteIdClient { get; set; }

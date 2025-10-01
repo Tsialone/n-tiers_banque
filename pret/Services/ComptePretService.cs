@@ -63,10 +63,19 @@ namespace Pret.Services
         // Ajouter depuis DTO de création
         public async Task<ComptePret> AddAsync(ComptePretCreateDto dto)
         {
-            var entity =  ComptePretMapper.ToEntity(dto);
-            await _context.ComptePrets.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            try
+            {
+                var entity = ComptePretMapper.ToEntity(dto);
+                await _context.ComptePrets.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                throw new Exception("Erreur : " + innerMessage, ex);
+            }
+
         }
 
         // Mettre à jour

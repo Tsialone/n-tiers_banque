@@ -1,0 +1,30 @@
+meta {
+  name: askPret
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:5000/api/ComptePret/askPret?idCompteCourant=1
+  body: json
+  auth: inherit
+}
+
+params:query {
+  idCompteCourant: 1
+}
+
+body:json {
+  {
+    "IdClient":1,
+    "capitalEmprunte":100,
+    "TauxInteret":10,
+    "Libelle":"pret immobilier",
+    "DureeMois":4,
+    "DateEcheance":"2026-01-01"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -35,6 +35,10 @@ namespace Pret.Models
         [Column("reste_du")]
         public decimal ResteDu { get; set; }
 
+        [Required]
+        [Column("created_at")]
+        public DateOnly CreatedAt { get; set; }
+
         [Column("statut")]
         public string Statut { get; set; } = "en_attente";
 
