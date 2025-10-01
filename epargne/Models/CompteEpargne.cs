@@ -19,6 +19,12 @@ namespace Epargne.Models
         [ForeignKey("IdClient")]
         public ClientEpargne Client { get; set; }
 
+        [Column("capital_epargne")]
+        public decimal CapitalEpargne { get; set; }
+
+        [Column("libelle")]
+        public string Libelle { get; set; }
+
         [Column("date_ouverture")]
         public DateOnly DateOuverture { get; set; }
 

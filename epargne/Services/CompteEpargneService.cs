@@ -5,6 +5,8 @@ using Epargne.Data;
 using Epargne.DTO;
 using System.Linq;
 using Epargne.Models;
+using System;
+using Epargne.Mappers;
 
 namespace Epargne.Services
 {
@@ -18,6 +20,7 @@ namespace Epargne.Services
         }
 
 
+        public AppDbContext Context => _context;
 
 
         // Récupère tous les comptes avec DTO
@@ -52,27 +55,55 @@ namespace Epargne.Services
                 .Include(c => c.Client)
                 .ToListAsync();
 
-        public async Task<CompteEpargne> GetByIdAsync(int idCompte) =>
-            await  _context.ComptesEpargne
-                .Include(c => c.Client)
-                .Include(c => c.Transactions)
-                .FirstOrDefaultAsync(c => c.IdCompte == idCompte);
+        public async Task<CompteEpargne> GetByIdAsync(int idCompte)
+        {
+            try
+            {
+                var compte = await _context.ComptesEpargne
+                    .Include(c => c.Client)
+                    .Include(c => c.Transactions)
+                    .FirstOrDefaultAsync(c => c.IdCompte == idCompte);
+
+                if (compte == null)
+                    Console.WriteLine($"Compte épargne avec Id {idCompte} introuvable.");
+
+                return compte;
+            }
+            catch (Exception ex)
+            {
+                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                Console.WriteLine($"Erreur lors de la récupération du compte : {innerMessage}");
+                throw new Exception($"Erreur lors de la récupération du compte épargne {idCompte} : {innerMessage}", ex);
+            }
+        }
+
 
         public async Task<List<CompteEpargne>> GetByClientIdAsync(int idClient) =>
             await _context.ComptesEpargne
                 .Where(c => c.IdClient == idClient)
                 .Include(c => c.Transactions)
                 .ToListAsync();
-        public async Task<List<CompteEpargne>> GetByClientIdAndCompteIdAsync(int idClient , int  idCompte) =>
+        public async Task<List<CompteEpargne>> GetByClientIdAndCompteIdAsync(int idClient, int idCompte) =>
             await _context.ComptesEpargne
                 .Where(c => c.IdClient == idClient && c.IdCompte == idCompte)
                 .Include(c => c.Transactions)
                 .ToListAsync();
 
-        public async Task AddAsync(CompteEpargne compte)
+        public async Task<CompteEpargne> AddAsync(CompteEpargneCreateDto dto)
         {
-            await _context.ComptesEpargne.AddAsync(compte);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                var entity = CompteEpargneMapper.ToEntity(dto);
+                await _context.ComptesEpargne.AddAsync(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                throw new Exception("Erreur : " + innerMessage, ex);
+            }
         }
 
         public async Task UpdateAsync(CompteEpargne compte)

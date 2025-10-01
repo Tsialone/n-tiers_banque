@@ -1,0 +1,28 @@
+meta {
+  name: saveEpargne
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:6000/api/CompteEpargne?idCompteCourant=1
+  body: json
+  auth: inherit
+}
+
+params:query {
+  idCompteCourant: 1
+}
+
+body:json {
+  {
+    "IdClient":1,
+    "CapitalEpargne":20,
+    "Libelle":"Prix scolaire",
+    "DateOuverture":"2023-01-01"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

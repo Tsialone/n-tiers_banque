@@ -1,0 +1,20 @@
+meta {
+  name: getSoldeEpargneByClientAndCompteAndDate
+  type: http
+  seq: 8
+}
+
+get {
+  url: http://localhost:6000/api/TransactionEpargne/solde?idClient=1&idCompteEpargne=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  idClient: 1
+  idCompteEpargne: 1
+}
+
+settings {
+  encodeUrl: true
+}

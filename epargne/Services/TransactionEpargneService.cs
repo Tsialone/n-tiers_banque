@@ -12,24 +12,61 @@ namespace Epargne.Services
     public class TransactionEpargneService
     {
         private readonly AppDbContext _context;
+        private readonly CompteEpargneService _compteEpargneService;
 
-        public TransactionEpargneService(AppDbContext context)
+        public TransactionEpargneService(
+            AppDbContext context,
+            CompteEpargneService compteEpargneService
+            )
         {
             _context = context;
+            _compteEpargneService = compteEpargneService;
         }
         public AppDbContext Context => _context;
 
         public async Task<double> getSoldeByClientAndEpargneAndDate(int idClient, int idCompteEpargne, DateOnly date)
         {
-            
-            var solde = await _context.TransactionsEpargne
-                .Where(t => t.IdCompte == idCompteEpargne
-                         && t.Compte.IdClient == idClient
-                         && t.DateTransaction <= date) 
-                .SumAsync(t => t.Sens == "credit" ? t.Montant : -t.Montant);
+            try
+            {
+                var compteEpargne = await _compteEpargneService.GetByIdAsync(idCompteEpargne);
 
-            return (double)solde;
+                decimal tauxMensuel = compteEpargne.TauxInteret / 12 / 100;
+
+                decimal solde = compteEpargne.CapitalEpargne;
+                DateOnly currentDate = compteEpargne.DateOuverture;
+
+                while (currentDate <= date)
+                {
+                    // Transactions du mois courant
+                    var transactionsMois = await _context.TransactionsEpargne
+                        .Where(t => t.IdCompte == idCompteEpargne
+                                 && t.Compte.IdClient == idClient
+                                 && t.DateTransaction.Year == currentDate.Year
+                                 && t.DateTransaction.Month == currentDate.Month)
+                        .ToListAsync();
+
+                    decimal credit = transactionsMois.Where(t => t.Sens == "credit").Sum(t => t.Montant);
+                    decimal debit = transactionsMois.Where(t => t.Sens == "debit").Sum(t => t.Montant);
+
+                    // Ajouter intérêts du mois
+                    solde += solde * tauxMensuel;
+
+                    // Ajouter crédits et retirer débits
+                    solde += credit - debit;
+
+                    // Passer au mois suivant
+                    currentDate = currentDate.AddMonths(1);
+                }
+
+                return (double)Math.Round(solde, 2); ;
+            }
+            catch (Exception ex)
+            {
+                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                throw new Exception("Erreur : " + innerMessage, ex);
+            }
         }
+
         public async Task<List<TransactionEpargneDto>> GetByIdClientAndIdCompteAsync(int idClient, int idCompte)
         {
             var transactions = await _context.TransactionsEpargne

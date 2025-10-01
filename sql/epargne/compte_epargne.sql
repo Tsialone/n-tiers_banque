@@ -14,8 +14,10 @@ CREATE TABLE clients_epargne (
 CREATE TABLE comptes_epargne (
     id_compte SERIAL PRIMARY KEY,
     id_client INT NOT NULL REFERENCES clients_epargne(id_client) ON DELETE CASCADE,
+    capital_epargne NUMERIC(15,2) NOT NULL , 
+    libelle VARCHAR (100) , 
     date_ouverture DATE NOT NULL DEFAULT CURRENT_DATE,
-    taux_interet NUMERIC(5,2) NOT NULL -- annuel
+    taux_interet NUMERIC(15,2) NOT NULL -- annuel
 );
 
 -- Table transactions_epargne
@@ -35,11 +37,11 @@ INSERT INTO clients_epargne (nom, prenom, date_naissance) VALUES
 ('Andrian', 'Claire', '2000-02-15');
 
 -- Données exemples comptes
-INSERT INTO comptes_epargne (id_client, date_ouverture, taux_interet) VALUES
-(1, '2023-01-01', 3.50),
-(1, '2024-05-10', 2.75),
-(2, '2022-08-15', 4.00),
-(3, '2023-11-20', 3.25);
+INSERT INTO comptes_epargne (id_client,  capital_epargne ,  libelle ,date_ouverture, taux_interet) VALUES
+(1, 200.00 ,  'vacance' , '2023-01-01', 3.50),
+(1, 1201.12 ,'moto' ,'2024-05-10', 2.75),
+(2, 20003.17  ,'rancard','2022-08-15', 4.00),
+(3, 231.12 ,'ferrari','2023-11-20', 3.25);
 
 -- Données exemples transactions
 INSERT INTO transactions_epargne (id_compte, date_transaction, libelle, montant, sens) VALUES

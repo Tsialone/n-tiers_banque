@@ -1,5 +1,6 @@
 using Epargne.DTO;
 using Epargne.Models;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Epargne.Mappers
@@ -17,6 +18,8 @@ namespace Epargne.Mappers
                 IdClient = entity.IdClient,
                 ClientNom = entity.Client?.Nom,
                 ClientPrenom = entity.Client?.Prenom,
+                CapitalEpargne = entity.CapitalEpargne ,
+                Libelle = entity.Libelle,
                 DateOuverture = entity.DateOuverture,
                 TauxInteret = entity.TauxInteret,
                 Transactions = entity.Transactions?
@@ -32,29 +35,25 @@ namespace Epargne.Mappers
             };
         }
 
-        // DTO -> Entity
-        public static CompteEpargne ToEntity(this CompteEpargneDto dto)
+        // CreateDTO -> Entity
+        public static CompteEpargne ToEntity(this CompteEpargneCreateDto dto)
         {
             if (dto == null) return null;
 
             return new CompteEpargne
             {
-                IdCompte = dto.IdCompte,
                 IdClient = dto.IdClient,
+                CapitalEpargne = dto.CapitalEpargne ,
+                Libelle = dto.Libelle,
                 DateOuverture = dto.DateOuverture,
-                TauxInteret = dto.TauxInteret,
-                Transactions = dto.Transactions?
-                    .Select(t => new TransactionEpargne
-                    {
-                        IdTransaction = t.IdTransaction,
-                        IdCompte = t.IdCompte,
-                        DateTransaction = t.DateTransaction,
-                        Libelle = t.Libelle,
-                        Montant = t.Montant,
-                        Sens = t.Sens
-                    }).ToList()
+                TauxInteret = dto.TauxInteret
             };
         }
-    }
 
+        // Liste d’entities -> Liste DTOs
+        public static List<CompteEpargneDto> ToDtoList(this IEnumerable<CompteEpargne> entities)
+        {
+            return entities?.Select(e => e.ToDto()).ToList();
+        }
+    }
 }
