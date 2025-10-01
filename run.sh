@@ -1,8 +1,10 @@
 # Aller dans le dossier du premier serveur et compiler
-cd server_ejb
-mvn clean package
+mvn clean package -f server_ejb
 
-# Revenir à la racine
-cd ..
+# restore dotnet
+dotnet restore ./pret
+dotnet restore ./epargne
+
+#revenir a la racine
 docker compose down 
 docker compose up -d --build

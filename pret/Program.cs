@@ -6,6 +6,7 @@ using Pret.Data;
 using Pret.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using Pret.ExternalApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options =>
@@ -20,6 +21,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // DI
 builder.Services.AddScoped<AmortissementService>();
 builder.Services.AddScoped<ComptePretService>();
+builder.Services.AddScoped<TransactionPretService>();
+
+// api client, compte courant
+builder.Services.AddHttpClient<TransactionCourantApiClient>();
+builder.Services.AddHttpClient<CompteCourantApiClient>();
+
+
+
+
 
 
 

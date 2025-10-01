@@ -1,4 +1,6 @@
 using System;
+using Pret.Utils;
+
 
 namespace Pret.DTO
 {
@@ -6,9 +8,11 @@ namespace Pret.DTO
     {
         public int IdClient { get; set; }
 
-        public DateOnly DateOuverture { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        public DateOnly DateOuverture { get; set; } =  DateUtils.Today() ;
 
-        public decimal Montant { get; set; }
+        public string Libelle { get; set; }
+
+        public decimal CapitalEmprunte { get; set; }
 
         public decimal TauxInteret { get; set; }
 

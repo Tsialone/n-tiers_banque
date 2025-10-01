@@ -8,10 +8,12 @@ namespace Pret.DTO
         public int IdClient { get; set; }
 
         public string ClientNom { get; set; }
+        public string Libelle { get; set; }
+
         public string ClientPrenom { get; set; }
 
         public DateOnly DateOuverture { get; set; }
-        public decimal Montant { get; set; }
+        public decimal CapitalEmprunte { get; set; }
         public decimal TauxInteret { get; set; }
         public int DureeMois { get; set; }
         public DateOnly DateEcheance { get; set; }

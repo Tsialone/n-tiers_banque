@@ -15,13 +15,18 @@ namespace Pret.Models
         [Column("id_client")]
         public int IdClient { get; set; }
 
+        [Column("libelle")]
+        public string Libelle { get; set; }
+
         [Required]
         [Column("date_ouverture")]
         public DateOnly DateOuverture { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
+
+
         [Required]
-        [Column("montant")]
-        public decimal Montant { get; set; }
+        [Column("capital_emprunte")]
+        public decimal CapitalEmprunte { get; set; }
 
         [Required]
         [Column("taux_interet")]

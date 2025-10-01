@@ -15,7 +15,7 @@ CREATE TABLE comptes_epargne (
     id_compte SERIAL PRIMARY KEY,
     id_client INT NOT NULL REFERENCES clients_epargne(id_client) ON DELETE CASCADE,
     date_ouverture DATE NOT NULL DEFAULT CURRENT_DATE,
-    taux_interet NUMERIC(5,2) NOT NULL
+    taux_interet NUMERIC(5,2) NOT NULL -- annuel
 );
 
 -- Table transactions_epargne

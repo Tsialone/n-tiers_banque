@@ -2,13 +2,16 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
+# Copier les configs NuGet (important si offline)
+COPY ~/.nuget/NuGet /root/.nuget/NuGet
+
 # Copier uniquement le fichier projet pour restaurer le cache
 COPY pret.csproj ./
 RUN dotnet restore
 
 # Copier le reste du code et publier
 COPY . ./
-RUN dotnet publish -c Release -o /app
+RUN dotnet publish -c Release -o /app 
 
 # Étape 2 : runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime

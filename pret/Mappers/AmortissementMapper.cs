@@ -21,6 +21,7 @@ namespace Pret.Mappers
                 Interet = entity.Interet,
                 Capital = entity.Capital,
                 ResteDu = entity.ResteDu,
+                CreatedAt = entity.CreatedAt,
                 Statut = entity.Statut,
                 CompteIdClient = entity.ComptePret?.IdClient ?? 0,
                 CompteClientNom = entity.ComptePret?.Client?.Nom,
@@ -41,6 +42,7 @@ namespace Pret.Mappers
                 Interet = dto.Interet,
                 Capital = dto.Capital,
                 ResteDu = dto.ResteDu,
+                CreatedAt = dto.CreatedAt,
                 Statut = dto.Statut
             };
         }

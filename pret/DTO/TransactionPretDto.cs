@@ -8,7 +8,7 @@ namespace Pret.DTO
         public int IdCompte { get; set; }
         public int? IdAmortissement { get; set; }
 
-        public DateTime DateTransaction { get; set; }
+        public DateOnly DateTransaction { get; set; }
         public string Libelle { get; set; }
         public decimal Montant { get; set; }
         public string TypeTransaction { get; set; }
