@@ -1,0 +1,32 @@
+meta {
+  name: remboursserPretCentral
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8080/server-ejb/api/pret/remboursser
+  body: json
+  auth: inherit
+}
+
+body:json {
+    {
+      "idAmortissement": 2,
+      "idCompte": 1,
+      "mois": 1,
+      "mensualite": 260,
+      "interet": 8.33,
+      "capital": 251.67,
+      "resteDu": 748.33,
+      "createdAt": "2025-01-01",
+      "statut": "en_attente",
+      "compteIdClient": 1,
+      "compteClientNom": "Dupont",
+      "compteClientPrenom": "Jean"
+    }
+}
+
+settings {
+  encodeUrl: true
+}

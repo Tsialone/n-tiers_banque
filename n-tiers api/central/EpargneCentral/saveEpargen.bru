@@ -1,0 +1,33 @@
+meta {
+  name: saveEpargen
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/server-ejb/api/epargne/save?idCompteCourant=1
+  body: json
+  auth: inherit
+}
+
+params:query {
+  idCompteCourant: 1
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+    {
+      "IdClient":1,
+      "CapitalEpargne":1,
+      "Libelle":"Prix scolaire",
+      "DateOuverture":"2023-01-01"
+    }
+}
+
+settings {
+  encodeUrl: true
+}

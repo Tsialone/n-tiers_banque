@@ -1,11 +1,11 @@
 meta {
-  name: saveTransactionByEpargneAndCourant
+  name: saveTransaction
   type: http
-  seq: 5
+  seq: 3
 }
 
 post {
-  url: http://localhost:6000/api/TransactionEpargne?idCompteCourant=1
+  url: http://localhost:8080/server-ejb/api/epargne/transaction?idCompteCourant=1
   body: json
   auth: inherit
 }
@@ -17,9 +17,9 @@ params:query {
 body:json {
   {
       "idCompte":1,
-      "libelle":"retrait",
+      "libelle":"x",
       "montant":100,
-      "sens":"debit"
+      "sens":"credit"
   }
 }
 
