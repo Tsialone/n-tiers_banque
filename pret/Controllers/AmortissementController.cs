@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Pret.Mappers;
+using Pret.Utils;
 
 namespace Pret.Controllers
 {
@@ -19,6 +20,29 @@ namespace Pret.Controllers
         {
             _service = service;
         }
+
+
+        // getSolde de pret par compte de pret  et date
+        // public async Task<List<AmortissementDto>> GetByPretAndDateAndStatus(int idComptePret, DateOnly date, string status)
+        [HttpGet("solde")]
+        public async Task<IActionResult> getSoldeByPretAndDateAndStatus([FromQuery] int idComptePret, [FromQuery] DateOnly? date)
+        {
+            string status = "en_attente";
+
+            try
+            {
+                DateOnly temp_date = date ??  DateUtils.Today();
+                var amortissements_filtred = await _service.GetByPretAndDateAndStatus(idComptePret, temp_date, status);
+                return Ok(amortissements_filtred.FirstOrDefault()?.ResteDu ?? 0.0m);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+
+        }
+
 
         // GET api/amortissement
         [HttpGet]
@@ -64,13 +88,15 @@ namespace Pret.Controllers
         }
 
         // PUT api/amortissement/{id}
-        [HttpPut("{idAmortissement}")]
-        public async Task<IActionResult> Update(int idAmortissement, [FromBody] Amortissement amortissement)
+        [HttpPut("remboursser")]
+        public async Task<IActionResult> Update([FromBody] AmortissementDto amortissement)
         {
-            if (idAmortissement != amortissement.IdAmortissement) return BadRequest();
-
-            await _service.UpdateAsync(amortissement);
-            return Ok();
+            // if (idAmortissement != amortissement.IdAmortissement) return BadRequest();
+            var entity = await _service.GetByIdAsync(amortissement.IdAmortissement);
+            if (entity == null) return NotFound();
+            entity.Statut = "paye";
+            await _service.UpdateAsync(entity);
+            return Ok(new {success = "payement reussi!" });
         }
 
         // DELETE api/amortissement/{id}

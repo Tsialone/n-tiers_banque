@@ -76,7 +76,7 @@ namespace Epargne.Controllers
                          DateTransaction = dto.DateOuverture,
                          Libelle = "depot initial de: " + dto.Libelle,
                          Montant = dto.CapitalEpargne,
-                         Sens = "credit"
+                         Sens = "debit"
                      }
                 );
                 await dbTransaction.CommitAsync();

@@ -1,0 +1,30 @@
+meta {
+  name: askPretCentral
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/server-ejb/api/pret/askPret?idCompteCourant=1
+  body: json
+  auth: inherit
+}
+
+params:query {
+  idCompteCourant: 1
+}
+
+body:json {
+  {
+    "IdClient":1,
+    "capitalEmprunte":1000,
+    "TauxInteret":10,
+    "Libelle":"pret immobilier",
+    "DureeMois":4,
+    "DateEcheance":"2026-01-01"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

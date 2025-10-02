@@ -21,6 +21,31 @@ namespace Pret.Services
 
         public AppDbContext Context => _context;
 
+        // getSoldeByPretAndDate
+        public async Task<List<AmortissementDto>> GetByPretAndDateAndStatus(int idComptePret, DateOnly date, string statut)
+        {
+
+            try
+            {
+                var amortissements = await _context.Amortissements
+              .Include(a => a.ComptePret)
+                  .ThenInclude(c => c.Client)
+              .Where(a => a.Statut == statut && a.CreatedAt <= date && a.ComptePret.IdCompte == idComptePret)
+              .OrderBy(a => a.CreatedAt)
+              .ToListAsync();
+
+                return amortissements.Select(a => a.ToDto()).ToList();
+            }
+            catch (Exception ex)
+            {
+                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                throw new Exception("Erreur : " + innerMessage, ex);
+            }
+
+        }
+
+
+
         // Récupérer tous les amortissements
         public async Task<List<AmortissementDto>> GetAllDtoAsync()
         {
@@ -33,7 +58,7 @@ namespace Pret.Services
         }
 
         // Récupérer par ID
-        public async Task<AmortissementDto> GetByIdAsync(int idAmortissement)
+        public async Task<AmortissementDto> GetByIdDtoAsync(int idAmortissement)
         {
             var amortissement = await _context.Amortissements
                 .Include(a => a.ComptePret)
@@ -42,7 +67,15 @@ namespace Pret.Services
 
             return amortissement?.ToDto();
         }
+        public async Task<Amortissement> GetByIdAsync(int idAmortissement)
+        {
+            var amortissement = await _context.Amortissements
+                .Include(a => a.ComptePret)
+                .ThenInclude(c => c.Client)
+                .FirstOrDefaultAsync(a => a.IdAmortissement == idAmortissement);
 
+            return amortissement;
+        }
         // Récupérer tous les amortissements d'un compte
         public async Task<List<AmortissementDto>> GetByCompteIdAsync(int idCompte)
         {
@@ -75,8 +108,18 @@ namespace Pret.Services
         // Mettre à jour
         public async Task UpdateAsync(Amortissement amortissement)
         {
-            _context.Amortissements.Update(amortissement);
-            await _context.SaveChangesAsync();
+            try
+            {
+                // var entity = dto.ToEntity();
+                _context.Amortissements.Update(amortissement);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                throw new Exception("Erreur : " + innerMessage, ex);
+            }
+
         }
 
         // Supprimer
