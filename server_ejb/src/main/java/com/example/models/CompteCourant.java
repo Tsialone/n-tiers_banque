@@ -26,7 +26,10 @@ public class CompteCourant {
     private ClientCourant client;
 
     @Column(name = "date_ouverture")
-    private LocalDate dateOuverture;
+    private LocalDate dateOuverture   = LocalDate.now();
+
+    @Column(name = "capital")
+    private Double capital;
 
     @Column(name = "decouvert_autorise")
     private Double decouvertAutorise = 0.0;

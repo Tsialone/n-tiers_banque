@@ -1,12 +1,16 @@
 package com.example.dto;
 
+import java.time.LocalDate;
+
 import lombok.Data;
 
 @Data
 public class CompteCourantDto {
+    
     private Integer idCompte;
     private String nom;
-    private Double solde;
-    private Double decouvertAutorise;
-
+    private Integer idClient;
+    private Double capital;
+    private LocalDate dateOuverture  = LocalDate.now();
+    private Double decouvertAutorise = 0.0;
 }

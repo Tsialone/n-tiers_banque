@@ -14,6 +14,7 @@ CREATE TABLE clients_courant (
 CREATE TABLE comptes_courant (
     id_compte SERIAL PRIMARY KEY,
     nom VARCHAR(100),
+    capital NUMERIC (15,2) NOT NULL , 
     id_client INT NOT NULL REFERENCES clients_courant(id_client) ON DELETE CASCADE,
     date_ouverture DATE NOT NULL DEFAULT CURRENT_DATE,
     decouvert_autorise NUMERIC(15,2) DEFAULT 0.00
@@ -34,8 +35,8 @@ INSERT INTO clients_courant (nom, prenoms, date_naissance)
 VALUES ('Randria', 'Tiana Andry', '1992-08-15');
 
 -- Insérer un seul compte pour ce client
-INSERT INTO comptes_courant (nom, id_client, decouvert_autorise)
-VALUES ('Compte principal', 1, 500.00);
+INSERT INTO comptes_courant (nom, capital  , id_client, decouvert_autorise)
+VALUES ('Compte principal', 100 , 1, 500.00);
 
 -- Insérer quelques transactions pour ce compte
 INSERT INTO transactions_courant (id_compte, date_transaction, libelle, montant, sens) VALUES

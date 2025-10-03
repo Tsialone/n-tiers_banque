@@ -35,8 +35,6 @@ namespace Epargne.Services
             {
                 IdCompte = c.IdCompte,
                 IdClient = c.IdClient,
-                ClientNom = c.Client.Nom,
-                ClientPrenom = c.Client.Prenom,
                 DateOuverture = c.DateOuverture,
                 TauxInteret = c.TauxInteret,
                 Transactions = c.Transactions?.Select(t => new TransactionEpargneDto
@@ -79,7 +77,7 @@ namespace Epargne.Services
 
 
         public async Task<List<CompteEpargne>> GetByClientIdAsync(int idClient) =>
-            await _context.ComptesEpargne
+              await _context.ComptesEpargne
                 .Where(c => c.IdClient == idClient)
                 .Include(c => c.Transactions)
                 .ToListAsync();

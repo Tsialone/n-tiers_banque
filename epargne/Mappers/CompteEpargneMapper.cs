@@ -16,8 +16,6 @@ namespace Epargne.Mappers
             {
                 IdCompte = entity.IdCompte,
                 IdClient = entity.IdClient,
-                ClientNom = entity.Client?.Nom,
-                ClientPrenom = entity.Client?.Prenom,
                 CapitalEpargne = entity.CapitalEpargne ,
                 Libelle = entity.Libelle,
                 DateOuverture = entity.DateOuverture,

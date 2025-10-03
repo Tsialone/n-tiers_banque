@@ -1,14 +1,25 @@
 package com.example.rest;
 
+import java.time.LocalDate;
+
 import com.example.models.CompteCourant;
+import com.example.service.ClientCourantService;
 import com.example.service.CompteCourantService;
+import com.example.views.CompteCourantView;
 
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.example.dto.CompteCourantDto;
+import com.example.mappers.CompteCourantMapper;
+import com.example.models.ClientCourant;
+
+import jakarta.persistence.Entity;
 
 @Path("/compte-courant")
 @Produces(MediaType.APPLICATION_JSON)
@@ -17,6 +28,8 @@ public class CompteCourantController {
 
     @EJB
     private CompteCourantService service;
+    @EJB
+    private ClientCourantService clientCourantService;
 
     @GET
     public Response getAllComptes() {
@@ -40,17 +53,39 @@ public class CompteCourantController {
 
     // Récupérer tous les comptes d'un client
     @GET
-    @Path("/client/{idClient}")
-    public Response getComptesByClient(@PathParam("idClient") Integer idClient) {
+    @Path("/client")
+    public Response getComptesByClient(@QueryParam("idClient") Integer idClient)  throws Exception {
+        
         List<CompteCourant> comptes = service.getComptesByClient(idClient);
-        return Response.ok(comptes).build();
+        List<CompteCourantView> comptes_views = new ArrayList<>();
+        for (CompteCourant compte_entity : comptes) {
+            CompteCourantView temp_view = new CompteCourantView();
+            double solde = clientCourantService .getSoldeByIdClientAndIdCompte(compte_entity.getIdCompte() , idClient, LocalDate.now());
+            temp_view.setNom(compte_entity.getNom());
+            temp_view.setIdCompte(compte_entity.getIdCompte());
+            temp_view.setCapital(compte_entity.getCapital());
+            temp_view.setDateOuverture(compte_entity.getDateOuverture());
+            temp_view.setDecouvertAutorise(compte_entity.getDecouvertAutorise());
+            temp_view.setSolde(solde);
+            comptes_views.add(temp_view);
+        }
+        return Response.ok(comptes_views).build();
     }
 
     // Ajouter ou mettre à jour un compte
     @POST
-    public Response saveCompte(CompteCourant compte) {
-        CompteCourant saved = service.saveCompte(compte);
-        return Response.ok(saved).build();
+    public Response saveCompte(CompteCourantDto dto) {
+        try {
+            ClientCourant client = clientCourantService.getClientById(dto.getIdClient());
+            CompteCourant entity = CompteCourantMapper.toEntity(dto, client);
+            CompteCourant saved = service.saveCompte(entity);
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(e.getMessage())
+                    .build();
+        }
+        return Response.ok(dto).build();
     }
 
     // Supprimer un compte

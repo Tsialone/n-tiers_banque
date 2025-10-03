@@ -5,8 +5,11 @@ import com.example.repositories.ClientCourantRepository;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+
 import java.time.LocalDate;
 import java.util.List;
+
+import com.example.models.CompteCourant;
 
 @Stateless
 public class ClientCourantService {
@@ -14,9 +17,17 @@ public class ClientCourantService {
     @EJB
     private ClientCourantRepository repository;
 
+    @EJB
+    private CompteCourantService compteCourantService;
+
     // getSoldeByIdClientAndIdCompte
-    public double getSoldeByIdClientAndIdCompte(Integer idCompte, Integer idClient,LocalDate dateTransaction) {
-        return repository.findSoldeByIdClientAndIdCompte(idCompte, idClient, dateTransaction);
+    public double getSoldeByIdClientAndIdCompte(Integer idCompte, Integer idClient,LocalDate dateTransaction) throws Exception {
+        try {
+            CompteCourant compteCourant  = compteCourantService.getCompteById(idCompte);
+            return repository.findSoldeByIdClientAndIdCompte(idCompte, idClient, dateTransaction) + compteCourant.getCapital();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     // Récupérer un client par son ID
