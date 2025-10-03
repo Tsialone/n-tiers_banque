@@ -16,6 +16,27 @@ import com.mashape.unirest.http.JsonNode;
 public class EpargneApiController {
 
     private static final String BASE_URL = "http://172.17.0.1:6000/api";
+    // trouver les comptes d'un client
+    // GET solde
+    @GET
+    @Path("/byClient")
+    public Response getEpargnesByClient(
+            @QueryParam("idClient") int idClient) {
+        try {
+            HttpResponse<String> response = Unirest.get(BASE_URL + "/CompteEpargne/byClient")
+                    .queryString("idClient", idClient)
+                    .asString();
+
+            return Response.status(response.getStatus())
+                    .entity(response.getBody())
+                    .build();
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Erreur GET API C# : " + e.getMessage())
+                    .build();
+        }
+    }
 
     // creation d'un transaction epargne
     @POST

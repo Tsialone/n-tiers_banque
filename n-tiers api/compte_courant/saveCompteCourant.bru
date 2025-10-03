@@ -1,0 +1,25 @@
+meta {
+  name: saveCompteCourant
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:8080/server-ejb/api/compte-courant/
+  body: json
+  auth: inherit
+}
+
+body:json {
+    {
+      "idClient":1,
+      "capital":100,
+      "dateOuverture": "2025-10-02",
+      "decouvertAutorise": 500,
+      "nom": "Tabita"
+    }
+}
+
+settings {
+  encodeUrl: true
+}

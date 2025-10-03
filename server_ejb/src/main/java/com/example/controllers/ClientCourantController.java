@@ -27,7 +27,7 @@ public class ClientCourantController {
     public Response getSolde(
             @QueryParam("idCompte") Integer idCompte,
             @QueryParam("idClient") Integer idClient,
-            @QueryParam("date") String dateStr) {
+            @QueryParam("date") String dateStr) throws Exception {
         try {
             if (idCompte == null || idClient == null) {
                 return Response.status(Response.Status.BAD_REQUEST)
@@ -36,20 +36,20 @@ public class ClientCourantController {
             }
 
             LocalDate dateTransaction;
+            Double solde = 0.0;
             try {
                 if (dateStr == null || dateStr.isEmpty()) {
                     dateTransaction = LocalDate.now();
                 } else {
                     dateTransaction = LocalDate.parse(dateStr);
                 }
+                solde = service.getSoldeByIdClientAndIdCompte(
+                        idCompte, idClient, dateTransaction);
             } catch (DateTimeParseException e) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Format de date invalide. Exemple attendu: 2023-08-05T23:59:59")
                         .build();
             }
-
-            Double solde = service.getSoldeByIdClientAndIdCompte(
-                    idCompte, idClient, dateTransaction);
 
             return Response.ok(solde).build();
 

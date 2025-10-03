@@ -8,8 +8,6 @@ namespace Epargne.DTO
         public int IdCompte { get; set; }
         public int IdClient { get; set; }
 
-        public string ClientNom { get; set; }
-        public string ClientPrenom { get; set; }
         public decimal CapitalEpargne { get; set; }
         public string Libelle { get; set; }
         public DateOnly DateOuverture { get; set; }

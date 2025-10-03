@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
+import com.example.mappers.TransactionCourantMapper;
 import com.example.service.CompteCourantService;
 
 @Path("/transactions-courant")
@@ -25,44 +26,16 @@ public class TransactionCourantController {
     @EJB
     private CompteCourantService compteCourantService;
 
-    // DTO → Entité
-    public TransactionCourant toEntity(TransactionCourantDto dto) {
-        TransactionCourant transaction = new TransactionCourant();
-
-        if (dto.getIdTransaction() != null) {
-            transaction.setIdTransaction(dto.getIdTransaction());
-        }
-        // System.out.println(dto);
-        // Récupérer le compte depuis l'ID
-        CompteCourant compte = compteCourantService.getCompteById(dto.getIdCompte());
-        transaction.setCompte(compte);
-
-        transaction.setLibelle(dto.getLibelle());
-        transaction.setMontant(dto.getMontant());
-        transaction.setSens(dto.getSens());
-        transaction.setDateTransaction(dto.getDateTransaction() != null
-                ? dto.getDateTransaction()
-                : java.time.LocalDate.now());
-
-        return transaction;
-    }
-
-    // Entité → DTO
-    public TransactionCourantDto toDto(TransactionCourant transaction) {
-        TransactionCourantDto dto = new TransactionCourantDto();
-        dto.setIdTransaction(transaction.getIdTransaction());
-        dto.setIdCompte(transaction.getCompte().getIdCompte());
-        dto.setLibelle(transaction.getLibelle());
-        dto.setMontant(transaction.getMontant());
-        dto.setSens(transaction.getSens());
-        dto.setDateTransaction(transaction.getDateTransaction());
-        return dto;
+    @GET
+    public Response getAllTransactionsByIdClient(@QueryParam("idClient") int idClient) {
+        List<TransactionCourantDto> transactionsCourantDto = service.getAllTransactionsByClient(idClient);
+        return Response.ok(transactionsCourantDto).build();
     }
 
     @GET
     public Response getAllTransactions() {
-        List<TransactionCourant> transactions = service.getAllTransactions();
-        return Response.ok(transactions).build();
+        List<TransactionCourantDto> transactionsCourantDto = service.getAllTransactions();
+        return Response.ok(transactionsCourantDto).build();
     }
 
     // Récupérer une transaction par ID
@@ -91,7 +64,8 @@ public class TransactionCourantController {
     @POST
     public Response saveTransaction(TransactionCourantDto transactionDto) {
         try {
-            TransactionCourant saved = service.saveTransaction(toEntity(transactionDto));
+            CompteCourant compteCourant = compteCourantService.getCompteById(transactionDto.getIdCompte());
+            TransactionCourant saved = service.saveTransaction( TransactionCourantMapper. toEntity(transactionDto, compteCourant));
             return Response.ok(saved).build();
         } catch (Exception e) {
             // Retourne 500 avec un message JSON

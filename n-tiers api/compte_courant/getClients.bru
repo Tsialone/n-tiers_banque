@@ -1,0 +1,15 @@
+meta {
+  name: getClients
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:8080/server-ejb/api/clients-courant
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
