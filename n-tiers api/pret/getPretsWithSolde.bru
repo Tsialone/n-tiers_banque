@@ -1,0 +1,19 @@
+meta {
+  name: getPretsWithSolde
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:5000/api/Amortissement/solde?idComptePret=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  idComptePret: 1
+}
+
+settings {
+  encodeUrl: true
+}

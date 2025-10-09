@@ -88,6 +88,14 @@ namespace Epargne.Controllers
             return Ok(transactions);
         }
 
+         [HttpGet("byClient")]
+        public async Task<IActionResult> GetByIdClient([FromQuery] int idClient)
+        {
+            var transactions = await _service.GetByIdClient(idClient);
+            // if (!transactions.Any()) return NotFound();
+            return Ok(transactions);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllDto()
         {
@@ -132,6 +140,8 @@ namespace Epargne.Controllers
                     Sens = dto.Sens,
                     DateTransaction = DateUtils.Today()
                 };
+
+                Console.WriteLine("debugggggggggggggg" + transaction);
 
                 var created = await _service.AddAsync(transaction);
 

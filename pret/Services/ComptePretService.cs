@@ -3,6 +3,8 @@ using Pret.Data;
 using Pret.DTO;
 using Pret.Mappers;
 using Pret.Models;
+using Pret.Utils;
+using Pret.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +15,15 @@ namespace Pret.Services
     public class ComptePretService
     {
         private readonly AppDbContext _context;
+        private readonly AmortissementService _amortissementService;
 
-        public ComptePretService(AppDbContext context)
+        public ComptePretService(
+            AppDbContext context,
+            AmortissementService amortissementService
+            )
         {
             _context = context;
+            _amortissementService = amortissementService;
         }
 
         public AppDbContext Context => _context;
@@ -50,6 +57,40 @@ namespace Pret.Services
                 .ToListAsync();
 
             return comptes.Select(c => c.ToDto()).ToList();
+        }
+
+        // Récupérer tous les comptes d’un client
+        public async Task<List<ComptePretView>> GetByClientIdWithSoldeAsync(int idClient)
+        {
+            var comptes = await _context.ComptePrets
+                .Where(c => c.IdClient == idClient)
+                .Include(c => c.Client)
+                .ToListAsync();
+            var dtos = comptes.Select(c => c.ToDto()).ToList();
+            List<ComptePretView> pretViews = new List<ComptePretView>();
+            foreach (var pretDto in dtos)
+            {
+                // GetByPretAndDateAndStatus(int idComptePret, DateOnly date, string statut)
+                var amortissements_filtred = await _amortissementService.GetByPretAndDateAndStatus(pretDto.IdCompte, DateUtils.Today(), "en_attente");
+                decimal soldePret =  amortissements_filtred.FirstOrDefault()?.ResteDu ?? 0.0m;
+                pretViews.Add(
+                    new ComptePretView
+                    {
+                        IdCompte = pretDto.IdCompte,
+                        IdClient = pretDto.IdClient,
+                        Libelle = pretDto.Libelle,
+                        DateOuverture = pretDto.DateOuverture,
+                        CapitalEmprunte = pretDto.CapitalEmprunte,
+                        TauxInteret = pretDto.TauxInteret,
+                        DureeMois = pretDto.DureeMois,
+                        DateEcheance = pretDto.DateEcheance,
+                        Statut = pretDto.Statut,
+                        Solde = (decimal) soldePret
+                    }
+
+                );
+            }
+            return pretViews;
         }
 
         // Ajouter un compte depuis l'entité

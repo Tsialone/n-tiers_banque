@@ -7,33 +7,105 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Quic;
+using Pret.ExternalApi.Services;
+using Pret.ExternalApi.DTO;
+using Pret.Utils;
 
 namespace Pret.Services
 {
     public class AmortissementService
     {
         private readonly AppDbContext _context;
+        private readonly TransactionPretService _transactionPretService;
+        private readonly TransactionCourantApiClient _transactionCourantApiClient;
 
-        public AmortissementService(AppDbContext context)
+
+        public AmortissementService(
+            AppDbContext context,
+            TransactionPretService transactionPretService,
+            TransactionCourantApiClient transactionCourantApiClient
+            )
         {
             _context = context;
+            _transactionPretService = transactionPretService;
+            _transactionCourantApiClient = transactionCourantApiClient;
         }
 
         public AppDbContext Context => _context;
 
+
+
+        // rembourssement du pret sur le dernier mois de l'amortissement
+        public async Task<List<AmortissementDto>> rembourssementPret(int idComptePret, int idCompteCourant, DateOnly? date, double montant)
+        {
+
+            await using var dbTransaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var temp_date =  date ?? DateUtils.Today() ;
+                var amortissementsNonPaye = await GetByPretAndDateAndStatus(idComptePret, date, "en_attente");
+                var amortissementsPaye = await GetByPretAndDateAndStatus(idComptePret, date, "paye");
+
+                if (amortissementsNonPaye.Count == 0 && amortissementsPaye.Count != 0) throw new Exception("Tout les mois de ce compte pret son ok");
+                if (amortissementsNonPaye.Count == 0 && amortissementsPaye.Count == 0) throw new Exception("Pas d'amortissement sur cette depuis cette date: " + date);
+
+                // verifie si le montant est ok, au cas ou
+                // ici
+                var lastMonth = amortissementsNonPaye.First();
+                // update du statut
+                var amortissement = await GetByIdAsync(lastMonth.IdAmortissement);
+                amortissement.Statut = "paye";
+                // Console.WriteLine("ito ny id any " + amortissement.IdAmortissement);
+
+                var transaction_courant_created = await _transactionCourantApiClient.CreateAsync(
+                     new TransactionCourantDto
+                     {
+                         IdCompte = idCompteCourant,
+                         DateTransaction = temp_date,
+                         Libelle = "remboursement du mois: " + lastMonth.CreatedAt,
+                         Montant =   lastMonth.Mensualite  , // ca peut varie si payement partiel
+                         Sens = "debit"
+                     }
+                );
+                await UpdateAsync(amortissement);
+
+                await dbTransaction.CommitAsync();
+                return await GetByCompteIdAsync(idComptePret);
+            }
+            catch (Exception ex)
+            {
+                await dbTransaction.RollbackAsync();
+                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                throw new Exception("Erreur : " + innerMessage, ex);
+            }
+        }
+
         // getSoldeByPretAndDate
-        public async Task<List<AmortissementDto>> GetByPretAndDateAndStatus(int idComptePret, DateOnly date, string statut)
+        public async Task<List<AmortissementDto>> GetByPretAndDateAndStatus(int idComptePret, DateOnly? date, string? statut)
         {
 
             try
             {
-                var amortissements = await _context.Amortissements
-              .Include(a => a.ComptePret)
-                  .ThenInclude(c => c.Client)
-              .Where(a => a.Statut == statut && a.CreatedAt <= date && a.ComptePret.IdCompte == idComptePret)
-              .OrderBy(a => a.CreatedAt)
-              .ToListAsync();
+                var query = _context.Amortissements
+                .Include(a => a.ComptePret)
+                .ThenInclude(c => c.Client)
+                .Where(a => a.ComptePret.IdCompte == idComptePret);
+                if (date.HasValue)
+                {
+                    query = query.Where(a => a.CreatedAt <= date.Value);
+                    Console.WriteLine("tsy null ny date " + date);
+                }
+                if (statut != null)
+                {
+                    query = query.Where(a => a.Statut == statut);
+                    Console.WriteLine("tsy null ny satut " + date);
 
+
+                }
+                var amortissements = await query
+                .OrderBy(a => a.CreatedAt)
+                .ToListAsync();
                 return amortissements.Select(a => a.ToDto()).ToList();
             }
             catch (Exception ex)

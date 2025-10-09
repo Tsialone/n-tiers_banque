@@ -42,6 +42,8 @@ namespace Pret.Controllers
         public async Task<IActionResult> askPret([FromBody] ComptePretCreateDto dto, [FromQuery] int idCompteCourant)
         {
             if (dto == null) return BadRequest();
+            Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxx");
+            Console.WriteLine(dto);
             // ouverture du transaction
             await using var dbTransaction = await _service.Context.Database.BeginTransactionAsync();
 
@@ -167,6 +169,15 @@ namespace Pret.Controllers
         {
             var comptes = await _service.GetByClientIdAsync(idClient);
             if (!comptes.Any()) return NotFound();
+            return Ok(comptes);
+        }
+
+         // GET api/comptePret/byClient?idClient=1
+        [HttpGet("byClientSolde")]
+        public async Task<IActionResult> GetByClientIdSolde([FromQuery] int idClient)
+        {
+            var comptes = await _service.GetByClientIdWithSoldeAsync(idClient);
+            // if (!comptes.Any()) return NotFound();
             return Ok(comptes);
         }
 

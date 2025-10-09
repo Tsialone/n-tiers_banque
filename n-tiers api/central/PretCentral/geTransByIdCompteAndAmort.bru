@@ -1,0 +1,20 @@
+meta {
+  name: geTransByIdCompteAndAmort
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:8080/server-ejb/api/pret/byIdCompteAndAmort?idCompte=1&idAmortissement=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  idCompte: 1
+  idAmortissement: 1
+}
+
+settings {
+  encodeUrl: true
+}
