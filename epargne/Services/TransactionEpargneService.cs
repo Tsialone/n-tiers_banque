@@ -34,24 +34,31 @@ namespace Epargne.Services
 
                 decimal solde = compteEpargne.CapitalEpargne;
                 DateOnly currentDate = compteEpargne.DateOuverture;
-
                 while (currentDate <= date)
                 {
                     // Transactions du mois courant
                     var transactionsMois = await _context.TransactionsEpargne
                         .Where(t => t.IdCompte == idCompteEpargne
-                                 && t.Compte.IdClient == idClient
-                                 && t.DateTransaction.Year == currentDate.Year
-                                 && t.DateTransaction.Month == currentDate.Month)
+                                 && t.Compte.Client.IdClient == idClient
+                                //  && t.DateTransaction.Year == currentDate.Year
+                                //  && t.DateTransaction.Month == currentDate.Month
+                                )
                         .ToListAsync();
 
                     decimal credit = transactionsMois.Where(t => t.Sens == "credit").Sum(t => t.Montant);
                     decimal debit = transactionsMois.Where(t => t.Sens == "debit").Sum(t => t.Montant);
 
+
                     // Ajouter intérêts du mois
                     solde += solde * tauxMensuel;
 
                     // Ajouter crédits et retirer débits
+                    Console.WriteLine("nemanyyyyyyyyyyyyyyyy " + transactionsMois);
+                    Console.WriteLine("==== Transactions du mois ==== pour idCompteEpargne= " + idCompteEpargne + " et idClient= "   + idClient);
+                    foreach (var t in transactionsMois)
+                    {
+                        Console.WriteLine($"ID: {t.IdTransaction}, Montant: {t.Montant},  idClient: {t.Compte.IdClient} Sens: {t.Sens}, Date: {t.DateTransaction}");
+                    }
                     solde += credit - debit;
 
                     // Passer au mois suivant
@@ -76,6 +83,22 @@ namespace Epargne.Services
 
             return transactions.Select(t => new TransactionEpargneDto
             {
+                IdTransaction = t.IdTransaction,
+                DateTransaction = t.DateTransaction,
+                Libelle = t.Libelle,
+                Montant = t.Montant,
+                Sens = t.Sens
+            }).ToList();
+        }
+        public async Task<List<TransactionEpargneDto>> GetByIdClient(int idClient)
+        {
+            var transactions = await _context.TransactionsEpargne
+                .Include(t => t.Compte)
+                .Where(t => t.Compte.IdClient == idClient)
+                .ToListAsync();
+            return transactions.Select(t => new TransactionEpargneDto
+            {
+                IdCompte = t.IdCompte,
                 IdTransaction = t.IdTransaction,
                 DateTransaction = t.DateTransaction,
                 Libelle = t.Libelle,

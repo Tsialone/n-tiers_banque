@@ -1,0 +1,20 @@
+meta {
+  name: getEpargneWithSolde
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:8080/server-ejb/api/epargne/byClientSolde?idClient=1&date=2023-08-01
+  body: none
+  auth: inherit
+}
+
+params:query {
+  idClient: 1
+  date: 2023-08-01
+}
+
+settings {
+  encodeUrl: true
+}

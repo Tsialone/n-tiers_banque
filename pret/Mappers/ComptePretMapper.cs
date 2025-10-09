@@ -16,8 +16,8 @@ namespace Pret.Mappers
             {
                 IdCompte = entity.IdCompte,
                 IdClient = entity.IdClient,
-                ClientNom = entity.Client?.Nom,
-                ClientPrenom = entity.Client?.Prenom,
+                // ClientNom = entity.Client?.Nom,
+                // ClientPrenom = entity.Client?.Prenom,
                 Libelle = entity.Libelle,
                 DateOuverture = entity.DateOuverture,
                 CapitalEmprunte = entity.CapitalEmprunte,

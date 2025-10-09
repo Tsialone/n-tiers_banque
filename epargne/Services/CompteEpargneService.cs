@@ -76,11 +76,21 @@ namespace Epargne.Services
         }
 
 
-        public async Task<List<CompteEpargne>> GetByClientIdAsync(int idClient) =>
-              await _context.ComptesEpargne
+        public async Task<List<CompteEpargne>> GetByClientIdAsync(int idClient, DateOnly? date)
+        {
+            var query = _context.ComptesEpargne
                 .Where(c => c.IdClient == idClient)
                 .Include(c => c.Transactions)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (date.HasValue)
+            {
+                query = query.Where(c => c.DateOuverture >= date);
+            }
+
+            // Retourne la liste finale
+            return await query.ToListAsync();
+        }
         public async Task<List<CompteEpargne>> GetByClientIdAndCompteIdAsync(int idClient, int idCompte) =>
             await _context.ComptesEpargne
                 .Where(c => c.IdClient == idClient && c.IdCompte == idCompte)

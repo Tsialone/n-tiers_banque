@@ -20,7 +20,31 @@ namespace Pret.Services
         }
 
         public AppDbContext Context => _context;
+        // Récupérer tous les comptes
+        public async Task<List<TransactionPretDto>> GetAllDtoByIdCompteAsync(int idCompte)
+        {
+            var transactions = await _context.TransactionPrets
+                .Where(t => t.IdCompte == idCompte)
+                .ToListAsync();
 
+            return transactions.Select(t => t.ToDto()).ToList();
+        }
+
+        // Récupérer tous les comptes
+        public async Task<List<TransactionPretDto>> GetAllDtoByIdCompteAndIdAmortAsync(int idCompte, int? idAmortissement)
+        {
+            var transactions = await _context.TransactionPrets
+                .Where(t => t.IdCompte == idCompte)
+                .ToListAsync();
+            Console.WriteLine("nulll ve ?? " + idAmortissement);
+            if (idAmortissement != null && idAmortissement != 0)
+            {
+                transactions = await _context.TransactionPrets
+               .Where(t => t.IdCompte == idCompte && t.IdAmortissement == idAmortissement)
+               .ToListAsync();
+            }
+            return transactions.Select(t => t.ToDto()).ToList();
+        }
         // Récupérer tous les comptes
         public async Task<List<TransactionPretDto>> GetAllDtoAsync()
         {

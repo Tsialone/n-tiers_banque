@@ -21,6 +21,23 @@ namespace Pret.Controllers
             _service = service;
         }
 
+        [HttpGet("rembourssement")]
+        public async Task<IActionResult> rembourssementPret([FromQuery] int idComptePret, [FromQuery] int idCompteCourant, [FromQuery] DateOnly? date)
+        {
+
+            try
+            {
+                DateOnly temp_date = date ?? DateUtils.Today();
+                var amortissements = await _service.rembourssementPret(idComptePret , idCompteCourant, null, 0.0);
+                return Ok(amortissements);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+
+        }
 
         // getSolde de pret par compte de pret  et date
         // public async Task<List<AmortissementDto>> GetByPretAndDateAndStatus(int idComptePret, DateOnly date, string status)
@@ -31,7 +48,7 @@ namespace Pret.Controllers
 
             try
             {
-                DateOnly temp_date = date ??  DateUtils.Today();
+                DateOnly temp_date = date ?? DateUtils.Today();
                 var amortissements_filtred = await _service.GetByPretAndDateAndStatus(idComptePret, temp_date, status);
                 return Ok(amortissements_filtred.FirstOrDefault()?.ResteDu ?? 0.0m);
 
@@ -65,8 +82,8 @@ namespace Pret.Controllers
         [HttpGet("byCompte")]
         public async Task<IActionResult> GetByCompteId([FromQuery] int idCompte)
         {
-            var amortissements = await _service.GetByCompteIdAsync(idCompte);
-            if (!amortissements.Any()) return NotFound();
+            var amortissements = await _service.GetByPretAndDateAndStatus(idCompte, null, null);
+            // if (!amortissements.Any()) return NotFound();
             return Ok(amortissements);
         }
 
@@ -88,6 +105,18 @@ namespace Pret.Controllers
         }
 
         // PUT api/amortissement/{id}
+        [HttpGet("payementPret")]
+        public async Task<IActionResult> Update([FromQuery] int idAmortissement, double? montant)
+        {
+            // if (idAmortissement != amortissement.IdAmortissement) return BadRequest();
+            var entity = await _service.GetByIdAsync(idAmortissement);
+            if (entity == null) return NotFound();
+            entity.Statut = "paye";
+            await _service.UpdateAsync(entity);
+            return Ok(new { success = "payement reussi!" });
+        }
+
+        // PUT api/amortissement/{id}
         [HttpPut("remboursser")]
         public async Task<IActionResult> Update([FromBody] AmortissementDto amortissement)
         {
@@ -96,7 +125,7 @@ namespace Pret.Controllers
             if (entity == null) return NotFound();
             entity.Statut = "paye";
             await _service.UpdateAsync(entity);
-            return Ok(new {success = "payement reussi!" });
+            return Ok(new { success = "payement reussi!" });
         }
 
         // DELETE api/amortissement/{id}

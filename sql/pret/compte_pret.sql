@@ -14,7 +14,7 @@ CREATE TABLE comptes_pret (
     id_client INT NOT NULL REFERENCES clients_pret(id_client) ON DELETE CASCADE,
     libelle VARCHAR(100) NULL , 
     date_ouverture DATE NOT NULL DEFAULT CURRENT_DATE,
-    capital_emprunte NUMERIC(15,2) NOT NULL,   -- montant du prêt
+    capital_emprunte NUMERIC(15,2) NOT NULL, 
     taux_interet NUMERIC(5,2) NOT NULL,
     duree_mois INT NOT NULL CHECK (duree_mois > 0),
     date_echeance DATE NOT NULL,
