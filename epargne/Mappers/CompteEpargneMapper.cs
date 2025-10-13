@@ -16,9 +16,10 @@ namespace Epargne.Mappers
             {
                 IdCompte = entity.IdCompte,
                 IdClient = entity.IdClient,
-                CapitalEpargne = entity.CapitalEpargne ,
+                CapitalEpargne = entity.CapitalEpargne,
                 Libelle = entity.Libelle,
                 DateOuverture = entity.DateOuverture,
+                Retrait = entity.Retrait ,
                 TauxInteret = entity.TauxInteret,
                 Transactions = entity.Transactions?
                     .Select(t => new TransactionEpargneDto
@@ -41,9 +42,10 @@ namespace Epargne.Mappers
             return new CompteEpargne
             {
                 IdClient = dto.IdClient,
-                CapitalEpargne = dto.CapitalEpargne ,
+                CapitalEpargne = dto.CapitalEpargne,
                 Libelle = dto.Libelle,
                 DateOuverture = dto.DateOuverture,
+                Retrait = dto.Retrait ,
                 TauxInteret = dto.TauxInteret
             };
         }

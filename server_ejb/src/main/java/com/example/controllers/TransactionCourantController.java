@@ -1,4 +1,4 @@
-package com.example.rest;
+package com.example.controllers;
 
 import com.example.dto.TransactionCourantDto;
 import com.example.models.CompteCourant;

@@ -11,6 +11,8 @@ namespace Epargne.DTO
         public decimal CapitalEpargne { get; set; }
         public string Libelle { get; set; }
         public DateOnly DateOuverture { get; set; }
+        public decimal Retrait  { get; set; } = 50.00m;
+
         public decimal TauxInteret { get; set; }
 
         public List<TransactionEpargneDto> Transactions { get; set; }

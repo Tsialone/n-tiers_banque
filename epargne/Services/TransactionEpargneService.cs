@@ -6,6 +6,7 @@ using Epargne.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Epargne.Utils;
 
 namespace Epargne.Services
 {
@@ -54,7 +55,7 @@ namespace Epargne.Services
 
                     // Ajouter crédits et retirer débits
                     Console.WriteLine("nemanyyyyyyyyyyyyyyyy " + transactionsMois);
-                    Console.WriteLine("==== Transactions du mois ==== pour idCompteEpargne= " + idCompteEpargne + " et idClient= "   + idClient);
+                    Console.WriteLine("==== Transactions du mois ==== pour idCompteEpargne= " + idCompteEpargne + " et idClient= " + idClient);
                     foreach (var t in transactionsMois)
                     {
                         Console.WriteLine($"ID: {t.IdTransaction}, Montant: {t.Montant},  idClient: {t.Compte.IdClient} Sens: {t.Sens}, Date: {t.DateTransaction}");
@@ -146,6 +147,16 @@ namespace Epargne.Services
         {
             try
             {
+                // on verifie si la transaction debit est conforme au % de retrait
+                var compte_epargne = await _compteEpargneService.GetByIdAsync(transaction.IdCompte);
+                double pourcentage_retrait = (double)compte_epargne.Retrait;
+                double compte_solde = await getSoldeByClientAndEpargneAndDate(compte_epargne.IdClient, transaction.IdCompte, DateUtils.Today());
+                double max_retrait = compte_solde * pourcentage_retrait / 100;
+                if (max_retrait < (double)transaction.Montant && transaction.Sens == "debit")
+                {
+                    throw new Exception("Retrait maximum atteint: " + max_retrait + ", or que vous avez essaieé de retiré: " + transaction.Montant);
+                }
+
                 await _context.TransactionsEpargne.AddAsync(transaction);
                 await _context.SaveChangesAsync();
                 return transaction;

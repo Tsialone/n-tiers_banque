@@ -41,9 +41,8 @@ namespace Pret.Controllers
         [HttpPost("askPret")]
         public async Task<IActionResult> askPret([FromBody] ComptePretCreateDto dto, [FromQuery] int idCompteCourant)
         {
-            if (dto == null) return BadRequest();
-            Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxx");
-            Console.WriteLine(dto);
+            // if (dto == null) return BadRequest();
+
             // ouverture du transaction
             await using var dbTransaction = await _service.Context.Database.BeginTransactionAsync();
 
@@ -51,7 +50,11 @@ namespace Pret.Controllers
             {
                 // enregistrement du compte
                 Console.WriteLine("creation du compte pret.......");
+                if (!ModelState.IsValid)  throw new  Exception("tay nolona");
                 var created = await _service.AddAsync(dto);
+
+                Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxx");
+                Console.WriteLine(dto);
 
                 // enregistrement du transaction
                 Console.WriteLine("creation des  transactions.......");
@@ -111,32 +114,33 @@ namespace Pret.Controllers
                                       $"Intérêt={interet:F2}, " +
                                       $"Capital remboursé={capital_rembourse:F2}, " +
                                       $"Reste dû={reste_du:F2}, " +
-                                      $"Prevu ={date_prevu}" 
+                                      $"Prevu ={date_prevu}"
                                        );
                     // sauvegarde
-                   var amortissement_created = await _amortissementService.AddAsync(
-                        new AmortissementCreateDto
-                        {
-                            IdCompte = created.IdCompte,
-                            Mois = mois,
-                            Mensualite = (decimal) mensualite ,
-                            Interet = (decimal)interet,
-                            Capital = (decimal)capital_rembourse,
-                            ResteDu = (decimal)reste_du,
-                            CreatedAt = date_prevu
-                        }
-                    );
+                    var amortissement_created = await _amortissementService.AddAsync(
+                         new AmortissementCreateDto
+                         {
+                             IdCompte = created.IdCompte,
+                             Mois = mois,
+                             Mensualite = (decimal)mensualite,
+                             Interet = (decimal)interet,
+                             Capital = (decimal)capital_rembourse,
+                             ResteDu = (decimal)reste_du,
+                             CreatedAt = date_prevu
+                         }
+                     );
                 }
                 // fermeture du tansaction
                 await dbTransaction.CommitAsync();
                 // await dbTransaction.RollbackAsync();
 
-                return StatusCode(200, new { success = "Demande de pret reussi! "  });
+                return StatusCode(200, new { success = "Demande de pret reussi! " });
 
             }
             catch (Exception ex)
             {
                 await dbTransaction.RollbackAsync();
+                Console.WriteLine(ex.Message + "dddddddddddddddddddddddddddddddd");
                 return StatusCode(500, new { error = ex.Message });
             }
 
@@ -167,18 +171,35 @@ namespace Pret.Controllers
         [HttpGet("byClient")]
         public async Task<IActionResult> GetByClientId([FromQuery] int idClient)
         {
-            var comptes = await _service.GetByClientIdAsync(idClient);
-            if (!comptes.Any()) return NotFound();
-            return Ok(comptes);
+            try
+            {
+                var comptes = await _service.GetByClientIdAsync(idClient);
+                if (!comptes.Any()) return NotFound();
+                return Ok(comptes);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
-         // GET api/comptePret/byClient?idClient=1
+        // GET api/comptePret/byClient?idClient=1
         [HttpGet("byClientSolde")]
         public async Task<IActionResult> GetByClientIdSolde([FromQuery] int idClient)
         {
-            var comptes = await _service.GetByClientIdWithSoldeAsync(idClient);
-            // if (!comptes.Any()) return NotFound();
-            return Ok(comptes);
+            try
+            {
+                var comptes = await _service.GetByClientIdWithSoldeAsync(idClient);
+                // if (!comptes.Any()) return NotFound();
+                return Ok(comptes);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, new { error = ex.Message });
+            }
+
         }
 
         // POST api/comptePret

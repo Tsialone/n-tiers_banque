@@ -32,7 +32,7 @@ CREATE TABLE transactions_courant (
 
 -- Insérer un seul client
 INSERT INTO clients_courant (nom, prenoms, date_naissance)
-VALUES ('Randria', 'Tiana Andry', '1992-08-15');
+VALUES ('Rakoto', 'Alice', '1990-05-23');
 
 -- Insérer un seul compte pour ce client
 INSERT INTO comptes_courant (nom, capital  , id_client, decouvert_autorise)

@@ -28,12 +28,18 @@ namespace Epargne.Models
         [Column("date_ouverture")]
         public DateOnly DateOuverture { get; set; }
 
+        [Column("retrait")]
+        public decimal Retrait { get; set; }
+        
         [Column("taux_interet")]
         public decimal TauxInteret { get; set; }
+
+
+
 
         // Navigation property vers les transactions
         public ICollection<TransactionEpargne> Transactions { get; set; }
     }
-    
-   
+
+
 }
