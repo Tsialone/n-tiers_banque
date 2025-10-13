@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.Response;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.JsonNode;
 
 @Path("/pret")
 @Produces(MediaType.APPLICATION_JSON)

@@ -14,6 +14,7 @@ namespace Epargne.Views
         public string Libelle { get; set; }
         public DateOnly DateOuverture { get; set; }
         public decimal TauxInteret { get; set; }
+        public decimal Retrait { get; set; }
 
         public decimal Solde { get; set; } = 0.0m;
 

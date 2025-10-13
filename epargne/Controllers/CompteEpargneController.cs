@@ -79,7 +79,7 @@ namespace Epargne.Controllers
             try
             {
                 var comptes = await _service.GetByClientIdAsync(idClient, date);
-                if (comptes == null || !comptes.Any()) return  Ok (comptes);
+                if (comptes == null || !comptes.Any()) return Ok(comptes);
                 var comptesDto = comptes.Select(c => c.ToDto()).ToList();
                 var temp_date = date ?? DateUtils.Today();
                 Console.WriteLine("mtfffffffffff " + temp_date);
@@ -95,14 +95,15 @@ namespace Epargne.Controllers
                             Libelle = compte.Libelle,
                             DateOuverture = compte.DateOuverture,
                             TauxInteret = compte.TauxInteret,
+                            Retrait = compte.Retrait,
                             Transactions = compte.Transactions,
                             Solde = (decimal)solde
                         }
 
                     );
                 }
-            // var comptesDto = await _service.GetAllDtoAsync();
-            // return  Ok(comptes);
+                // var comptesDto = await _service.GetAllDtoAsync();
+                // return  Ok(comptes);
                 return Ok(compteEpargneViews);
             }
             catch (Exception ex)
@@ -115,7 +116,7 @@ namespace Epargne.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] CompteEpargneCreateDto dto, [FromQuery] int idCompteCourant)
         {
-            if (dto == null) return NotFound();
+            // if (dto == null) return NotFound();
             await using var dbTransaction = await _service.Context.Database.BeginTransactionAsync();
             try
             {

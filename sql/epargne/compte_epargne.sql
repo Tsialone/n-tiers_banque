@@ -17,6 +17,7 @@ CREATE TABLE comptes_epargne (
     capital_epargne NUMERIC(15,2) NOT NULL , 
     libelle VARCHAR (100) , 
     date_ouverture DATE NOT NULL DEFAULT CURRENT_DATE,
+    retrait NUMERIC(15,2) NOT NULL DEFAULT (50),
     taux_interet NUMERIC(15,2) NOT NULL -- annuel
 );
 
@@ -31,10 +32,9 @@ CREATE TABLE transactions_epargne (
 );
 
 -- Données exemples clients
-INSERT INTO clients_epargne (nom, prenom, date_naissance) VALUES
-('Rakoto', 'Alice', '1990-05-23'),
-('Rabe', 'Bob', '1985-11-10'),
-('Andrian', 'Claire', '2000-02-15');
+INSERT INTO clients_epargne (nom, prenom, date_naissance) 
+VALUES ('Rakoto', 'Alice', '1990-05-23');
+
 
 -- Données exemples comptes
 INSERT INTO comptes_epargne (id_client,  capital_epargne ,  libelle ,date_ouverture, taux_interet) VALUES

@@ -8,7 +8,9 @@ namespace Epargne.DTO
         public decimal CapitalEpargne { get; set; }
         public string Libelle { get; set; }
         public DateOnly DateOuverture { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        public decimal Retrait { get; set; } = 50.00M;
         public decimal TauxInteret { get; set; } = 2.1M;
+
 
     }
 }

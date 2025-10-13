@@ -46,11 +46,12 @@ CREATE TABLE transactions_pret (
 
 -- Client
 INSERT INTO clients_pret (nom, prenom, date_naissance)
-VALUES ('Dupont', 'Jean', '1990-05-10');
+VALUES ('Rakoto', 'Alice', '1990-05-23');
+
 
 -- Compte prêt
-INSERT INTO comptes_pret (id_client, date_ouverture, capital_emprunte, taux_interet, duree_mois, date_echeance)
-VALUES (1, '2025-09-01', 1000.00, 10.00, 4, '2026-01-01');
+INSERT INTO comptes_pret (id_client,  libelle  ,date_ouverture, capital_emprunte, taux_interet, duree_mois, date_echeance)
+VALUES (1,'immobillier' , '2025-09-01', 1000.00, 10.00, 4, '2026-01-01');
 
 -- Amortissements (simplifié, avec capital et intérêts arrondis)
 INSERT INTO amortissements (id_compte, mois, mensualite, interet, capital, reste_du , created_at)
