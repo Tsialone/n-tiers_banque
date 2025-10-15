@@ -16,7 +16,7 @@ namespace Pret.DTO
         public decimal CapitalEmprunte { get; set; }
         public decimal TauxInteret { get; set; }
         public int DureeMois { get; set; }
-        public DateOnly DateEcheance { get; set; }
+        public DateOnly? DateEcheance { get; set; }
         public string Statut { get; set; }
     }
 }

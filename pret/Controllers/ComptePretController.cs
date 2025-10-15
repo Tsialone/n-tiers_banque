@@ -50,7 +50,6 @@ namespace Pret.Controllers
             {
                 // enregistrement du compte
                 Console.WriteLine("creation du compte pret.......");
-                if (!ModelState.IsValid)  throw new  Exception("tay nolona");
                 var created = await _service.AddAsync(dto);
 
                 Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxx");
@@ -140,7 +139,7 @@ namespace Pret.Controllers
             catch (Exception ex)
             {
                 await dbTransaction.RollbackAsync();
-                Console.WriteLine(ex.Message + "dddddddddddddddddddddddddddddddd");
+            
                 return StatusCode(500, new { error = ex.Message });
             }
 
@@ -186,11 +185,11 @@ namespace Pret.Controllers
 
         // GET api/comptePret/byClient?idClient=1
         [HttpGet("byClientSolde")]
-        public async Task<IActionResult> GetByClientIdSolde([FromQuery] int idClient)
+        public async Task<IActionResult> GetByClientIdSolde([FromQuery] int idClient , DateOnly? date)
         {
             try
             {
-                var comptes = await _service.GetByClientIdWithSoldeAsync(idClient);
+                var comptes = await _service.GetByClientIdAndDateWithSoldeAsync(idClient , date);
                 // if (!comptes.Any()) return NotFound();
                 return Ok(comptes);
             }

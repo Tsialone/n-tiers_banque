@@ -1,3 +1,7 @@
+using Epargne.Utils;
+using System;
+
+
 namespace Epargne.DTO
 {
     public class TransactionEpargneCreateDto
@@ -6,5 +10,9 @@ namespace Epargne.DTO
         public string Libelle { get; set; }
         public decimal Montant { get; set; }
         public string Sens { get; set; } // debit ou credit
+        public DateOnly DateTransaction { get; set; } = DateUtils.Today();
+
+
+
     }
 }

@@ -37,13 +37,13 @@ namespace Pret.Services
 
 
         // rembourssement du pret sur le dernier mois de l'amortissement
-        public async Task<List<AmortissementDto>> rembourssementPret(int idComptePret, int idCompteCourant, DateOnly? date, double montant)
+        public async Task<List<AmortissementDto>> rembourssementPret(int idComptePret, int idCompteCourant, DateOnly date, double montant)
         {
 
             await using var dbTransaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var temp_date =  date ?? DateUtils.Today() ;
+                var temp_date = date != default ? date : DateUtils.Today();
                 var amortissementsNonPaye = await GetByPretAndDateAndStatus(idComptePret, date, "en_attente");
                 var amortissementsPaye = await GetByPretAndDateAndStatus(idComptePret, date, "paye");
 
@@ -64,7 +64,7 @@ namespace Pret.Services
                          IdCompte = idCompteCourant,
                          DateTransaction = temp_date,
                          Libelle = "remboursement du mois: " + lastMonth.CreatedAt,
-                         Montant =   lastMonth.Mensualite  , // ca peut varie si payement partiel
+                         Montant = lastMonth.Mensualite, // ca peut varie si payement partiel
                          Sens = "debit"
                      }
                 );
@@ -82,7 +82,7 @@ namespace Pret.Services
         }
 
         // getSoldeByPretAndDate
-        public async Task<List<AmortissementDto>> GetByPretAndDateAndStatus(int idComptePret, DateOnly? date, string? statut)
+        public async Task<List<AmortissementDto>> GetByPretAndDateAndStatus(int idComptePret, DateOnly? date, string statut)
         {
 
             try
@@ -91,15 +91,16 @@ namespace Pret.Services
                 .Include(a => a.ComptePret)
                 .ThenInclude(c => c.Client)
                 .Where(a => a.ComptePret.IdCompte == idComptePret);
+                Console.WriteLine("tsy null ny date " + date);
                 if (date.HasValue)
                 {
                     query = query.Where(a => a.CreatedAt <= date.Value);
-                    Console.WriteLine("tsy null ny date " + date);
+                    Console.WriteLine("tsy null ny date " + date.Value);
                 }
-                if (statut != null)
+                if (!string.IsNullOrEmpty(statut))
                 {
                     query = query.Where(a => a.Statut == statut);
-                    Console.WriteLine("tsy null ny satut " + date);
+                    Console.WriteLine("tsy null ny satut " + statut);
 
 
                 }

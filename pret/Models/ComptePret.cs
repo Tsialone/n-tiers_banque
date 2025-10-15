@@ -36,9 +36,9 @@ namespace Pret.Models
         [Column("duree_mois")]
         public int DureeMois { get; set; }
 
-        [Required]
+
         [Column("date_echeance")]
-        public DateOnly DateEcheance { get; set; }
+        public DateOnly? DateEcheance { get; set; }
 
         [Column("statut")]
         public string Statut { get; set; } = "actif";

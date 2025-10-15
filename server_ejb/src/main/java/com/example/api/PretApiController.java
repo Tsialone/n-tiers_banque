@@ -93,10 +93,11 @@ public class PretApiController {
         @GET
         @Path("/byClientSolde")
         public Response getPretByClient(
-                        @QueryParam("idClient") int idClient) {
+                        @QueryParam("idClient") int idClient  , @QueryParam("date") String date ) {
                 try {
                         HttpResponse<String> response = Unirest.get(BASE_URL + "/ComptePret/byClientSolde")
                                         .queryString("idClient", idClient)
+                                        .queryString("date", date)
                                         .asString();
 
                         return Response.status(response.getStatus())

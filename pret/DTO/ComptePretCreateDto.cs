@@ -18,7 +18,7 @@ namespace Pret.DTO
 
         public int DureeMois { get; set; }
 
-        public DateOnly DateEcheance { get; set; }
+        public DateOnly? DateEcheance { get; set; } 
 
         public string Statut { get; set; } = "actif";
     }

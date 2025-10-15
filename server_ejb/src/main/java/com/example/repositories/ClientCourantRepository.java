@@ -20,16 +20,28 @@ public class ClientCourantRepository {
             Integer idCompte,
             Integer idClient,
             LocalDate dateTransaction) {
-        String jpql = "SELECT SUM(CASE WHEN t.sens = 'credit' THEN t.montant ELSE -t.montant END) " +
-                "FROM TransactionCourant t " +
-                "WHERE t.compte.idCompte = :idCompte " +
-                "AND t.compte.client.idClient = :idClient " +
-                "AND t.dateTransaction <= :dateTransaction";
+        String jpql;
+        if (dateTransaction == null) {
+
+            jpql = "SELECT SUM(CASE WHEN t.sens = 'credit' THEN t.montant ELSE -t.montant END) " +
+                    "FROM TransactionCourant t " +
+                    "WHERE t.compte.idCompte = :idCompte " +
+                    "AND t.compte.client.idClient = :idClient ";
+        } else {
+
+            jpql = "SELECT SUM(CASE WHEN t.sens = 'credit' THEN t.montant ELSE -t.montant END) " +
+                    "FROM TransactionCourant t " +
+                    "WHERE t.compte.idCompte = :idCompte " +
+                    "AND t.compte.client.idClient = :idClient " +
+                    "AND t.dateTransaction <= :dateTransaction";
+        }
 
         Query query = em.createQuery(jpql);
         query.setParameter("idCompte", idCompte);
         query.setParameter("idClient", idClient);
-        query.setParameter("dateTransaction", dateTransaction);
+        if (dateTransaction != null) {
+            query.setParameter("dateTransaction",dateTransaction);
+        }
 
         Double solde = (Double) query.getSingleResult();
         return solde != null ? solde : 0.0;

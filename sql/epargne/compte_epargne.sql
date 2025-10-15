@@ -40,8 +40,8 @@ VALUES ('Rakoto', 'Alice', '1990-05-23');
 INSERT INTO comptes_epargne (id_client,  capital_epargne ,  libelle ,date_ouverture, taux_interet) VALUES
 (1, 200.00 ,  'vacance' , '2023-01-01', 3.50),
 (1, 1201.12 ,'moto' ,'2024-05-10', 2.75),
-(2, 20003.17  ,'rancard','2022-08-15', 4.00),
-(3, 231.12 ,'ferrari','2023-11-20', 3.25);
+(1, 20003.17  ,'rancard','2022-08-15', 4.00),
+(1, 231.12 ,'ferrari','2023-11-20', 3.25);
 
 -- Données exemples transactions
 INSERT INTO transactions_epargne (id_compte, date_transaction, libelle, montant, sens) VALUES

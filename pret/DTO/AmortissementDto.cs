@@ -14,10 +14,10 @@ namespace Pret.DTO
         public decimal ResteDu { get; set; }
         public DateOnly CreatedAt { get; set; }
 
-        public string Statut { get; set; }
+        public  string Statut { get; set; }
 
         public int CompteIdClient { get; set; }
-        public string CompteClientNom { get; set; }
-        public string CompteClientPrenom { get; set; }
+        // public string CompteClientNom { get; set; }
+        // public string CompteClientPrenom { get; set; }
     }
 }

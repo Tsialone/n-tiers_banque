@@ -150,7 +150,7 @@ namespace Epargne.Services
                 // on verifie si la transaction debit est conforme au % de retrait
                 var compte_epargne = await _compteEpargneService.GetByIdAsync(transaction.IdCompte);
                 double pourcentage_retrait = (double)compte_epargne.Retrait;
-                double compte_solde = await getSoldeByClientAndEpargneAndDate(compte_epargne.IdClient, transaction.IdCompte, DateUtils.Today());
+                double compte_solde = await getSoldeByClientAndEpargneAndDate(compte_epargne.IdClient, transaction.IdCompte,  transaction.DateTransaction );
                 double max_retrait = compte_solde * pourcentage_retrait / 100;
                 if (max_retrait < (double)transaction.Montant && transaction.Sens == "debit")
                 {

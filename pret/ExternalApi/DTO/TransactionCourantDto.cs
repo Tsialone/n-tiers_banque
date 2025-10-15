@@ -15,13 +15,13 @@ namespace Pret.ExternalApi.DTO
         public DateOnly DateTransaction { get; set; }
 
         [JsonPropertyName("libelle")]
-        public string Libelle { get; set; }
+        public   string Libelle { get; set; }
 
         [JsonPropertyName("montant")]
         public decimal Montant { get; set; }
 
         [JsonPropertyName("sens")]
-        public string Sens { get; set; }
+        public  string Sens { get; set; }
     }
 
 }

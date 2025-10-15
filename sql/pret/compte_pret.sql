@@ -17,7 +17,7 @@ CREATE TABLE comptes_pret (
     capital_emprunte NUMERIC(15,2) NOT NULL, 
     taux_interet NUMERIC(5,2) NOT NULL,
     duree_mois INT NOT NULL CHECK (duree_mois > 0),
-    date_echeance DATE NOT NULL,
+    date_echeance DATE  NULL,
     statut VARCHAR(20) DEFAULT 'actif'
 );
 CREATE TABLE amortissements (

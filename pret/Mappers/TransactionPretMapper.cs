@@ -22,8 +22,8 @@ namespace Pret.Mappers
                 Montant = entity.Montant,
                 TypeTransaction = entity.TypeTransaction,
                 CompteIdClient = entity.ComptePret?.IdClient ?? 0,
-                CompteClientNom = entity.ComptePret?.Client?.Nom,
-                CompteClientPrenom = entity.ComptePret?.Client?.Prenom
+                // CompteClientNom = entity.ComptePret?.Client?.Nom,
+                // CompteClientPrenom = entity.ComptePret?.Client?.Prenom
             };
         }
 

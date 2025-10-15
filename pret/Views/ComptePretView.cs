@@ -16,7 +16,7 @@ namespace Pret.Views
         public decimal CapitalEmprunte { get; set; }
         public decimal TauxInteret { get; set; }
         public int DureeMois { get; set; }
-        public DateOnly DateEcheance { get; set; }
+        public DateOnly? DateEcheance { get; set; }
         public string Statut { get; set; }
         public decimal Solde { get; set; } = 0.0m;
     }

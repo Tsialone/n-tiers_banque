@@ -13,11 +13,11 @@ namespace Pret.Models
 
         [Required]
         [Column("nom")]
-        public string Nom { get; set; }
+        public  string Nom { get; set; }
 
         [Required]
         [Column("prenom")]
-        public string Prenom { get; set; }
+        public  string Prenom { get; set; }
 
         [Column("date_naissance")]
         public DateOnly? DateNaissance { get; set; }  // nullable

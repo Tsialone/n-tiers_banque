@@ -42,7 +42,7 @@ namespace Epargne.Controllers
             try
             {
                 // Appel vers l'API Java
-                 var effectiveDate = date ?? DateUtils.Today();
+                var effectiveDate = date ?? DateUtils.Today();
                 var solde = await _service.getSoldeByClientAndEpargneAndDate(idClient, idCompteEpargne, effectiveDate);
                 Console.WriteLine(solde);
                 return Ok(solde);
@@ -88,7 +88,7 @@ namespace Epargne.Controllers
             return Ok(transactions);
         }
 
-         [HttpGet("byClient")]
+        [HttpGet("byClient")]
         public async Task<IActionResult> GetByIdClient([FromQuery] int idClient)
         {
             var transactions = await _service.GetByIdClient(idClient);
@@ -126,7 +126,7 @@ namespace Epargne.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] TransactionEpargneCreateDto dto, [FromQuery] int idCompteCourant)
         {
-            if (dto == null) return BadRequest();
+            // if (dto == null) return BadRequest();
 
             await using var dbTransaction = await _service.Context.Database.BeginTransactionAsync();
 
@@ -138,7 +138,7 @@ namespace Epargne.Controllers
                     Libelle = dto.Libelle,
                     Montant = dto.Montant,
                     Sens = dto.Sens,
-                    DateTransaction = DateUtils.Today()
+                    DateTransaction = dto.DateTransaction
                 };
 
                 Console.WriteLine("debugggggggggggggg" + transaction);
@@ -150,7 +150,7 @@ namespace Epargne.Controllers
                 var transaction_courant = new TransactionCourantDto
                 {
                     IdCompte = idCompteCourant,
-                    DateTransaction = DateUtils.Today(),
+                    DateTransaction = dto.DateTransaction,
                     Libelle = dto.Libelle + " compte epargne: " + dto.IdCompte,
                     Montant = dto.Montant,
                     Sens = courant_sens
@@ -160,11 +160,7 @@ namespace Epargne.Controllers
 
                 await dbTransaction.CommitAsync();
 
-                return Ok(new
-                {
-                    TransactionEpargne = created,
-                    TransactionCourant = created_courant
-                });
+                return Ok(new { success = "Transaction reussi" });
             }
             catch (Exception ex)
             {

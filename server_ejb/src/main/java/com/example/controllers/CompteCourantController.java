@@ -54,13 +54,18 @@ public class CompteCourantController {
     // Récupérer tous les comptes d'un client
     @GET
     @Path("/client")
-    public Response getComptesByClient(@QueryParam("idClient") Integer idClient)  throws Exception {
+    public Response getComptesByClient(@QueryParam("idClient") Integer idClient ,  @QueryParam("date") String date )  throws Exception {
         
         List<CompteCourant> comptes = service.getComptesByClient(idClient);
+
+        LocalDate theDate = null;
+        if (  date != null && !date.isEmpty()  ){
+            theDate = LocalDate.parse(date);
+        }
         List<CompteCourantView> comptes_views = new ArrayList<>();
         for (CompteCourant compte_entity : comptes) {
             CompteCourantView temp_view = new CompteCourantView();
-            double solde = clientCourantService .getSoldeByIdClientAndIdCompte(compte_entity.getIdCompte() , idClient, LocalDate.now());
+            double solde = clientCourantService .getSoldeByIdClientAndIdCompte(compte_entity.getIdCompte() , idClient,  theDate  );
             temp_view.setNom(compte_entity.getNom());
             temp_view.setIdCompte(compte_entity.getIdCompte());
             temp_view.setCapital(compte_entity.getCapital());

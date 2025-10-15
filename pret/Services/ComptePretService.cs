@@ -60,7 +60,7 @@ namespace Pret.Services
         }
 
         // Récupérer tous les comptes d’un client
-        public async Task<List<ComptePretView>> GetByClientIdWithSoldeAsync(int idClient)
+        public async Task<List<ComptePretView>> GetByClientIdAndDateWithSoldeAsync(int idClient , DateOnly? date)
         {
             var comptes = await _context.ComptePrets
                 .Where(c => c.IdClient == idClient)
@@ -71,7 +71,7 @@ namespace Pret.Services
             foreach (var pretDto in dtos)
             {
                 // GetByPretAndDateAndStatus(int idComptePret, DateOnly date, string statut)
-                var amortissements_filtred = await _amortissementService.GetByPretAndDateAndStatus(pretDto.IdCompte, DateUtils.Today(), "en_attente");
+                var amortissements_filtred = await _amortissementService.GetByPretAndDateAndStatus(pretDto.IdCompte,  date , "en_attente");
                 decimal soldePret =  amortissements_filtred.FirstOrDefault()?.ResteDu ?? 0.0m;
                 pretViews.Add(
                     new ComptePretView

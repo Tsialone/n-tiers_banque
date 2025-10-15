@@ -22,13 +22,13 @@ namespace Pret.Controllers
         }
 
         [HttpGet("rembourssement")]
-        public async Task<IActionResult> rembourssementPret([FromQuery] int idComptePret, [FromQuery] int idCompteCourant, [FromQuery] DateOnly? date)
+        public async Task<IActionResult> rembourssementPret([FromQuery] int idComptePret, [FromQuery] int idCompteCourant, [FromQuery] DateOnly date = default)
         {
 
             try
             {
-                DateOnly temp_date = date ?? DateUtils.Today();
-                var amortissements = await _service.rembourssementPret(idComptePret , idCompteCourant, null, 0.0);
+                // DateOnly temp_date = date ?? DateUtils.Today();
+                var amortissements = await _service.rembourssementPret(idComptePret , idCompteCourant, date, 0.0);
                 return Ok(amortissements);
 
             }
@@ -82,7 +82,7 @@ namespace Pret.Controllers
         [HttpGet("byCompte")]
         public async Task<IActionResult> GetByCompteId([FromQuery] int idCompte)
         {
-            var amortissements = await _service.GetByPretAndDateAndStatus(idCompte, null, null);
+            var amortissements = await _service.GetByPretAndDateAndStatus(idCompte, default, "");
             // if (!amortissements.Any()) return NotFound();
             return Ok(amortissements);
         }
