@@ -37,13 +37,13 @@ namespace Pret.Services
 
 
         // rembourssement du pret sur le dernier mois de l'amortissement
-        public async Task<List<AmortissementDto>> rembourssementPret(int idComptePret, int idCompteCourant, DateOnly date, double montant)
+        public async Task<List<AmortissementDto>> rembourssementPret(int idComptePret, int idCompteCourant, DateOnly? date, double montant)
         {
 
             await using var dbTransaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var temp_date = date != default ? date : DateUtils.Today();
+                var temp_date = date ?? DateUtils.Today();
                 var amortissementsNonPaye = await GetByPretAndDateAndStatus(idComptePret, date, "en_attente");
                 var amortissementsPaye = await GetByPretAndDateAndStatus(idComptePret, date, "paye");
 

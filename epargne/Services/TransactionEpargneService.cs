@@ -41,11 +41,11 @@ namespace Epargne.Services
                     var transactionsMois = await _context.TransactionsEpargne
                         .Where(t => t.IdCompte == idCompteEpargne
                                  && t.Compte.Client.IdClient == idClient
-                                //  && t.DateTransaction.Year == currentDate.Year
-                                //  && t.DateTransaction.Month == currentDate.Month
+                                 && t.DateTransaction.Year == currentDate.Year
+                                 && t.DateTransaction.Month == currentDate.Month
                                 )
                         .ToListAsync();
-
+                    Console.WriteLine("ouverture " + date);
                     decimal credit = transactionsMois.Where(t => t.Sens == "credit").Sum(t => t.Montant);
                     decimal debit = transactionsMois.Where(t => t.Sens == "debit").Sum(t => t.Montant);
 
@@ -61,10 +61,13 @@ namespace Epargne.Services
                         Console.WriteLine($"ID: {t.IdTransaction}, Montant: {t.Montant},  idClient: {t.Compte.IdClient} Sens: {t.Sens}, Date: {t.DateTransaction}");
                     }
                     solde += credit - debit;
+                    Console.WriteLine("soldeeeeeeeeee" + solde);
 
                     // Passer au mois suivant
                     currentDate = currentDate.AddMonths(1);
                 }
+                    Console.WriteLine("soldeeeeeeeeee" + solde);
+
 
                 return (double)Math.Round(solde, 2); ;
             }

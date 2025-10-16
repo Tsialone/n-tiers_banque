@@ -43,6 +43,7 @@ public class CompteCourantController {
     public Response getCompteById(@PathParam("idCompte") Integer idCompte) {
         try {
             CompteCourant compte = service.getCompteById(idCompte);
+            
             return Response.ok(compte).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.NOT_FOUND)

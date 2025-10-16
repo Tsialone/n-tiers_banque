@@ -62,6 +62,16 @@
         <finalName>server-ejb</finalName>
 
         <plugins>
+            <!-- Ensure compilation uses Java 21 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <!-- Use release to properly target JDK 21 -->
+                    <release>17</release>
+                </configuration>
+            </plugin>
             <!-- Compiler Java 17 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -22,11 +22,12 @@ namespace Pret.Controllers
         }
 
         [HttpGet("rembourssement")]
-        public async Task<IActionResult> rembourssementPret([FromQuery] int idComptePret, [FromQuery] int idCompteCourant, [FromQuery] DateOnly date = default)
+        public async Task<IActionResult> rembourssementPret([FromQuery] int idComptePret, [FromQuery] int idCompteCourant, [FromQuery] DateOnly ? date)
         {
 
             try
-            {
+            {   
+                Console.WriteLine("hiohihihihihi "  +  date);
                 // DateOnly temp_date = date ?? DateUtils.Today();
                 var amortissements = await _service.rembourssementPret(idComptePret , idCompteCourant, date, 0.0);
                 return Ok(amortissements);

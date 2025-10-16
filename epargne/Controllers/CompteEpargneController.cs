@@ -1,3 +1,10 @@
+using System.Runtime.InteropServices;
+using System.Reflection.Metadata;
+using System.Net.Http.Headers;
+using System.Collections.Concurrent;
+using System.Runtime.Serialization;
+using System.Data;
+using System.Reflection.Emit;
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Epargne.Models;
@@ -47,9 +54,10 @@ namespace Epargne.Controllers
         {
             var compte = await _service.GetByIdAsync(idCompte);
             var compte_mapped = CompteEpargneMapper.ToDto(compte);
-
             if (compte == null) return NotFound();
+            
             return Ok(compte_mapped);
+
         }
         [HttpGet("byClientAndCompte")]
         public async Task<IActionResult> GetByClientId([FromQuery] int idClient, [FromQuery] int idCompte)
@@ -81,6 +89,7 @@ namespace Epargne.Controllers
                 var comptes = await _service.GetByClientIdAsync(idClient, date);
                 if (comptes == null || !comptes.Any()) return Ok(comptes);
                 var comptesDto = comptes.Select(c => c.ToDto()).ToList();
+                // return Ok (comptesDto);
                 var temp_date = date ?? DateUtils.Today();
                 Console.WriteLine("mtfffffffffff " + temp_date);
                 foreach (var compte in comptesDto)

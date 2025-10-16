@@ -46,7 +46,9 @@ CREATE TABLE transactions_pret (
 
 -- Client
 INSERT INTO clients_pret (nom, prenom, date_naissance)
-VALUES ('Rakoto', 'Alice', '1990-05-23');
+VALUES 
+('Jean', 'Marie', '1990-05-23'),
+('Rakoto', 'Alice', '1990-05-23');
 
 
 -- Compte prêt

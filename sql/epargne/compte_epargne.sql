@@ -33,7 +33,9 @@ CREATE TABLE transactions_epargne (
 
 -- Données exemples clients
 INSERT INTO clients_epargne (nom, prenom, date_naissance) 
-VALUES ('Rakoto', 'Alice', '1990-05-23');
+VALUES 
+('Jean', 'Marie', '1990-05-23'),
+('Rakoto', 'Alice', '1990-05-23');
 
 
 -- Données exemples comptes

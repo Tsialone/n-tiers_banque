@@ -44,7 +44,7 @@ namespace Epargne.Controllers
                 // Appel vers l'API Java
                 var effectiveDate = date ?? DateUtils.Today();
                 var solde = await _service.getSoldeByClientAndEpargneAndDate(idClient, idCompteEpargne, effectiveDate);
-                Console.WriteLine(solde);
+            
                 return Ok(solde);
             }
             catch (Exception ex)

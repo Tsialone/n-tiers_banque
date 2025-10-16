@@ -85,8 +85,9 @@ namespace Epargne.Services
 
             if (date.HasValue)
             {
-                query = query.Where(c => c.DateOuverture >= date);
+                query = query.Where(c => c.DateOuverture <= date.Value);
             }
+            Console.WriteLine("daty " + date);
 
             // Retourne la liste finale
             return await query.ToListAsync();
