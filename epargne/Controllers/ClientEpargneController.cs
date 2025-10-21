@@ -21,7 +21,7 @@ namespace Epargne.Controllers
             var client = await _service.GetByIdClientAsync(idClient);
             if (client == null)
                 return NotFound();
-
+            
             return Ok(client);
         }
 

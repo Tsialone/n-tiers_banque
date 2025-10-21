@@ -1,0 +1,117 @@
+package com.example.controllers;
+
+import java.time.LocalDate;
+
+import com.example.models.ClientCourant;
+import com.example.remotes.ClientCourantServiceRemote;
+import com.example.service.ClientCourantService;
+
+import jakarta.ejb.EJB;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+import java.time.format.DateTimeParseException;
+import java.util.List;
+
+@Path("/clients-courant")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class ClientCourantController {
+
+    // @EJB
+    // private ClientCourantService service;
+
+    @EJB
+    private ClientCourantServiceRemote service;
+
+    // getSolde
+    @GET
+    @Path("/solde")
+    public Response getSolde(
+            @QueryParam("idCompte") Integer idCompte,
+            @QueryParam("idClient") Integer idClient,
+            @QueryParam("date") String dateStr) throws Exception {
+        try {
+            if (idCompte == null || idClient == null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("idCompte, idClient et date sont obligatoires")
+                        .build();
+            }
+
+            LocalDate dateTransaction;
+            Double solde = 0.0;
+            try {
+                if (dateStr == null || dateStr.isEmpty()) {
+                    dateTransaction = LocalDate.now();
+                } else {
+                    dateTransaction = LocalDate.parse(dateStr);
+                }
+                solde = service.getSoldeByIdClientAndIdCompte(
+                        idCompte, idClient, dateTransaction);
+            } catch (DateTimeParseException e) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Format de date invalide. Exemple attendu: 2023-08-05T23:59:59")
+                        .build();
+            }
+
+            return Response.ok(solde).build();
+
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    // Lister tous les clients
+    @GET
+    public Response getAllClients() {
+        List<ClientCourant> clients = service.getAllClients();
+        return Response.ok(clients).build();
+    }
+
+    // Récupérer un client par ID
+    @GET
+    @Path("/{id_client}")
+    public Response getClientById(@PathParam("id_client") Integer idClient) {
+        try {
+            ClientCourant client = service.getClientById(idClient);
+            return Response.ok(client).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    // Ajouter ou mettre à jour un client
+    @POST
+    public Response saveClient(ClientCourant client) {
+        ClientCourant saved = service.saveClient(client);
+        return Response.ok(saved).build();
+    }
+
+    // Supprimer un client
+    @DELETE
+    @Path("/{id_client}")
+    public Response deleteClient(@PathParam("id_client") Integer idClient) {
+        try {
+            ClientCourant client = service.getClientById(idClient);
+            service.deleteClient(client);
+            return Response.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    // Chercher par nom
+    @GET
+    @Path("/search")
+    public Response getClientsByNom(@QueryParam("nom") String nom) {
+        List<ClientCourant> clients = service.getClientsByNom(nom);
+        return Response.ok(clients).build();
+    }
+}

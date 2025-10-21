@@ -2,12 +2,11 @@ version: "3.8"
 
 services:
   wildfly:
-    build: ./server_ejb
+    build: ./server-ejb
     container_name: ejb-server
     ports:
-      - "8080:8080"
-    volumes:
-    - ./server_ejb/target:/opt/jboss/wildfly/standalone/deployments
+      - "8080:8080"      # Accès HTTP
+      - "9990:9990"      # Accès management console
     restart: unless-stopped
 
   dotnet-api-pret:

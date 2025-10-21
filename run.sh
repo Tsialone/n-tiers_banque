@@ -1,5 +1,9 @@
 # Aller dans le dossier du premier serveur et compiler
-mvn clean package   -f server_ejb
+mvn clean install package
+
+cp server-ejb/target/server-ejb.war server-ejb/deploy/
+cp client-ejb/target/client-ejb.war server-ejb/deploy/
+
 
 # restore dotnet
 dotnet restore ./pret
