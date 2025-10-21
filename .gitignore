@@ -1,7 +1,7 @@
 /epargne/bin
 /epargne/obj
 
-
-/server_ejb/target
+/client-ejb/target
+/server-ejb/target
 /pret/bin
 /pret/obj
