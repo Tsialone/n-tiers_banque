@@ -8,7 +8,7 @@ namespace Pret.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Amortissement> Amortissements { get; set; }
-        public DbSet<ClientPret> ClientPrets { get; set; }
+        // public DbSet<ClientPret> ClientPrets { get; set; }
         public DbSet<ComptePret> ComptePrets { get; set; }
         public DbSet<TransactionPret> TransactionPrets { get; set; }
 

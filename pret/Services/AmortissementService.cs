@@ -89,7 +89,7 @@ namespace Pret.Services
             {
                 var query = _context.Amortissements
                 .Include(a => a.ComptePret)
-                .ThenInclude(c => c.Client)
+                // .ThenInclude(c => c.Client)
                 .Where(a => a.ComptePret.IdCompte == idComptePret);
                 Console.WriteLine("tsy null ny date " + date);
                 if (date.HasValue)
@@ -124,7 +124,7 @@ namespace Pret.Services
         {
             var amortissements = await _context.Amortissements
                 .Include(a => a.ComptePret)
-                .ThenInclude(c => c.Client)
+                // .ThenInclude(c => c.Client)
                 .ToListAsync();
 
             return amortissements.Select(a => a.ToDto()).ToList();
@@ -135,7 +135,7 @@ namespace Pret.Services
         {
             var amortissement = await _context.Amortissements
                 .Include(a => a.ComptePret)
-                .ThenInclude(c => c.Client)
+                // .ThenInclude(c => c.Client)
                 .FirstOrDefaultAsync(a => a.IdAmortissement == idAmortissement);
 
             return amortissement?.ToDto();
@@ -144,7 +144,7 @@ namespace Pret.Services
         {
             var amortissement = await _context.Amortissements
                 .Include(a => a.ComptePret)
-                .ThenInclude(c => c.Client)
+                // .ThenInclude(c => c.Client)
                 .FirstOrDefaultAsync(a => a.IdAmortissement == idAmortissement);
 
             return amortissement;
@@ -155,7 +155,7 @@ namespace Pret.Services
             var amortissements = await _context.Amortissements
                 .Where(a => a.IdCompte == idCompte)
                 .Include(a => a.ComptePret)
-                .ThenInclude(c => c.Client)
+                // .ThenInclude(c => c.Client)
                 .ToListAsync();
 
             return amortissements.Select(a => a.ToDto()).ToList();

@@ -44,7 +44,7 @@ namespace Pret.Models
         public string Statut { get; set; } = "actif";
 
         // Navigation vers le client
-        [ForeignKey("IdClient")]
-        public ClientPret Client { get; set; }
+        // [ForeignKey("IdClient")]
+        // public ClientPret Client { get; set; }
     }
 }

@@ -1,7 +1,10 @@
 package com.example.controllers;
 
+import java.util.Map;
+
 import com.example.annotations.TablePermission;
 import com.example.models.ClientCourant;
+import com.example.models.Direction;
 import com.example.remotes.ClientCourantServiceRemote;
 import com.example.remotes.ClientCourantStatefulServiceRemote;
 import com.example.service.ClientCourantStatefulService;
@@ -33,11 +36,35 @@ public class ClientCourantController {
     private ClientCourantStatefulServiceRemote session;
 
     @GET
-    @TablePermission (table = "clients_courant")
+    @TablePermission(table = "clients_courant")
     @Path("/check_instance")
     public Response checkInstance() {
         String id = session.getInstanceId();
         return Response.ok("Stateful EJB instance ID: " + id).build();
+    }
+
+    @GET
+    // @TablePermission (table = "clients_courant")
+    @Path("/checkDirection")
+    public Response checkDirection(@QueryParam("page") String page) {
+        // String id = session.getInstanceId();
+        try {
+            ClientCourant clientCourant = userSession.getClient();
+            Direction direction = clientCourant.getDirection();
+            if (!direction.getLibelle().equalsIgnoreCase(page) && !direction.getLibelle().equalsIgnoreCase("general")) {
+                String message = "Vous avez pas la direction necaissaire pour visitez cette page: " + page
+                        + ", votre direction actu: " + direction.getLibelle();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                        .entity(Map.of("error", message))
+                        .build();
+            }
+            return Response.ok("Direction ok!").build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Map.of("error", e.getMessage()))
+                    .build();
+        }
+
     }
 
     // @GET
@@ -116,12 +143,11 @@ public class ClientCourantController {
     @Path("/logout")
     public Response logout() {
         try {
-
-            userSession.setClient(null);
-            return Response.ok(userSession.getClient()).build();
+            userSession.clear();
+            return Response.ok(Map.of("success", "deconnection reussie")).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e.getMessage())
+                    .entity(Map.of("error", e.getMessage()))
                     .build();
         }
     }

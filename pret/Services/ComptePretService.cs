@@ -32,7 +32,7 @@ namespace Pret.Services
         public async Task<List<ComptePretDto>> GetAllDtoAsync()
         {
             var comptes = await _context.ComptePrets
-                .Include(c => c.Client)
+                // .Include(c => c.Client)
                 .ToListAsync();
 
             return comptes.Select(c => c.ToDto()).ToList();
@@ -42,7 +42,7 @@ namespace Pret.Services
         public async Task<ComptePretDto> GetByIdAsync(int idCompte)
         {
             var compte = await _context.ComptePrets
-                .Include(c => c.Client)
+                // .Include(c => c.Client)
                 .FirstOrDefaultAsync(c => c.IdCompte == idCompte);
 
             return compte?.ToDto();
@@ -53,7 +53,7 @@ namespace Pret.Services
         {
             var comptes = await _context.ComptePrets
                 .Where(c => c.IdClient == idClient)
-                .Include(c => c.Client)
+                // .Include(c => c.Client)
                 .ToListAsync();
 
             return comptes.Select(c => c.ToDto()).ToList();
@@ -64,7 +64,7 @@ namespace Pret.Services
         {
             var comptes = await _context.ComptePrets
                 .Where(c => c.IdClient == idClient)
-                .Include(c => c.Client)
+                // .Include(c => c.Client)
                 .ToListAsync();
             var dtos = comptes.Select(c => c.ToDto()).ToList();
             List<ComptePretView> pretViews = new List<ComptePretView>();

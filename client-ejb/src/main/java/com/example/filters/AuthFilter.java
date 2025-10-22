@@ -27,6 +27,7 @@ public class AuthFilter implements ContainerRequestFilter {
             path.startsWith("auth") ||
             path.startsWith("public") ||
             path.equals("/clients-courants/login") ||
+            path.equals("/clients-courants/logout") ||
             path.equals("/clients-courants")) {
             return; // On laisse passer le préflight
         }

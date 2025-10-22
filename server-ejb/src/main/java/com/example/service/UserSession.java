@@ -1,6 +1,5 @@
 package com.example.service;
 
-
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
@@ -18,7 +17,7 @@ public class UserSession implements Serializable {
     @EJB
     private ClientCourantStatefulServiceRemote sessionEJB;
 
-    private ClientCourant client; 
+    private ClientCourant client;
 
     public ClientCourant getClient() {
         return client;
@@ -26,7 +25,20 @@ public class UserSession implements Serializable {
 
     public void setClient(ClientCourant client) {
         this.client = client;
-        sessionEJB.setClient(client);
+        if (client != null && sessionEJB != null) {
+            try {
+                sessionEJB.setClient(client); // seulement si on a un client
+            } catch (Exception e) {
+                // Stateful EJB peut avoir expiré, on ignore
+                sessionEJB = null; // supprime la référence cassée
+            }
+        }
+    }
+
+    public void clear() {
+        // déconnexion sécurisée
+        client = null;
+        sessionEJB = null; // on ne touche plus au EJB expiré
     }
 
     public ClientCourantStatefulServiceRemote getSessionEJB() {

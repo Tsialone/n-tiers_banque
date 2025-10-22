@@ -2,16 +2,16 @@
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
-CREATE TABLE clients_pret (
-    id_client SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    prenom VARCHAR(100) NOT NULL,
-    date_naissance DATE
-);
+-- CREATE TABLE clients_pret (
+--     id_client SERIAL PRIMARY KEY,
+--     nom VARCHAR(100) NOT NULL,
+--     prenom VARCHAR(100) NOT NULL,
+--     date_naissance DATE
+-- );
 
 CREATE TABLE comptes_pret (
     id_compte SERIAL PRIMARY KEY,
-    id_client INT NOT NULL REFERENCES clients_pret(id_client) ON DELETE CASCADE,
+    id_client INT NOT NULL ,
     libelle VARCHAR(100) NULL , 
     date_ouverture DATE NOT NULL DEFAULT CURRENT_DATE,
     capital_emprunte NUMERIC(15,2) NOT NULL, 
@@ -45,10 +45,10 @@ CREATE TABLE transactions_pret (
 
 
 -- Client
-INSERT INTO clients_pret (nom, prenom, date_naissance)
-VALUES 
-('Jean', 'Marie', '1990-05-23'),
-('Rakoto', 'Alice', '1990-05-23');
+-- INSERT INTO clients_pret (nom, prenom, date_naissance)
+-- VALUES 
+-- ('Jean', 'Marie', '1990-05-23'),
+-- ('Rakoto', 'Alice', '1990-05-23');
 
 
 -- Compte prêt
