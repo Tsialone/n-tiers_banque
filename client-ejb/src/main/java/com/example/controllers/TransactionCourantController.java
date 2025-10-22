@@ -1,11 +1,11 @@
 package com.example.controllers;
 
+import com.example.annotations.TablePermission;
 import com.example.dto.TransactionCourantDto;
 import com.example.models.CompteCourant;
 import com.example.models.TransactionCourant;
 import com.example.remotes.CompteCourantServiceRemote;
 import com.example.remotes.TransactionCourantServiceRemote;
-import com.example.service.TransactionCourantService;
 
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
@@ -25,18 +25,46 @@ public class TransactionCourantController {
 
     @EJB(lookup = "java:global/server-ejb/TransactionCourantService!com.example.remotes.TransactionCourantServiceRemote")
     private TransactionCourantServiceRemote service;
+
     @EJB(lookup = "java:global/server-ejb/CompteCourantService!com.example.remotes.CompteCourantServiceRemote")
     private CompteCourantServiceRemote compteCourantService;
 
+    @PUT
+    // @Path("/client")
+    @TablePermission(table = "transactions_courant")
+    public Response updateTransaction(TransactionCourantDto transactionCourantDto) {
+        try {
+
+            System.out.println(transactionCourantDto);
+            return Response.ok(service.updateTransactionCourant(transactionCourantDto)).build();
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Map.of("error", e.getMessage()))
+                    .build();
+        }
+    }
+
     @GET
+    @Path("/client")
+    @TablePermission(table = "transactions_courant")
     public Response getAllTransactionsByIdClient(@QueryParam("idClient") int idClient) {
-        List<TransactionCourantDto> transactionsCourantDto = service.getAllTransactionsByClient(idClient);
-        return Response.ok(transactionsCourantDto).build();
+        try {
+            List<TransactionCourantDto> transactionsCourantDto = service.getAllTransactionsByClient(idClient);
+            return Response.ok(transactionsCourantDto).build();
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Map.of("error", e.getMessage()))
+                    .build();
+        }
     }
 
     @GET
     public Response getAllTransactions() {
+
         List<TransactionCourantDto> transactionsCourantDto = service.getAllTransactions();
+
         return Response.ok(transactionsCourantDto).build();
     }
 
@@ -62,8 +90,8 @@ public class TransactionCourantController {
         return Response.ok(transactions).build();
     }
 
-    // Ajouter ou mettre à jour une transaction
     @POST
+    @TablePermission(table = "transactions_courant")
     public Response saveTransaction(TransactionCourantDto transactionDto) {
         try {
             CompteCourant compteCourant = compteCourantService.getCompteById(transactionDto.getIdCompte());

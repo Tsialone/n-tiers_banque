@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.models.ClientCourant;
+import com.example.models.ClientRole;
 import com.example.repositories.ClientCourantRepository;
 
 import jakarta.ejb.EJB;
@@ -12,7 +13,7 @@ import java.util.List;
 
 import com.example.models.CompteCourant;
 import com.example.remotes.ClientCourantServiceRemote;
-import com.example.remotes.ClientCourantStatefulRemote;
+import com.example.remotes.ClientCourantStatefulServiceRemote;
 import com.example.remotes.CompteCourantServiceRemote;
 
 @Stateless
@@ -26,29 +27,28 @@ public class ClientCourantService implements ClientCourantServiceRemote {
     private CompteCourantServiceRemote compteCourantService;
 
     @EJB
-    private ClientCourantStatefulRemote clientCourantStatefulService;
+    private ClientCourantStatefulServiceRemote clientCourantStatefulServiceRemote;
 
+    // public ClientCourant getUtilisateur() throws Exception {
 
-     public ClientCourant getUtilisateur() {
+    // try {
+    // return clientCourantStatefulService.getClient();
+    // } catch (Exception e) {
+    // throw e;
+    // }
+    // }
 
-        try {
-          return   clientCourantStatefulService.getClient();
-        } catch (Exception e) {
-            throw e;
-        }
-    }
+    // public ClientCourant login(Integer idClient) {
 
-    public ClientCourant login(Integer idClient) {
-
-        try {
-            ClientCourant clientCourant = getClientById(idClient);
-            clientCourant.getComptes().size();
-            clientCourantStatefulService.setClient(clientCourant);
-            return clientCourant;
-        } catch (Exception e) {
-            throw e;
-        }
-    }
+    // try {
+    // ClientCourant clientCourant = getClientById(idClient);
+    // clientCourant.getComptes().size();
+    // clientCourantStatefulService.setClient(clientCourant);
+    // return clientCourant;
+    // } catch (Exception e) {
+    // throw e;
+    // }
+    // }
 
     // getSoldeByIdClientAndIdCompte
     public double getSoldeByIdClientAndIdCompte(Integer idCompte, Integer idClient, LocalDate dateTransaction)
@@ -68,6 +68,13 @@ public class ClientCourantService implements ClientCourantServiceRemote {
         ClientCourant client = repository.findById(idClient);
         if (client == null) {
             throw new IllegalArgumentException("Client non trouvé : " + idClient);
+        } else {
+            client.getComptes().size();
+            client.getClientRoles().size();
+            for (ClientRole clientRole : client.getClientRoles()) {
+                    clientRole.getRole().getActionRoles().size();
+            }
+
         }
         return client;
     }

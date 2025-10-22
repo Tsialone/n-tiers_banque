@@ -1,8 +1,14 @@
 package com.example.controllers;
 
+import com.example.annotations.TablePermission;
 import com.example.models.ClientCourant;
 import com.example.remotes.ClientCourantServiceRemote;
+import com.example.remotes.ClientCourantStatefulServiceRemote;
+import com.example.service.ClientCourantStatefulService;
+import com.example.service.UserSession;
+
 import jakarta.ejb.EJB;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -17,23 +23,88 @@ import jakarta.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class ClientCourantController {
 
+    @Inject
+    private UserSession userSession;
+
     @EJB(lookup = "java:global/server-ejb/ClientCourantService!com.example.remotes.ClientCourantServiceRemote")
     private ClientCourantServiceRemote service;
+
+    @EJB(lookup = "java:global/server-ejb/ClientCourantStatefulService!com.example.remotes.ClientCourantStatefulServiceRemote")
+    private ClientCourantStatefulServiceRemote session;
+
+    @GET
+    @TablePermission (table = "clients_courant")
+    @Path("/check_instance")
+    public Response checkInstance() {
+        String id = session.getInstanceId();
+        return Response.ok("Stateful EJB instance ID: " + id).build();
+    }
+
+    // @GET
+    // @Path("/session_auth")
+    // public Response getUtilisateur() {
+    // try {
+    // Object utilisateur = session.getClient();
+
+    // if (utilisateur == null) {
+    // return Response.status(Response.Status.NOT_FOUND)
+    // .entity("Aucun utilisateur trouvé pour cette session")
+    // .build();
+    // }
+
+    // return Response.ok(utilisateur).build();
+
+    // } catch (Exception e) {
+    // return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+    // .entity(e.getMessage())
+    // .build();
+    // }
+    // }
 
     @GET
     @Path("/session_auth")
     public Response getUtilisateur() {
-        try {
-            Object utilisateur = service.getUtilisateur();
+        ClientCourant client = userSession.getClient();
+        if (client == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Aucun utilisateur trouvé pour cette session")
+                    .build();
+        }
+        return Response.ok(client).build();
+    }
+    // @GET
+    // @Path("/login")
+    // public Response loginByIdClient(@QueryParam("idClient") int idClient) {
 
-            if (utilisateur == null) {
+    // try {
+    // ClientCourant clientCourant = service.getClientById(idClient);
+    // session.setClient(clientCourant);
+    // // if (utilisateur == null) {
+    // // return Response.status(Response.Status.NOT_FOUND)
+    // // .entity("Aucun utilisateur trouvé")
+    // // .build();
+    // // }
+    // return Response.ok(session.getClient()).build();
+    // } catch (Exception e) {
+    // return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+    // .entity(e.getMessage())
+    // .build();
+    // }
+    // }
+    @GET
+    @Path("/login")
+    public Response loginByIdClient(@QueryParam("idClient") int idClient) {
+        try {
+            ClientCourant client = service.getClientById(idClient);
+
+            if (client == null) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Aucun utilisateur trouvé pour cette session")
+                        .entity("Utilisateur non trouvé")
                         .build();
             }
 
-            return Response.ok(utilisateur).build();
-
+            userSession.setClient(client); // Stocke dans le UserSession
+            return Response.ok(userSession.getClient()).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(e.getMessage())
@@ -42,17 +113,12 @@ public class ClientCourantController {
     }
 
     @GET
-    @Path("/login")
-    public Response loginByIdClient(@QueryParam("idClient") int idClient) {
-
+    @Path("/logout")
+    public Response logout() {
         try {
-            Object utilisateur = service.login(idClient);
-            if (utilisateur == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Aucun utilisateur trouvé")
-                        .build();
-            }
-            return Response.ok(service.login(idClient)).build();
+
+            userSession.setClient(null);
+            return Response.ok(userSession.getClient()).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(e.getMessage())

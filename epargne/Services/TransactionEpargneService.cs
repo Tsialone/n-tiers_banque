@@ -40,7 +40,7 @@ namespace Epargne.Services
                     // Transactions du mois courant
                     var transactionsMois = await _context.TransactionsEpargne
                         .Where(t => t.IdCompte == idCompteEpargne
-                                 && t.Compte.Client.IdClient == idClient
+                                 && t.Compte.IdClient == idClient
                                  && t.DateTransaction.Year == currentDate.Year
                                  && t.DateTransaction.Month == currentDate.Month
                                 )
@@ -132,13 +132,13 @@ namespace Epargne.Services
         public async Task<List<TransactionEpargne>> GetAllAsync() =>
             await _context.TransactionsEpargne
                 .Include(t => t.Compte)
-                .ThenInclude(c => c.Client)
+                // .ThenInclude(c => c.Client)
                 .ToListAsync();
 
         public async Task<TransactionEpargne> GetByIdAsync(int idTransaction) =>
             await _context.TransactionsEpargne
                 .Include(t => t.Compte)
-                .ThenInclude(c => c.Client)
+                // .ThenInclude(c => c.Client)
                 .FirstOrDefaultAsync(t => t.IdTransaction == idTransaction);
 
         public async Task<List<TransactionEpargne>> GetByCompteIdAsync(int idCompte) =>

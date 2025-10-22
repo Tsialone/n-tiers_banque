@@ -14,7 +14,7 @@ namespace Epargne.ExternalApi.Services
         public TransactionCourantApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("http://172.17.0.1:8080/server-ejb/api/");
+            _httpClient.BaseAddress = new Uri("http://172.17.0.1:8080/client-ejb/api/");
         }
 
         public async Task<List<TransactionCourantDto>> GetAllAsync()
@@ -34,7 +34,7 @@ namespace Epargne.ExternalApi.Services
 
         public async Task<TransactionCourantDto> CreateAsync(TransactionCourantDto dto)
         {
-            var response = await _httpClient.PostAsJsonAsync("transactions-courant", dto);
+            var response = await _httpClient.PostAsJsonAsync("transactions-courants", dto);
 
             if (response.IsSuccessStatusCode)
             {

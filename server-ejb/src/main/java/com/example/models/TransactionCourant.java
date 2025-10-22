@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "transactions_courant")
-public class TransactionCourant  implements Serializable {
+public class TransactionCourant implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +37,9 @@ public class TransactionCourant  implements Serializable {
     private String libelle;
 
     private Double montant;
+
+    @Column(name = "validate", nullable = false)
+    private boolean validate;
 
     @Column(length = 6)
     private String sens;

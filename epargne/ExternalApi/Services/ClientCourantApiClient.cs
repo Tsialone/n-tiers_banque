@@ -14,7 +14,7 @@ namespace Epargne.ExternalApi.Services
         public ClientCourantApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("http://172.17.0.1:8080/client-ejb/api/"); 
+            _httpClient.BaseAddress = new Uri("http://172.17.0.1:8080/client-ejb/api/");
         }
 
         // Récupérer tous les clients
@@ -27,6 +27,11 @@ namespace Epargne.ExternalApi.Services
         public async Task<ClientCourantDto> GetByIdAsync(int id)
         {
             return await _httpClient.GetFromJsonAsync<ClientCourantDto>($"clients-courants/{id}");
+        }
+
+        public async Task<ClientCourantDto> GetAuth()
+        {
+            return await _httpClient.GetFromJsonAsync<ClientCourantDto>($"clients-courants/session_auth");
         }
 
         // Créer un nouveau client

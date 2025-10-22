@@ -3,6 +3,10 @@ com/example/controllers/ClientCourantController.class
 com/example/controllers/TransactionCourantController.class
 com/example/api/EpargneApiController.class
 com/example/RestApplication.class
+com/example/filters/AuthFilter.class
+com/example/filters/PermissionFilter.class
 com/example/dto/ClientCourantDTO.class
-com/example/controllers/OptionsController.class
+com/example/filters/CorsFilter.class
+com/example/utils/JsonUtil.class
 com/example/controllers/CompteCourantController.class
+com/example/annotations/TablePermission.class

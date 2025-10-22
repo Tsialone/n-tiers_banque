@@ -1,11 +1,12 @@
 package com.example.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import lombok.Data;
 
 @Data
-public class CompteCourantDto {
+public class CompteCourantDto implements Serializable {
     
     private Integer idCompte;
     private String nom;

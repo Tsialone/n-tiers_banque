@@ -2,17 +2,29 @@ package com.example.service;
 
 import com.example.models.ClientCourant;
 import com.example.models.CompteCourant;
-import com.example.remotes.ClientCourantStatefulRemote;
+import com.example.remotes.ClientCourantServiceRemote;
+import com.example.remotes.ClientCourantStatefulServiceRemote;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateful;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Stateful
-public class ClientCourantStatefulService implements ClientCourantStatefulRemote {
+public class ClientCourantStatefulService implements ClientCourantStatefulServiceRemote {
 
+    @EJB
+    private ClientCourantServiceRemote clientCourantServiceRemote;
+
+    private String instanceId = UUID.randomUUID().toString();
     private ClientCourant client;
     private List<CompteCourant> comptes = new ArrayList<>();
+
+    @Override
+    public String getInstanceId() {
+        return instanceId;
+    }
 
     @Override
     public void setClient(ClientCourant client) {
@@ -25,7 +37,18 @@ public class ClientCourantStatefulService implements ClientCourantStatefulRemote
     }
 
     @Override
-    public ClientCourant getClient() {
+    public ClientCourant getClient() throws Exception {
+
+        // try {
+        // // if (this.client == null) {
+        // // throw new Exception("Aucune session pour utilisateur");
+        // // }
+        // ClientCourant clientCourant =
+        // clientCourantServiceRemote.getClientById(client.getIdClient()) ;
+        // } catch (Exception e) {
+        // throw e;
+        // }
+
         return client;
     }
 

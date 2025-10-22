@@ -22,6 +22,7 @@ public class TransactionCourantMapper {
         transaction.setLibelle(dto.getLibelle());
         transaction.setMontant(dto.getMontant());
         transaction.setSens(dto.getSens());
+        transaction.setValidate(dto.isValidate());
         transaction.setDateTransaction(dto.getDateTransaction() != null
                 ? dto.getDateTransaction()
                 : java.time.LocalDate.now());
@@ -37,6 +38,7 @@ public class TransactionCourantMapper {
         dto.setLibelle(transaction.getLibelle());
         dto.setMontant(transaction.getMontant());
         dto.setSens(transaction.getSens());
+        dto.setValidate(transaction.isValidate());
         dto.setDateTransaction(transaction.getDateTransaction());
         return dto;
     }

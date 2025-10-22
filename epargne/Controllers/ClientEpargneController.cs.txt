@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Epargne.Models;
 using Epargne.Services;
 using System.Threading.Tasks;
+using Epargne.ExternalApi.Services;
+using System;
 
 namespace Epargne.Controllers
 {
@@ -11,9 +13,31 @@ namespace Epargne.Controllers
     {
         private readonly ClientEpargneService _service;
 
-        public ClientEpargneController(ClientEpargneService service)
+        private readonly ClientCourantApiClient _clientCourantApiClient;
+
+        public ClientEpargneController(
+            ClientEpargneService service,
+            ClientCourantApiClient clientCourantApiClient
+
+            )
         {
             _service = service;
+            _clientCourantApiClient = clientCourantApiClient;
+        }
+
+
+        [HttpGet("auth")]
+        public async Task<IActionResult> getAuth()
+        {
+            try
+            {
+                return Ok(await _clientCourantApiClient.GetAuth());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+
+            }
         }
         [HttpGet("where")]
         public async Task<IActionResult> GetByIdClient([FromQuery] int idClient)
@@ -21,7 +45,7 @@ namespace Epargne.Controllers
             var client = await _service.GetByIdClientAsync(idClient);
             if (client == null)
                 return NotFound();
-            
+
             return Ok(client);
         }
 

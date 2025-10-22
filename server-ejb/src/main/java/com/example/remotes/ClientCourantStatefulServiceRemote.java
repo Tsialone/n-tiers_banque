@@ -7,13 +7,15 @@ import jakarta.ejb.Remote;
 import java.util.List;
 
 @Remote
-public interface ClientCourantStatefulRemote {
+public interface ClientCourantStatefulServiceRemote {
+
+    String getInstanceId();
 
     // Sélectionner le client courant pour la session
     void setClient(ClientCourant client);
 
     // Récupérer le client courant
-    ClientCourant getClient();
+    ClientCourant getClient() throws Exception;
 
     // Ajouter un compte au client courant
     void ajouterCompte(CompteCourant compte);

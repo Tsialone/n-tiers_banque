@@ -27,7 +27,7 @@ namespace Epargne.Services
         public async Task<List<CompteEpargneDto>> GetAllDtoAsync()
         {
             var comptes = await _context.ComptesEpargne
-                .Include(c => c.Client)
+                // .Include(c => c.Client)
                 .Include(c => c.Transactions)
                 .ToListAsync();
 
@@ -50,7 +50,7 @@ namespace Epargne.Services
 
         public async Task<List<CompteEpargne>> GetAllAsync() =>
             await _context.ComptesEpargne
-                .Include(c => c.Client)
+                // .Include(c => c.Client)
                 .ToListAsync();
 
         public async Task<CompteEpargne> GetByIdAsync(int idCompte)
@@ -58,7 +58,7 @@ namespace Epargne.Services
             try
             {
                 var compte = await _context.ComptesEpargne
-                    .Include(c => c.Client)
+                    // .Include(c => c.Client)
                     .Include(c => c.Transactions)
                     .FirstOrDefaultAsync(c => c.IdCompte == idCompte);
 

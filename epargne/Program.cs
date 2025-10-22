@@ -20,7 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // DI
 builder.Services.AddScoped<PersonService>();
-builder.Services.AddScoped<ClientEpargneService>();
+// builder.Services.AddScoped<ClientEpargneService>();
 builder.Services.AddScoped<CompteEpargneService>();
 builder.Services.AddScoped<TransactionEpargneService>();
 
@@ -28,6 +28,8 @@ builder.Services.AddScoped<TransactionEpargneService>();
 // compte courant api
 builder.Services.AddHttpClient<CompteCourantApiClient>();
 builder.Services.AddHttpClient<TransactionCourantApiClient>();
+builder.Services.AddHttpClient<ClientCourantApiClient>();
+
 
 
 

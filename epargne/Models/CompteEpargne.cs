@@ -15,9 +15,7 @@ namespace Epargne.Models
         [Column("id_client")]
         public int IdClient { get; set; }
 
-        // Navigation property vers Client
-        [ForeignKey("IdClient")]
-        public ClientEpargne Client { get; set; }
+   
 
         [Column("capital_epargne")]
         public decimal CapitalEpargne { get; set; }

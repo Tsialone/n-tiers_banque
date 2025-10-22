@@ -12,18 +12,31 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "clients_courant")
-public class ClientCourant  implements Serializable {
+public class ClientCourant implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_client")
+    @Column(name = "id_client")
     private Integer idClient;
 
     private String nom;
-    
+
     private String prenoms;
-    @Column(name="date_naissance")
+    @Column(name = "date_naissance")
     private LocalDate dateNaissance;
+
+    @ManyToOne
+    @JoinColumn(name = "id_direction")
+    private Direction direction;
+
+    // @ManyToOne
+    // @JoinColumn(name = "id_role")
+    // private Role role;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @JsonbTransient
+    private List<ClientRole> clientRoles;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     @ToString.Exclude

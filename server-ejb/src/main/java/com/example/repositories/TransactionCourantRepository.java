@@ -1,5 +1,8 @@
 package com.example.repositories;
 
+import com.example.dto.TransactionCourantDto;
+import com.example.mappers.TransactionCourantMapper;
+import com.example.models.CompteCourant;
 import com.example.models.TransactionCourant;
 
 import jakarta.ejb.Stateless;
@@ -38,6 +41,15 @@ public class TransactionCourantRepository {
         } else {
             em.merge(transaction);
         }
+    }
+
+    public TransactionCourant update(TransactionCourant transaction) {
+        return em.merge(transaction);
+    }
+
+    public TransactionCourantDto updateByDto(TransactionCourantDto transactionCourantDto , CompteCourant compteCourant) {
+        em.merge(TransactionCourantMapper.toEntity(transactionCourantDto, compteCourant));
+        return transactionCourantDto;
     }
 
     public void delete(TransactionCourant transaction) {

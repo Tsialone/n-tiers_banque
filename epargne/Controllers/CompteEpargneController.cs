@@ -38,6 +38,23 @@ namespace Epargne.Controllers
             _transactionCourantApiClient = transactionCourantApiClient;
             _transactionEpargneService = transactionEpargneService;
         }
+
+
+        [HttpGet("openTransaction")]
+        public async Task<IActionResult> OpentTransactionDb()
+        {
+            try
+            {
+                await using var dbTransaction = await _service.Context.Database.BeginTransactionAsync();
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+            return Ok(new { succress = "transaction db epargne ouverte" });
+        }
+
         // GET api/compteEpargne
         [HttpGet]
         public async Task<IActionResult> GetAllDto()
@@ -55,7 +72,7 @@ namespace Epargne.Controllers
             var compte = await _service.GetByIdAsync(idCompte);
             var compte_mapped = CompteEpargneMapper.ToDto(compte);
             if (compte == null) return NotFound();
-            
+
             return Ok(compte_mapped);
 
         }
@@ -130,16 +147,16 @@ namespace Epargne.Controllers
             try
             {
                 var compte_epargne_created = await _service.AddAsync(dto);
-                var transaction_courant_created = await _transactionCourantApiClient.CreateAsync(
-                     new TransactionCourantDto
-                     {
-                         IdCompte = idCompteCourant,
-                         DateTransaction = dto.DateOuverture,
-                         Libelle = "depot initial de: " + dto.Libelle,
-                         Montant = dto.CapitalEpargne,
-                         Sens = "debit"
-                     }
-                );
+                // var transaction_courant_created = await _transactionCourantApiClient.CreateAsync(
+                //      new TransactionCourantDto
+                //      {
+                //          IdCompte = idCompteCourant,
+                //          DateTransaction = dto.DateOuverture,
+                //          Libelle = "depot initial de: " + dto.Libelle,
+                //          Montant = dto.CapitalEpargne,
+                //          Sens = "debit"
+                //      }
+                // );
                 await dbTransaction.CommitAsync();
                 // await dbTransaction.RollbackAsync();
 

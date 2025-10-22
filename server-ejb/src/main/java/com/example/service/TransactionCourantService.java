@@ -1,6 +1,8 @@
 package com.example.service;
 
+import com.example.models.CompteCourant;
 import com.example.models.TransactionCourant;
+import com.example.remotes.CompteCourantServiceRemote;
 import com.example.remotes.TransactionCourantServiceRemote;
 import com.example.repositories.TransactionCourantRepository;
 import jakarta.ejb.EJB;
@@ -13,10 +15,19 @@ import com.example.dto.TransactionCourantDto;
 import com.example.mappers.TransactionCourantMapper;
 
 @Stateless
-public class TransactionCourantService  implements TransactionCourantServiceRemote {
+public class TransactionCourantService implements TransactionCourantServiceRemote {
 
     @EJB
     private TransactionCourantRepository repository;
+
+    @EJB
+    private CompteCourantServiceRemote compteCourantServiceRemote;
+
+    // Ajouter ou mettre à jour une transaction
+    public TransactionCourantDto updateTransactionCourant(TransactionCourantDto transactionCourantDto ) {
+        CompteCourant compteCourant = compteCourantServiceRemote.getCompteById(transactionCourantDto.getIdCompte());
+       return repository.updateByDto(transactionCourantDto  , compteCourant);
+    }
 
     public List<TransactionCourantDto> getAllTransactionsByClient(int idClient) {
         List<TransactionCourantDto> transactionsCourantDto = new ArrayList<>();

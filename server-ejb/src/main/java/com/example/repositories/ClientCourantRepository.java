@@ -26,6 +26,7 @@ public class ClientCourantRepository {
             jpql = "SELECT SUM(CASE WHEN t.sens = 'credit' THEN t.montant ELSE -t.montant END) " +
                     "FROM TransactionCourant t " +
                     "WHERE t.compte.idCompte = :idCompte " +
+                    "AND t.validate = true " +
                     "AND t.compte.client.idClient = :idClient ";
         } else {
 
@@ -33,6 +34,7 @@ public class ClientCourantRepository {
                     "FROM TransactionCourant t " +
                     "WHERE t.compte.idCompte = :idCompte " +
                     "AND t.compte.client.idClient = :idClient " +
+                    "AND t.validate = true " +
                     "AND t.dateTransaction <= :dateTransaction";
         }
 

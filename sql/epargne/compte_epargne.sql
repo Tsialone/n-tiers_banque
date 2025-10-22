@@ -3,17 +3,17 @@ DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
 -- Table clients_epargne
-CREATE TABLE clients_epargne (
-    id_client SERIAL PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    prenom VARCHAR(100) NOT NULL,
-    date_naissance DATE
-);
+-- CREATE TABLE clients_epargne (
+--     id_client SERIAL PRIMARY KEY,
+--     nom VARCHAR(100) NOT NULL,
+--     prenom VARCHAR(100) NOT NULL,
+--     date_naissance DATE
+-- );
 
 -- Table comptes_epargne
 CREATE TABLE comptes_epargne (
     id_compte SERIAL PRIMARY KEY,
-    id_client INT NOT NULL REFERENCES clients_epargne(id_client) ON DELETE CASCADE,
+    id_client INT NOT NULL ,
     capital_epargne NUMERIC(15,2) NOT NULL , 
     libelle VARCHAR (100) , 
     date_ouverture DATE NOT NULL DEFAULT CURRENT_DATE,
@@ -31,11 +31,11 @@ CREATE TABLE transactions_epargne (
     sens VARCHAR(6) NOT NULL CHECK (sens IN ('debit','credit'))
 );
 
--- Données exemples clients
-INSERT INTO clients_epargne (nom, prenom, date_naissance) 
-VALUES 
-('Jean', 'Marie', '1990-05-23'),
-('Rakoto', 'Alice', '1990-05-23');
+-- -- Données exemples clients
+-- INSERT INTO clients_epargne (nom, prenom, date_naissance) 
+-- VALUES 
+-- ('Jean', 'Marie', '1990-05-23'),
+-- ('Rakoto', 'Alice', '1990-05-23');
 
 
 -- Données exemples comptes

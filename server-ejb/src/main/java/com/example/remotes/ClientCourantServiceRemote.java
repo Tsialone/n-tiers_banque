@@ -9,8 +9,8 @@ import com.example.models.ClientCourant;
 @Remote
 public interface ClientCourantServiceRemote {
     double getSoldeByIdClientAndIdCompte(Integer idCompte, Integer idClient, LocalDate dateTransaction) throws Exception;
-    ClientCourant login (Integer idClient);
-    ClientCourant getUtilisateur ();
+    // ClientCourant login (Integer idClient);
+    // ClientCourant getUtilisateur () throws Exception;
     ClientCourant getClientById(Integer idClient);
     List<ClientCourant> getAllClients();
     List<ClientCourant> getClientsByNom(String nom);
