@@ -88,19 +88,22 @@ INSERT INTO actions_roles (nom_table, id_action, id_role) VALUES
 ('clients_courant', 1, 1), -- Insertion = Ajouter
 ('clients_courant', 2, 2), -- Validation = Modifier
 ('clients_courant', 4, 3), -- Consultation = Voir
-('transactions_courant', 4, 3); 
+('transactions_courant', 4, 3),
+('transactions_courant', 2, 3); 
+
 
 
 -- Insertion clients
 INSERT INTO clients_courant (nom, prenoms, date_naissance, id_direction) VALUES
 ('Jean', 'Marie', '1990-05-23', 2),
-('Rakoto', 'Alice', '1992-08-12', 3);
+('Rakoto', 'Alice', '1992-08-12', 1);
 
 -- Assigner rôles aux clients
 INSERT INTO clients_role (id_client, id_role) VALUES
 (1, 1), -- Jean = Insertion
 (1, 3), -- Jean = Insertion
-(2, 3); -- Alice = Consultation
+(2, 3); 
+
 
 
 

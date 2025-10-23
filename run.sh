@@ -5,6 +5,7 @@ cp server-ejb/target/server-ejb.war server-ejb/deploy/
 cp client-ejb/target/client-ejb.war server-ejb/deploy/
 
 
+
 # restore dotnet
 dotnet restore ./pret
 dotnet restore ./epargne
