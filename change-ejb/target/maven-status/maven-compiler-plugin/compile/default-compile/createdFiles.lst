@@ -1,2 +1,4 @@
 com/example/remotes/ChangeServiceRemote.class
-ChangeService.class
+com/example/services/ChangeService$1.class
+com/example/services/ChangeService.class
+com/example/dto/DeviseDto.class

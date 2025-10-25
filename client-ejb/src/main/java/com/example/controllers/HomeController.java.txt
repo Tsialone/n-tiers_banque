@@ -1,0 +1,40 @@
+package com.example.controllers;
+
+import com.example.remotes.ChangeServiceRemote;
+import com.example.utils.Url;
+
+import jakarta.ejb.EJB;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/home")
+public class HomeController extends HttpServlet {
+
+    // @EJB(lookup =
+    // "java:global/server-ejb/ChangeService!com.example.remotes.ChangeServiceRemote")
+    // private ChangeServiceRemote changeService;
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String page = Url.pages + "/home.jsp";
+        // double montant = Double.parseDouble(request.getParameter("montant"));
+        // String source = request.getParameter("source");
+        // String cible = request.getParameter("cible");
+
+        // // double resultat = changeService.convertir(montant, source, cible);
+        request.setAttribute("content", page);
+        request.setAttribute("fonctionality", "Home");
+        request.setAttribute("title", "Prolongement-admin");
+        // request.setAttribute("source", source);
+        // request.setAttribute("cible", cible);
+
+        String landingPage = Url.layout + "/layout.jsp";
+        request.getRequestDispatcher(landingPage).forward(request, response);
+        // request.getRequestDispatcher("/login.jsp").forward(request, response);
+    }
+}

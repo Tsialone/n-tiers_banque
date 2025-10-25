@@ -8,6 +8,8 @@ import com.example.models.ClientCourant;
 
 @Remote
 public interface ClientCourantServiceRemote {
+    // void  logout  () throws Exception;
+    // ClientCourant getByEmail (String email) throws Exception;
     double getSoldeByIdClientAndIdCompte(Integer idCompte, Integer idClient, LocalDate dateTransaction) throws Exception;
     // ClientCourant login (Integer idClient);
     // ClientCourant getUtilisateur () throws Exception;

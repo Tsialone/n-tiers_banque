@@ -1,0 +1,48 @@
+package com.example.filters;
+
+import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
+import java.io.IOException;
+
+@Provider
+public class AuthFilter implements ContainerRequestFilter {
+
+    // @Inject
+    // private ClientCourantStateful userSession;
+
+    @Override
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+
+        // Autoriser l'accès à l'URL /auth/login ou /public sans session
+        String path = requestContext.getUriInfo().getPath();
+        System.out.println("path: " +   path );
+         // Autoriser l'accès à login, public, ou OPTIONS
+        if (requestContext.getMethod().equalsIgnoreCase("OPTIONS") ||
+            path.startsWith("auth") ||
+            path.startsWith("public") ||
+            path.equals("/clients-courants/login") ||
+            path.equals("/clients-courants/logout") ||
+            path.equals("/clients-courants")) {
+            return; // On laisse passer le préflight
+        }
+
+
+        JsonObject errorJson  = Json.createObjectBuilder()
+            .add("error", "Veuillez vous connecter !")
+            .build();
+
+        // Vérification si utilisateur connecté
+        // if (userSession == null || userSession.getClient() == null) {
+        //     requestContext.abortWith(
+        //         Response.status(Response.Status.UNAUTHORIZED)
+        //                 .entity(errorJson)
+        //                 .build()
+        //     );
+        // }
+    }
+}

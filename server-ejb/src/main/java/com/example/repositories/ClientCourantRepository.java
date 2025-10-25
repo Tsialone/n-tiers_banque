@@ -42,7 +42,7 @@ public class ClientCourantRepository {
         query.setParameter("idCompte", idCompte);
         query.setParameter("idClient", idClient);
         if (dateTransaction != null) {
-            query.setParameter("dateTransaction",dateTransaction);
+            query.setParameter("dateTransaction", dateTransaction);
         }
 
         Double solde = (Double) query.getSingleResult();
@@ -57,6 +57,17 @@ public class ClientCourantRepository {
         TypedQuery<ClientCourant> query = em.createQuery(
                 "SELECT c FROM ClientCourant c", ClientCourant.class);
         return query.getResultList();
+    }
+
+    public ClientCourant findByEmail(String email) {
+        try {
+            return em.createQuery(
+                    "SELECT c FROM ClientCourant c WHERE c.email = :email",
+                    ClientCourant.class).setParameter("email", email)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null; 
+        }
     }
 
     public List<ClientCourant> findByNom(String nom) {

@@ -8,6 +8,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>change-ejb</module>
     <module>server-ejb</module>
     <module>client-ejb</module>
   </modules>

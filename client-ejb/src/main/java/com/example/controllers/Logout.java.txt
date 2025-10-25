@@ -1,0 +1,41 @@
+package com.example.controllers;
+
+import com.example.models.ClientCourant;
+import com.example.remotes.ChangeServiceRemote;
+import com.example.remotes.ClientCourantServiceRemote;
+import com.example.utils.Url;
+
+import jakarta.ejb.EJB;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet("/logout")
+public class Logout extends HttpServlet {
+
+    // @EJB(lookup =
+    // "java:global/server-ejb/ChangeService!com.example.remotes.ChangeServiceRemote")
+    // private ChangeServiceRemote changeService;
+    @EJB(lookup = "java:global/server-ejb/ClientCourantService!com.example.remotes.ClientCourantServiceRemote")
+    private ClientCourantServiceRemote clientCourantServiceRemote;
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String landingPage = Url.pages + "/login.jsp";
+        String page = Url.pages + "/login.jsp";
+        try {
+            clientCourantServiceRemote.logout();
+        } catch (Exception e) {
+            // landingPage = page;
+            request.setAttribute("message", e.getMessage());
+            request.setAttribute("message_type", "danger");
+
+        }
+        request.getRequestDispatcher(landingPage).forward(request, response);
+        // request.getRequestDispatcher("/login.jsp").forward(request, response);
+    }
+}

@@ -7,6 +7,7 @@ import com.example.repositories.ClientCourantRepository;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Remote;
 import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,8 +27,10 @@ public class ClientCourantService implements ClientCourantServiceRemote {
     @EJB
     private CompteCourantServiceRemote compteCourantService;
 
-    @EJB
-    private ClientCourantStatefulServiceRemote clientCourantStatefulServiceRemote;
+    // @EJB
+    // private ClientCourantStatefulServiceRemote
+    // clientCourantStatefulServiceRemote;
+   
 
     // public ClientCourant getUtilisateur() throws Exception {
 
@@ -49,6 +52,18 @@ public class ClientCourantService implements ClientCourantServiceRemote {
     // throw e;
     // }
     // }
+
+   
+
+   
+
+    public ClientCourant getByEmail(String email) throws Exception {
+        try {
+            return repository.findByEmail(email);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
 
     // getSoldeByIdClientAndIdCompte
     public double getSoldeByIdClientAndIdCompte(Integer idCompte, Integer idClient, LocalDate dateTransaction)
@@ -72,7 +87,7 @@ public class ClientCourantService implements ClientCourantServiceRemote {
             client.getComptes().size();
             client.getClientRoles().size();
             for (ClientRole clientRole : client.getClientRoles()) {
-                    clientRole.getRole().getActionRoles().size();
+                clientRole.getRole().getActionRoles().size();
             }
 
         }

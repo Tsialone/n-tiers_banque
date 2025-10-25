@@ -9,17 +9,11 @@ import java.util.List;
 @Remote
 public interface ClientCourantStatefulServiceRemote {
 
-    String getInstanceId();
-
+    ClientCourant login (String email  , String mdp) throws Exception;
     // Sélectionner le client courant pour la session
     void setClient(ClientCourant client);
 
     // Récupérer le client courant
     ClientCourant getClient() throws Exception;
 
-    // Ajouter un compte au client courant
-    void ajouterCompte(CompteCourant compte);
-
-    // Lister les comptes du client courant
-    List<CompteCourant> getComptes();
 }

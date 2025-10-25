@@ -21,6 +21,8 @@ CREATE TABLE clients_courant (
     id_client SERIAL PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
     prenoms VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE ,
+    mdp   VARCHAR(500) NOT NULL ,
     id_direction INT REFERENCES directions(id_direction) ON DELETE CASCADE ,
     date_naissance DATE
 );
@@ -94,9 +96,9 @@ INSERT INTO actions_roles (nom_table, id_action, id_role) VALUES
 
 
 -- Insertion clients
-INSERT INTO clients_courant (nom, prenoms, date_naissance, id_direction) VALUES
-('Jean', 'Marie', '1990-05-23', 2),
-('Rakoto', 'Alice', '1992-08-12', 1);
+INSERT INTO clients_courant (nom, prenoms, email , mdp , date_naissance, id_direction) VALUES
+('Jean', 'Marie','a@gmail' , '1234' ,'1990-05-23', 2),
+('Rakoto', 'Alice','b@gmail' , '1234','1992-08-12', 1);
 
 -- Assigner rôles aux clients
 INSERT INTO clients_role (id_client, id_role) VALUES

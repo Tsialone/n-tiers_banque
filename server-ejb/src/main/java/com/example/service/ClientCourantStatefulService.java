@@ -1,65 +1,52 @@
 package com.example.service;
 
-import com.example.models.ClientCourant;
-import com.example.models.CompteCourant;
-import com.example.remotes.ClientCourantServiceRemote;
-import com.example.remotes.ClientCourantStatefulServiceRemote;
-
 import jakarta.ejb.EJB;
+import jakarta.ejb.Remote;
 import jakarta.ejb.Stateful;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
+import java.io.Serializable;
+
+import com.example.models.ClientCourant;
+import com.example.remotes.ClientCourantStatefulServiceRemote;
+import com.example.repositories.ClientCourantRepository;
 
 @Stateful
-public class ClientCourantStatefulService implements ClientCourantStatefulServiceRemote {
-
+@Remote(ClientCourantStatefulServiceRemote.class)
+public class ClientCourantStatefulService implements ClientCourantStatefulServiceRemote , Serializable {
+    
+    
     @EJB
-    private ClientCourantServiceRemote clientCourantServiceRemote;
+    private ClientCourantRepository repository;
 
-    private String instanceId = UUID.randomUUID().toString();
     private ClientCourant client;
-    private List<CompteCourant> comptes = new ArrayList<>();
 
-    @Override
-    public String getInstanceId() {
-        return instanceId;
-    }
-
-    @Override
-    public void setClient(ClientCourant client) {
-        this.client = client;
-        if (client.getComptes() != null) {
-            this.comptes = new ArrayList<>(client.getComptes());
-        } else {
-            this.comptes = new ArrayList<>();
-        }
-    }
-
-    @Override
-    public ClientCourant getClient() throws Exception {
-
-        // try {
-        // // if (this.client == null) {
-        // // throw new Exception("Aucune session pour utilisateur");
-        // // }
-        // ClientCourant clientCourant =
-        // clientCourantServiceRemote.getClientById(client.getIdClient()) ;
-        // } catch (Exception e) {
-        // throw e;
-        // }
-
+    public ClientCourant getClient() {
         return client;
     }
 
-    @Override
-    public void ajouterCompte(CompteCourant compte) {
-        comptes.add(compte);
-        compte.setClient(client);
+     public ClientCourant login(String email, String mdp ) throws Exception {
+        try {
+            ClientCourant clientCourant = repository.findByEmail(email);
+            if (clientCourant == null)
+                throw new Exception("Email non trouver");
+            if (!clientCourant.getMdp().equals(mdp))
+                throw new Exception("Mot de passe incorrect");
+            this.setClient(clientCourant);
+            return clientCourant;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
-    @Override
-    public List<CompteCourant> getComptes() {
-        return new ArrayList<>(comptes);
+    public void setClient(ClientCourant client) {
+        this.client = client;
     }
+
+    public void clear() {
+        client = null;
+    }
+
+   
+
 }

@@ -7,6 +7,7 @@ import com.example.repositories.CompteCourantRepository;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Stateless
@@ -15,6 +16,11 @@ public class CompteCourantService implements CompteCourantServiceRemote  {
     @EJB
     private CompteCourantRepository repository;
 
+
+
+    public List<CompteCourant> getComptesByClientAndDate(Integer idClient , LocalDate date) {
+        return repository.findByClientIdAndDate(idClient , date);
+    }
 
     // recuperer le solde par id_compte et utilisateur
     

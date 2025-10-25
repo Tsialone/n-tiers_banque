@@ -10,9 +10,10 @@ public class TransactionCourantDto  implements Serializable{
 
     private Integer idTransaction;
     private Integer idCompte;        
-    private LocalDate dateTransaction;
+    private LocalDate dateTransaction = LocalDate.now();
     private String libelle;
     private Double montant;
     private String sens;
     private boolean validate;
+    private String devise;
 }

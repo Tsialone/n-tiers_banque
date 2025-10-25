@@ -22,6 +22,12 @@ public class ClientCourant implements Serializable {
     private String nom;
 
     private String prenoms;
+
+    private String email;
+    
+    private String mdp;
+
+
     @Column(name = "date_naissance")
     private LocalDate dateNaissance;
 

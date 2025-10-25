@@ -1,0 +1,207 @@
+package com.example.controllers;
+
+import com.example.annotations.TablePermission;
+import com.example.dto.DeviseDto;
+import com.example.dto.TransactionCourantDto;
+import com.example.models.CompteCourant;
+import com.example.models.TransactionCourant;
+import com.example.remotes.CompteCourantServiceRemote;
+import com.example.remotes.TransactionCourantServiceRemote;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+import java.time.LocalDate;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import javax.naming.InitialContext;
+
+import com.example.mappers.TransactionCourantMapper;
+import com.example.remotes.ChangeServiceRemote;
+import javax.naming.Context;
+
+@Path("/transactions-courants")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class TransactionCourantController {
+
+    @EJB(lookup = "java:global/server-ejb/TransactionCourantService!com.example.remotes.TransactionCourantServiceRemote")
+    private TransactionCourantServiceRemote service;
+
+    @EJB(lookup = "java:global/server-ejb/CompteCourantService!com.example.remotes.CompteCourantServiceRemote")
+    private CompteCourantServiceRemote compteCourantService;
+
+    // @EJB(lookup = "java:global/change-ejb/ChangeService!com.example.remotes.ChangeServiceRemote")
+    private ChangeServiceRemote changeServiceRemote;
+
+    @PostConstruct
+    private void initRemoteEJB() {
+        try {
+            Hashtable<String, Object> jndiProps = new Hashtable<>();
+            jndiProps.put(Context.INITIAL_CONTEXT_FACTORY, "org.wildfly.naming.client.WildFlyInitialContextFactory");
+            jndiProps.put(Context.PROVIDER_URL, "http-remoting://change-server:9090");
+            Context ctx = new InitialContext(jndiProps);
+
+            changeServiceRemote = (ChangeServiceRemote) ctx
+            .lookup("ejb:/change-ejb/ChangeService!com.example.remotes.ChangeServiceRemote");
+            System.out.println("ChangeServiceRemote initialisé avec succès !");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @PUT
+    // @Path("/client")
+    @TablePermission(table = "transactions_courant")
+    public Response updateTransaction(TransactionCourantDto transactionCourantDto) {
+        try {
+
+            System.out.println(transactionCourantDto);
+            return Response.ok(service.updateTransactionCourant(transactionCourantDto)).build();
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Map.of("error", e.getMessage()))
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("/devise")
+    public Response getDevise() {
+        try {
+
+            return Response.ok(changeServiceRemote.getDevise(1l)).build();
+            // return Response.ok("cefo").build();
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Map.of("error", e.getMessage()))
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("/client")
+    @TablePermission(table = "transactions_courant")
+    public Response getAllTransactionsByIdClient(@QueryParam("idClient") int idClient) {
+        try {
+            List<TransactionCourantDto> transactionsCourantDto = service.getAllTransactionsByClient(idClient);
+            return Response.ok(transactionsCourantDto).build();
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Map.of("error", e.getMessage()))
+                    .build();
+        }
+    }
+
+    @GET
+    public Response getAllTransactions() {
+
+        List<TransactionCourantDto> transactionsCourantDto = service.getAllTransactions();
+
+        return Response.ok(transactionsCourantDto).build();
+    }
+
+    // Récupérer une transaction par ID
+    @GET
+    @Path("/{id}")
+    public Response getTransaction(@PathParam("id") Integer id) {
+        try {
+            TransactionCourant t = service.getTransactionById(id);
+            return Response.ok(t).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    // Récupérer toutes les transactions d'un compte
+    @GET
+    @Path("/compte")
+    public Response getTransactionsByCompte(@QueryParam("idCompte") Integer idCompte) {
+        List<TransactionCourant> transactions = service.getTransactionsByCompte(idCompte);
+        return Response.ok(transactions).build();
+    }
+
+    @POST
+    // @TablePermission(table = "transactions_courant")
+    public Response saveTransaction(TransactionCourantDto transactionDto) {
+        try {
+            double montant = transactionDto.getMontant();
+            double multipli = 1.0;
+            LocalDate transactionDate = transactionDto.getDateTransaction();
+
+            boolean deviseTrouvee = false;
+
+            // Récupérer toutes les devises
+            List<DeviseDto> devises = changeServiceRemote.getAllDevises();
+
+            for (DeviseDto dto : devises) {
+                LocalDate dateDebut = LocalDate.parse(dto.getDateDebut());
+                LocalDate dateFin = null;
+
+                // Si dateFin est null ou vide, considérer une période de 10 ans max après
+                // dateDebut
+                if (dto.getDateFin() != null && !dto.getDateFin().isEmpty()) {
+                    dateFin = LocalDate.parse(dto.getDateFin());
+                } else {
+                    dateFin = dateDebut.plusYears(10);
+                }
+
+                boolean periodeValide = !transactionDate.isBefore(dateDebut) && !transactionDate.isAfter(dateFin);
+
+                if (dto.getLibelle().equalsIgnoreCase(transactionDto.getDevise()) && periodeValide) {
+                    multipli = dto.getArriary();
+                    System.out.println("Devise trouvée: " + dto.getLibelle()
+                            + " (" + dateDebut + " - " + dateFin + "), transactionDate: " + transactionDate);
+                    deviseTrouvee = true;
+                    break;
+                }
+            }
+
+            if (!deviseTrouvee) {
+                throw new IllegalArgumentException("Devise invalide ou hors période : " + transactionDto.getDevise());
+            }
+
+            // Calculer le montant final
+            montant *= multipli;
+            transactionDto.setMontant(montant);
+
+            // Récupérer le compte et sauvegarder la transaction
+            CompteCourant compteCourant = compteCourantService.getCompteById(transactionDto.getIdCompte());
+            TransactionCourant saved = service
+                    .saveTransaction(TransactionCourantMapper.toEntity(transactionDto, compteCourant));
+
+            return Response.ok(saved).build();
+
+        } catch (Exception e) {
+            // Retourne 500 avec un message JSON
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Map.of("error", e.getMessage()))
+                    .build();
+        }
+    }
+
+    // Supprimer une transaction
+    @DELETE
+    @Path("/{id}")
+    public Response deleteTransaction(@PathParam("id") Integer id) {
+        try {
+            TransactionCourant t = service.getTransactionById(id);
+            service.deleteTransaction(t);
+            return Response.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+}

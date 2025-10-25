@@ -1,0 +1,170 @@
+package com.example.controllers.courants;
+
+import com.example.controllers.utils.Flash;
+import com.example.controllers.utils.UserSession;
+import com.example.dto.TransactionCourantDto;
+import com.example.mappers.TransactionCourantMapper;
+import com.example.models.ClientCourant;
+import com.example.models.CompteCourant;
+import com.example.models.TransactionCourant;
+import com.example.remotes.ChangeServiceRemote;
+import com.example.remotes.ClientCourantServiceRemote;
+import com.example.remotes.ClientCourantStatefulServiceRemote;
+import com.example.remotes.CompteCourantServiceRemote;
+import com.example.remotes.TransactionCourantServiceRemote;
+import com.example.utils.Url;
+import com.example.views.CompteCourantView;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
+@WebServlet("/transaction_courants")
+public class TransactionCourantController extends HttpServlet {
+
+    // @EJB(lookup =
+    // "java:global/server-ejb/ClientCourantService!com.example.remotes.ClientCourantServiceRemote")
+    // private ClientCourantServiceRemote clientCourantServiceRemote;
+
+    // @EJB(lookup =
+    // "java:global/server-ejb/ChangeService!com.example.remotes.ChangeServiceRemote")
+    // @EJB(lookup =
+    // "java:global/change-ejb/ChangeService!com.example.remotes.ChangeServiceRemote")
+    // private ChangeServiceRemote changeServiceRemote;
+
+    // @EJB(lookup =
+    // "java:global/server-ejb/ClientCourantStatefulService!com.example.remotes.ClientCourantStatefulServiceRemote")
+    // private ClientCourantStatefulServiceRemote
+    // clientCourantStatefulServiceRemote;
+
+    // @EJB(lookup =
+    // "java:global/server-ejb/CompteCourantService!com.example.remotes.CompteCourantServiceRemote")
+    // private CompteCourantServiceRemote compteCourantServiceRemote;
+
+    @EJB(lookup = "java:global/server-ejb/TransactionCourantService!com.example.remotes.TransactionCourantServiceRemote")
+    private TransactionCourantServiceRemote transactionCourantServiceRemote;
+
+    // @PostConstruct
+    // private void initRemoteEJB() {
+    // try {
+    // Hashtable<String, Object> jndiProps = new Hashtable<>();
+    // jndiProps.put(Context.INITIAL_CONTEXT_FACTORY,
+    // "org.wildfly.naming.client.WildFlyInitialContextFactory");
+    // jndiProps.put(Context.PROVIDER_URL, "remote+http://localhost:9090");
+
+    // // Ajout de l'authentification
+    // jndiProps.put(Context.SECURITY_PRINCIPAL, "ejbuser");
+    // jndiProps.put(Context.SECURITY_CREDENTIALS, "ejbpass");
+
+    // Context ctx = new InitialContext(jndiProps);
+
+    // changeServiceRemote = (ChangeServiceRemote) ctx
+    // .lookup("change-ejb/ChangeService!com.example.remotes.ChangeServiceRemote");
+
+    // System.out.println("ChangeServiceRemote initialisé avec succès !");
+    // } catch (Exception e) {
+    // System.err.println("Erreur lors de l'initialisation de
+    // ChangeServiceRemote:");
+    // e.printStackTrace();
+    // }
+    // }
+
+    @Override
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        Flash.loadFlashMessage(request);
+        request.setAttribute("content", Url.pages + "/courants/transaction_courant_liste.jsp");
+        request.setAttribute("fonctionality", "Mouvements courant");
+        request.setAttribute("title", "Courants-Mvt");
+
+        try {
+            // hovaina
+            int xx = 1;
+            List<TransactionCourantDto> transactionsCourantDto = transactionCourantServiceRemote
+                    .getAllTransactionsByClient(xx);
+            request.setAttribute("transactionCourants", transactionsCourantDto);
+        } catch (Exception e) {
+
+            Flash.set(request, "message", "Erreur: " + e.getMessage());
+            Flash.set(request, "message_type", "danger");
+            response.sendRedirect(request.getContextPath() + "/home");
+            return;
+
+        }
+
+        String landingPage = Url.layout;
+        request.getRequestDispatcher(landingPage).forward(request, response);
+        // request.getRequestDispatcher("/login.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+
+            if (request.getParameter("idTransactionCourant") != null) {
+                Integer idTransactionCourant = Integer.parseInt(request.getParameter("idTransactionCourant"));
+                TransactionCourant transactionCourant = transactionCourantServiceRemote
+                        .getTransactionById(idTransactionCourant);
+
+                TransactionCourantDto transactionCourantDto = TransactionCourantMapper.toDto(transactionCourant);
+                transactionCourantDto.setValidate(true);
+                transactionCourantServiceRemote.updateTransactionCourant(transactionCourantDto);
+            }
+            // clientCourant.getDirection().getLibelle();
+            // request.setAttribute("content", Url.pages + "/home.jsp");
+            // request.setAttribute("fonctionality", "Home");
+            // request.setAttribute("title", "Prolongement-admin");
+            // HttpSession session = request.getSession();
+            // session.setAttribute("client", clientCourant);
+
+        } catch (Exception e) {
+
+            Flash.set(request, "message", "Erreur: " + e.getMessage());
+            Flash.set(request, "message_type", "danger");
+            response.sendRedirect(request.getContextPath() + "/transaction_courants");
+
+        }
+        response.sendRedirect(request.getContextPath() + "/transaction_courants");
+    }
+
+    // @Override
+    // protected void doGet(HttpServletRequest request, HttpServletResponse
+    // response)
+    // throws ServletException, IOException {
+    // String page = Url.pages + "/home.jsp";
+    // // double montant = Double.parseDouble(request.getParameter("montant"));
+    // // String source = request.getParameter("source");
+    // // String cible = request.getParameter("cible");
+
+    // // // double resultat = changeService.convertir(montant, source, cible);
+    // request.setAttribute("content", page);
+    // request.setAttribute("fonctionality", "Home");
+    // request.setAttribute("title", "Prolongement-admin");
+    // // request.setAttribute("source", source);
+    // // request.setAttribute("cible", cible);
+
+    // String landingPage = Url.layout + "/layout.jsp";
+    // request.getRequestDispatcher(landingPage).forward(request, response);
+    // // request.getRequestDispatcher("/login.jsp").forward(request, response);
+    // }
+}

@@ -19,7 +19,6 @@ com/example/models/Action.class
 com/example/service/CompteCourantService.class
 com/example/views/CompteCourantView.class
 com/example/repositories/TransactionCourantRepository.class
-com/example/service/UserSession.class
 com/example/models/ClientRole.class
 com/example/models/ActionRole.class
 com/example/mappers/CompteCourantMapper.class
