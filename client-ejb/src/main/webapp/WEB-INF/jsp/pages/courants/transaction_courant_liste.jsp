@@ -46,8 +46,9 @@
                     </td>
                     <td>
                         <% if (!t.isValidate()) { %>
-                            <form method="post" action="<%= request.getContextPath() %>/transaction_courants">
+                            <form method="post" action="<%= request.getContextPath() %>/courants/transactions">
                                 <input type="hidden" name="idTransactionCourant" value="<%= t.getIdTransaction() %>" />
+                                <input type="hidden" name="idCompte" value="<%= t.getIdCompte() %>" />
                                 <button type="submit" class="btn btn-primary btn-sm">Valider</button>
                             </form>
                         <% } %>

@@ -1,5 +1,6 @@
 package com.example.controllers.courants;
 
+import com.example.annotations.TablePermission;
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
 import com.example.models.ClientCourant;
@@ -88,7 +89,10 @@ public class CourantController extends HttpServlet {
 
         try {
             // hovaina
-            int xx = 1;
+            // int xx = 1;
+            UserSession.checkPermission(request, response, "compte_courants", "put");
+            int xx = UserSession.getClient(request).getIdClient();
+
             String dateStr = request.getParameter("date");
             LocalDate date = null;
             if (dateStr != null && !dateStr.isEmpty())

@@ -58,16 +58,16 @@ namespace Pret.Services
                 amortissement.Statut = "paye";
                 // Console.WriteLine("ito ny id any " + amortissement.IdAmortissement);
 
-                var transaction_courant_created = await _transactionCourantApiClient.CreateAsync(
-                     new TransactionCourantDto
-                     {
-                         IdCompte = idCompteCourant,
-                         DateTransaction = temp_date,
-                         Libelle = "remboursement du mois: " + lastMonth.CreatedAt,
-                         Montant = lastMonth.Mensualite, // ca peut varie si payement partiel
-                         Sens = "debit"
-                     }
-                );
+                // var transaction_courant_created = await _transactionCourantApiClient.CreateAsync(
+                //      new TransactionCourantDto
+                //      {
+                //          IdCompte = idCompteCourant,
+                //          DateTransaction = temp_date,
+                //          Libelle = "remboursement du mois: " + lastMonth.CreatedAt,
+                //          Montant = lastMonth.Mensualite, // ca peut varie si payement partiel
+                //          Sens = "debit"
+                //      }
+                // );
                 await UpdateAsync(amortissement);
 
                 await dbTransaction.CommitAsync();

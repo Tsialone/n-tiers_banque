@@ -34,7 +34,7 @@ import java.util.List;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-@WebServlet("/transaction_courants")
+@WebServlet("/courants/transactions")
 public class TransactionCourantController extends HttpServlet {
 
     // @EJB(lookup =
@@ -97,9 +97,17 @@ public class TransactionCourantController extends HttpServlet {
 
         try {
             // hovaina
-            int xx = 1;
+            // int xx = 1;
+            int xx = UserSession.getClient(request).getIdClient() ;
+
+            int idCompte = Integer.parseInt(request.getParameter("idCompte"));
+            // List<TransactionCourantDto> transactionsCourantDto =
+            // transactionCourantServiceRemote
+            // .getAllTransactionsByClient(xx);
+
             List<TransactionCourantDto> transactionsCourantDto = transactionCourantServiceRemote
-                    .getAllTransactionsByClient(xx);
+                    .getAllTransactionsByClientAndCourant(xx, idCompte);
+
             request.setAttribute("transactionCourants", transactionsCourantDto);
         } catch (Exception e) {
 
@@ -119,8 +127,9 @@ public class TransactionCourantController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        try {
+        int idCompte = Integer.parseInt(request.getParameter("idCompte"));
 
+        try {
             if (request.getParameter("idTransactionCourant") != null) {
                 Integer idTransactionCourant = Integer.parseInt(request.getParameter("idTransactionCourant"));
                 TransactionCourant transactionCourant = transactionCourantServiceRemote
@@ -136,15 +145,17 @@ public class TransactionCourantController extends HttpServlet {
             // request.setAttribute("title", "Prolongement-admin");
             // HttpSession session = request.getSession();
             // session.setAttribute("client", clientCourant);
-
+            Flash.set(request, "message", "Success: " + "validation ok!");
+            Flash.set(request, "message_type", "success");
+            response.sendRedirect(request.getContextPath() + "/courants/transactions?idCompte=" + idCompte);
         } catch (Exception e) {
 
             Flash.set(request, "message", "Erreur: " + e.getMessage());
             Flash.set(request, "message_type", "danger");
-            response.sendRedirect(request.getContextPath() + "/transaction_courants");
+            response.sendRedirect(request.getContextPath() + "/courants/transactions?idCompte=" + idCompte);
 
         }
-        response.sendRedirect(request.getContextPath() + "/transaction_courants");
+
     }
 
     // @Override

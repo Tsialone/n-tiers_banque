@@ -37,9 +37,8 @@ namespace Pret.Controllers
             _amortissementService = amortissementService;
         }
 
-        // soumission d'un pret
         [HttpPost("askPret")]
-        public async Task<IActionResult> askPret([FromBody] ComptePretCreateDto dto, [FromQuery] int idCompteCourant)
+        public async Task<IActionResult> askPret([FromBody] ComptePretCreateDto dto)
         {
             // if (dto == null) return BadRequest();
 
@@ -68,17 +67,17 @@ namespace Pret.Controllers
                         TypeTransaction = "decaissement"
                     }
                 );
-                Console.WriteLine("creation de la transaction compte courant.......");
-                await _transactionCourantApiClient.CreateAsync(
-                    new TransactionCourantDto
-                    {
-                        IdCompte = idCompteCourant,
-                        DateTransaction = DateUtils.Today(),
-                        Libelle = "decaissement pret: " + created.Libelle,
-                        Montant = created.CapitalEmprunte,
-                        Sens = "credit"
-                    }
-                );
+                // Console.WriteLine("creation de la transaction compte courant.......");
+                // await _transactionCourantApiClient.CreateAsync(
+                //     new TransactionCourantDto
+                //     {
+                //         IdCompte = idCompteCourant,
+                //         DateTransaction = DateUtils.Today(),
+                //         Libelle = "decaissement pret: " + created.Libelle,
+                //         Montant = created.CapitalEmprunte,
+                //         Sens = "credit"
+                //     }
+                // );
 
                 // creation du tableau d'amortissement
                 Console.WriteLine("Création d'amortissement.......");
@@ -139,13 +138,124 @@ namespace Pret.Controllers
             catch (Exception ex)
             {
                 await dbTransaction.RollbackAsync();
-            
+
                 return StatusCode(500, new { error = ex.Message });
             }
 
             // var compte = await _service.GetByIdAsync(idCompte);
             // if (compte == null) return NotFound();
         }
+
+
+        // soumission d'un pret
+        // [HttpPost("askPret")]
+        // public async Task<IActionResult> askPret([FromBody] ComptePretCreateDto dto, [FromQuery] int idCompteCourant)
+        // {
+        //     // if (dto == null) return BadRequest();
+
+        //     // ouverture du transaction
+        //     await using var dbTransaction = await _service.Context.Database.BeginTransactionAsync();
+
+        //     try
+        //     {
+        //         // enregistrement du compte
+        //         Console.WriteLine("creation du compte pret.......");
+        //         var created = await _service.AddAsync(dto);
+
+        //         Console.WriteLine("xxxxxxxxxxxxxxxxxxxxxxx");
+        //         Console.WriteLine(dto);
+
+        //         // enregistrement du transaction
+        //         Console.WriteLine("creation des  transactions.......");
+        //         Console.WriteLine("creation de la transaction compte pret.......");
+        //         await _transactionPretService.AddAsync(
+        //             new TransactionPretCreateDto
+        //             {
+        //                 IdCompte = created.IdCompte,
+        //                 IdAmortissement = null,
+        //                 Libelle = "decaissement pret: " + created.Libelle,
+        //                 Montant = created.CapitalEmprunte,
+        //                 TypeTransaction = "decaissement"
+        //             }
+        //         );
+        //         Console.WriteLine("creation de la transaction compte courant.......");
+        //         await _transactionCourantApiClient.CreateAsync(
+        //             new TransactionCourantDto
+        //             {
+        //                 IdCompte = idCompteCourant,
+        //                 DateTransaction = DateUtils.Today(),
+        //                 Libelle = "decaissement pret: " + created.Libelle,
+        //                 Montant = created.CapitalEmprunte,
+        //                 Sens = "credit"
+        //             }
+        //         );
+
+        //         // creation du tableau d'amortissement
+        //         Console.WriteLine("Création d'amortissement.......");
+
+        //         decimal capital_emprunte = created.CapitalEmprunte;
+        //         decimal taux_interet_mensuel = created.TauxInteret / (12 * 100);
+        //         int nbr_mois = created.DureeMois;
+
+        //         // Conversion en double pour les calculs
+        //         double c = (double)capital_emprunte;
+        //         double t = (double)taux_interet_mensuel;
+
+        //         // Formule de mensualité
+        //         double mensualite = (c * t) / (1 - Math.Pow(1 + t, -nbr_mois));
+        //         Console.WriteLine($"Mensualité calculée = {mensualite:F2}");
+
+        //         // Variables de suivi
+        //         double reste_du = c;
+
+        //         for (int mois = 1; mois <= nbr_mois; mois++)
+        //         {
+        //             double interet = reste_du * t;
+        //             double capital_rembourse = mensualite - interet;
+        //             reste_du -= capital_rembourse;
+
+        //             DateOnly date_prevu = created.DateOuverture.AddMonths(mois);
+
+
+
+        //             // Affichage console
+        //             Console.WriteLine($"Mois {mois}: Mensualité={mensualite:F2}, " +
+        //                               $"Intérêt={interet:F2}, " +
+        //                               $"Capital remboursé={capital_rembourse:F2}, " +
+        //                               $"Reste dû={reste_du:F2}, " +
+        //                               $"Prevu ={date_prevu}"
+        //                                );
+        //             // sauvegarde
+        //             var amortissement_created = await _amortissementService.AddAsync(
+        //                  new AmortissementCreateDto
+        //                  {
+        //                      IdCompte = created.IdCompte,
+        //                      Mois = mois,
+        //                      Mensualite = (decimal)mensualite,
+        //                      Interet = (decimal)interet,
+        //                      Capital = (decimal)capital_rembourse,
+        //                      ResteDu = (decimal)reste_du,
+        //                      CreatedAt = date_prevu
+        //                  }
+        //              );
+        //         }
+        //         // fermeture du tansaction
+        //         await dbTransaction.CommitAsync();
+        //         // await dbTransaction.RollbackAsync();
+
+        //         return StatusCode(200, new { success = "Demande de pret reussi! " });
+
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         await dbTransaction.RollbackAsync();
+
+        //         return StatusCode(500, new { error = ex.Message });
+        //     }
+
+        //     // var compte = await _service.GetByIdAsync(idCompte);
+        //     // if (compte == null) return NotFound();
+        // }
 
         // GET api/comptePret
         [HttpGet]
@@ -185,11 +295,11 @@ namespace Pret.Controllers
 
         // GET api/comptePret/byClient?idClient=1
         [HttpGet("byClientSolde")]
-        public async Task<IActionResult> GetByClientIdSolde([FromQuery] int idClient , DateOnly? date)
+        public async Task<IActionResult> GetByClientIdSolde([FromQuery] int idClient, DateOnly? date)
         {
             try
             {
-                var comptes = await _service.GetByClientIdAndDateWithSoldeAsync(idClient , date);
+                var comptes = await _service.GetByClientIdAndDateWithSoldeAsync(idClient, date);
                 // if (!comptes.Any()) return NotFound();
                 return Ok(comptes);
             }

@@ -27,6 +27,7 @@
                 <th>Découvert Autorisé</th>
                 <th>Date Ouverture</th>
                 <th>Solde</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -39,6 +40,12 @@
                     <td><%= c.getDecouvertAutorise() %> Ar</td>
                     <td><%= c.getDateOuverture() %></td>
                     <td><%= c.getSolde() %> Ar</td>
+                    <td>
+                        <a href="<%= request.getContextPath() %>/courants/transactions?idCompte=<%= c.getIdCompte() %>"
+                           class="btn btn-primary btn-sm">voir transactions</a>
+                           <a href="<%= request.getContextPath() %>/courants/transactions/form?idCompte=<%= c.getIdCompte() %>"
+                           class="btn btn-primary btn-sm">add transaction</a>
+                    </td>
                 </tr>
             <% } } else { %>
                 <tr>

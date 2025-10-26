@@ -9,7 +9,7 @@
 
 <aside class="bg-white shadow-sm d-none d-md-block" style="width: 16rem;">
   <div class="p-4 border-bottom fw-bold fs-5">
-    <a href="/utilisateur/home" class="text-decoration-none text-dark">Banky</a>
+    <a href="${pageContext.request.contextPath}/home" class="text-decoration-none text-dark">Banky</a>
   </div>
 
   <nav class="p-3">
@@ -17,23 +17,23 @@
      <div class="mb-4">
       <h3 class="text-muted text-uppercase small fw-semibold mb-2">Courant(s)</h3>
       <a href="${pageContext.request.contextPath}/courants" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Comptes</a>
-      <a href="/pret/list" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Creation</a>
-      <a href="${pageContext.request.contextPath}/transaction_courants" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Mouvements</a>
-      <a href="${pageContext.request.contextPath}/transaction_courants/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Ajout mouvement</a>
+      <a href="${pageContext.request.contextPath}/courants/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Creation</a>
+      <%-- <a href="${pageContext.request.contextPath}/transaction_courants" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Mouvements</a> --%>
+      <%-- <a href="${pageContext.request.contextPath}/transaction_courants/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Ajout mouvement</a> --%>
 
 
      </div>
      <div class="mb-4">
       <h3 class="text-muted text-uppercase small fw-semibold mb-2">Pret(s)</h3>
-      <a href="/reservation/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Demande ou creation</a>
-      <a href="/reservation/list" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Mouvements</a>
-      <a href="/reservation/list" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Comptes</a>
+      <a href="${pageContext.request.contextPath}/prets" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Comptes</a>
+      <a href="${pageContext.request.contextPath}/prets/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Ouverture</a>
+      <%-- <a href="/reservation/list" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Mouvements</a> --%>
      </div>
       <div class="mb-4">
         <h3 class="text-muted text-uppercase small fw-semibold mb-2">Epargne(s)</h3>
-        <a href="/abonnement/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Comptes</a>
-        <a href="/abonnement/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Mouvements</a>
-        <a href="/abonnement/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Creations</a>
+        <a href="${pageContext.request.contextPath}/epargnes" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Comptes</a>
+        <%-- <a href="${pageContext.request.contextPath}/epargnes/transactions" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Mouvements</a> --%>
+        <a href="${pageContext.request.contextPath}/epargnes/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Creations</a>
 
       </div>
       

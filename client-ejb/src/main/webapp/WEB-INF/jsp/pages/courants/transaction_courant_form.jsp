@@ -7,14 +7,18 @@
 <%
     List<CompteCourant> comptes = (List<CompteCourant>) request.getAttribute("compteCourants");
     List<DeviseDto> devises = (List<DeviseDto>) request.getAttribute("devises");
+    String idCompte = request.getAttribute("idCompte") != null ? request.getAttribute("idCompte").toString() : "";
 
 %>
 
 <div class="container mt-4">
     <h4 class="mb-3">Créer une Nouvelle Transaction Courante</h4>
 
-    <form method="post" action="<%= request.getContextPath() %>/transaction_courants/form">
-         <div class="mb-3">
+    <form method="post" action="<%= request.getContextPath() %>/courants/transactions/form">
+        
+        <input type="hidden" id="idCompte" name="idCompte"  value="<%=  idCompte %>" required>
+        
+         <%-- <div class="mb-3">
             <label for="idCompte" class="form-label">Compte</label>
             <select id="idCompte" name="idCompte" class="form-select" required>
                 <option value="">-- Sélectionnez un compte --</option>
@@ -26,7 +30,7 @@
                 <%   } 
                    } %>
             </select>
-        </div>
+        </div> --%>
 
         <div class="mb-3">
             <label for="dateTransaction" class="form-label">Date de Transaction</label>
@@ -55,7 +59,7 @@
         
             <label for="devise" class="form-label">Devise</label>
             <%-- <input type="text" id="devise" name="devise" class="form-control" value="Ar" required> --%>
-            <select id="idDevise" name="idDevise" class="form-select" required>
+            <select id="idDevise" name="devise" class="form-select" required>
                 <option value="">-- Sélectionnez une devise --</option>
                 <% if (devises != null) {
                        for (DeviseDto c : devises) { %>

@@ -72,8 +72,8 @@ public class EpargneApiController {
         @Path("/transaction")
         @Consumes(MediaType.APPLICATION_JSON)
         @Produces(MediaType.APPLICATION_JSON)
-        public Response createTransactionEpargne(String json,
-                        @QueryParam("idCompteCourant") int idCompteCourant) {
+        public Response createTransactionEpargne(String json
+                       ) {
                 try {
                         // Affiche le JSON reçu
                         System.out.println(json);
@@ -81,7 +81,7 @@ public class EpargneApiController {
                         // Envoie directement au serveur C#
                         HttpResponse<String> response = Unirest.post(BASE_URL + "/TransactionEpargne")
                                         .header("Content-Type", "application/json")
-                                        .queryString("idCompteCourant", idCompteCourant)
+                                        // .queryString("idCompteCourant", idCompteCourant)
                                         .body(json)
                                         .asString();
 
@@ -96,13 +96,41 @@ public class EpargneApiController {
                 }
         }
 
+        // @POST
+        // @Path("/transaction")
+        // @Consumes(MediaType.APPLICATION_JSON)
+        // @Produces(MediaType.APPLICATION_JSON)
+        // public Response createTransactionEpargne(String json,
+        //                 @QueryParam("idCompteCourant") int idCompteCourant) {
+        //         try {
+        //                 // Affiche le JSON reçu
+        //                 System.out.println(json);
+        //                 System.out.flush();
+        //                 // Envoie directement au serveur C#
+        //                 HttpResponse<String> response = Unirest.post(BASE_URL + "/TransactionEpargne")
+        //                                 .header("Content-Type", "application/json")
+        //                                 .queryString("idCompteCourant", idCompteCourant)
+        //                                 .body(json)
+        //                                 .asString();
+
+        //                 return Response.status(response.getStatus())
+        //                                 .entity(response.getBody())
+        //                                 .build();
+
+        //         } catch (Exception e) {
+        //                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+        //                                 .entity("Erreur POST API C# : " + e.getMessage())
+        //                                 .build();
+        //         }
+        // }
+
         // creation d'un compte
-        @POST
+          @POST
         @Path("/save")
         @Consumes(MediaType.APPLICATION_JSON)
         @Produces(MediaType.APPLICATION_JSON)
-        public Response createEpargne(String json,
-                        @QueryParam("idCompteCourant") int idCompteCourant) {
+        public Response createEpargne(String json
+                       ) {
                 try {
                         // Affiche le JSON reçu
                         System.out.println(json);
@@ -110,7 +138,6 @@ public class EpargneApiController {
                         // Envoie directement au serveur C#
                         HttpResponse<String> response = Unirest.post(BASE_URL + "/CompteEpargne")
                                         .header("Content-Type", "application/json")
-                                        .queryString("idCompteCourant", idCompteCourant)
                                         .body(json)
                                         .asString();
 
@@ -124,6 +151,34 @@ public class EpargneApiController {
                                         .build();
                 }
         }
+
+        // @POST
+        // @Path("/save")
+        // @Consumes(MediaType.APPLICATION_JSON)
+        // @Produces(MediaType.APPLICATION_JSON)
+        // public Response createEpargne(String json,
+        //                 @QueryParam("idCompteCourant") int idCompteCourant) {
+        //         try {
+        //                 // Affiche le JSON reçu
+        //                 System.out.println(json);
+        //                 System.out.flush();
+        //                 // Envoie directement au serveur C#
+        //                 HttpResponse<String> response = Unirest.post(BASE_URL + "/CompteEpargne")
+        //                                 .header("Content-Type", "application/json")
+        //                                 .queryString("idCompteCourant", idCompteCourant)
+        //                                 .body(json)
+        //                                 .asString();
+
+        //                 return Response.status(response.getStatus())
+        //                                 .entity(response.getBody())
+        //                                 .build();
+
+        //         } catch (Exception e) {
+        //                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+        //                                 .entity("Erreur POST API C# : " + e.getMessage())
+        //                                 .build();
+        //         }
+        // }
 
         // GET solde
         @GET

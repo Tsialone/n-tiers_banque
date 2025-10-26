@@ -1,12 +1,15 @@
 package com.example.filters;
 
 import com.example.annotations.TablePermission;
+import com.example.controllers.utils.Flash;
+import com.example.controllers.utils.UserSession;
 import com.example.models.ActionRole;
 import com.example.models.ClientCourant;
 import com.example.models.ClientRole;
 import com.example.models.Role;
 
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ResourceInfo;
@@ -14,6 +17,8 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,9 +31,14 @@ public class PermissionFilter implements ContainerRequestFilter {
     // @Inject
     // ClientCourantStateful userSession;
 
+    @Context
+    private HttpServletRequest httpRequest;
+
     @Override
     public void filter(ContainerRequestContext requestContext) {
         Method method = resourceInfo.getResourceMethod();
+        HttpResponse resp = (HttpResponse) requestContext.getRequest();
+
         // if (userSession.getClient() == null || userSession == null) {
         // requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
         // .entity(Map.of("error", "Vous devez vous reconnceter stp")).build());
@@ -52,17 +62,24 @@ public class PermissionFilter implements ContainerRequestFilter {
                 try {
                     boolean hasPermission = checkPermission(requestContext, table, httpMethod);
                     if (!hasPermission) {
-                        requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
-                                .entity(Map.of("error",
-                                        "Vous n'avez pas la permission pour accéder à cette ressource: " + "table: "
-                                                + table + "\naction: " + httpMethod))
-                                .build());
+                        // requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
+                        // .entity(Map.of("error",
+                        // "Vous n'avez pas la permission pour accéder à cette ressource: " + "table: "
+                        // + table + "\naction: " + httpMethod))
+                        // .build());
+                        String message = "Vous n'avez pas la permission pour accéder à cette ressource: " + "table: "
+                                + table + "\naction: " + httpMethod;
+                        URI redirect403 = URI.create("/home");
+                        Flash.set(httpRequest, "message", "Erreur API : " + message);
+                        Flash.set(httpRequest, "message_type", "danger");
+                        requestContext.abortWith(Response.seeOther(redirect403).build());
+
                     }
                 } catch (Exception e) {
-                     requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
-                                .entity(Map.of("error",
-                                        "session expiré " + e.getMessage()))
-                                .build());
+                    requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
+                            .entity(Map.of("error",
+                                    "session expiré " + e.getMessage()))
+                            .build());
                 }
 
             }
@@ -71,8 +88,9 @@ public class PermissionFilter implements ContainerRequestFilter {
         }
     }
 
-    private boolean checkPermission(ContainerRequestContext requestContext, String table, String httpMethod) {
-        ClientCourant clientCourant = userSession.getClient();
+    private boolean checkPermission(ContainerRequestContext requestContext, String table, String httpMethod)
+            throws Exception {
+        ClientCourant clientCourant = UserSession.getClient(httpRequest);
 
         System.out.println("L'utilisateur: " + clientCourant.getNom());
         System.out.println("Ses roles: ");

@@ -21,15 +21,34 @@ namespace Pret.Controllers
             _service = service;
         }
 
+        //  [HttpGet("rembourssement")]
+        // public async Task<IActionResult> rembourssementPret([FromQuery] int idComptePret, [FromQuery] int idCompteCourant, [FromQuery] DateOnly ? date)
+        // {
+
+        //     try
+        //     {   
+        //         Console.WriteLine("hiohihihihihi "  +  date);
+        //         // DateOnly temp_date = date ?? DateUtils.Today();
+        //         var amortissements = await _service.rembourssementPret(idComptePret , idCompteCourant, date, 0.0);
+        //         return Ok(amortissements);
+
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return StatusCode(500, new { error = ex.Message });
+        //     }
+
+        // }
+
         [HttpGet("rembourssement")]
-        public async Task<IActionResult> rembourssementPret([FromQuery] int idComptePret, [FromQuery] int idCompteCourant, [FromQuery] DateOnly ? date)
+        public async Task<IActionResult> rembourssementPret([FromQuery] int idComptePret ,  [FromQuery] DateOnly ? date)
         {
 
             try
             {   
                 Console.WriteLine("hiohihihihihi "  +  date);
                 // DateOnly temp_date = date ?? DateUtils.Today();
-                var amortissements = await _service.rembourssementPret(idComptePret , idCompteCourant, date, 0.0);
+                var amortissements = await _service.rembourssementPret(idComptePret , 0, date, 0.0);
                 return Ok(amortissements);
 
             }

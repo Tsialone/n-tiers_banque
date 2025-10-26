@@ -138,9 +138,41 @@ namespace Epargne.Controllers
             }
         }
 
+    //  [HttpPost]
+    //     public async Task<IActionResult> Add([FromBody] CompteEpargneCreateDto dto, [FromQuery] int idCompteCourant)
+    //     {
+    //         // if (dto == null) return NotFound();
+    //         await using var dbTransaction = await _service.Context.Database.BeginTransactionAsync();
+    //         try
+    //         {
+    //             var compte_epargne_created = await _service.AddAsync(dto);
+    //             // var transaction_courant_created = await _transactionCourantApiClient.CreateAsync(
+    //             //      new TransactionCourantDto
+    //             //      {
+    //             //          IdCompte = idCompteCourant,
+    //             //          DateTransaction = dto.DateOuverture,
+    //             //          Libelle = "depot initial de: " + dto.Libelle,
+    //             //          Montant = dto.CapitalEpargne,
+    //             //          Sens = "debit"
+    //             //      }
+    //             // );
+    //             await dbTransaction.CommitAsync();
+    //             // await dbTransaction.RollbackAsync();
+
+    //             return Ok(new { success = "Creation du compte epargne et transaction compte couant reussi" });
+
+    //         }
+    //         catch (Exception ex)
+    //         {
+    //             await dbTransaction.RollbackAsync();
+    //             return StatusCode(500, new { error = ex.Message });
+
+    //         }
+
+    //     }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] CompteEpargneCreateDto dto, [FromQuery] int idCompteCourant)
+        public async Task<IActionResult> Add([FromBody] CompteEpargneCreateDto dto)
         {
             // if (dto == null) return NotFound();
             await using var dbTransaction = await _service.Context.Database.BeginTransactionAsync();
@@ -160,7 +192,7 @@ namespace Epargne.Controllers
                 await dbTransaction.CommitAsync();
                 // await dbTransaction.RollbackAsync();
 
-                return Ok(new { success = "Creation du compte epargne et transaction compte couant reussi" });
+                return Ok(new { success = "Creation du compte epargne reussi" });
 
             }
             catch (Exception ex)

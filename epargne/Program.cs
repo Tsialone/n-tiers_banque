@@ -11,7 +11,8 @@ using Epargne.ExternalApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(90); // écoute sur le port 90 dans le container
+    // options.ListenAnyIP(90); // écoute sur le port 90 dans le container
+    options.ListenAnyIP(6000);
 });
 
 // EF Core PostgreSQL

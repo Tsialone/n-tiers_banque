@@ -44,7 +44,7 @@ namespace Epargne.Controllers
                 // Appel vers l'API Java
                 var effectiveDate = date ?? DateUtils.Today();
                 var solde = await _service.getSoldeByClientAndEpargneAndDate(idClient, idCompteEpargne, effectiveDate);
-            
+
                 return Ok(solde);
             }
             catch (Exception ex)
@@ -96,6 +96,14 @@ namespace Epargne.Controllers
             return Ok(transactions);
         }
 
+        [HttpGet("byEpargne")]
+        public async Task<IActionResult> GetByEpargne([FromQuery] int idEpargne)
+        {
+            var transactions = await _service.GetByIdEpargne(idEpargne);
+            // if (!transactions.Any()) return NotFound();
+            return Ok(transactions);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllDto()
         {
@@ -122,9 +130,8 @@ namespace Epargne.Controllers
             if (transactions == null || !transactions.Any()) return NotFound();
             return Ok(transactions);
         }
-
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] TransactionEpargneCreateDto dto, [FromQuery] int idCompteCourant)
+        public async Task<IActionResult> Add([FromBody] TransactionEpargneCreateDto dto)
         {
             // if (dto == null) return BadRequest();
 
@@ -145,18 +152,18 @@ namespace Epargne.Controllers
 
                 var created = await _service.AddAsync(transaction);
 
-                string courant_sens = dto.Sens == "debit" ? "credit" : "debit";
-                Console.WriteLine("itooooooooooooooo e " + idCompteCourant);
-                var transaction_courant = new TransactionCourantDto
-                {
-                    IdCompte = idCompteCourant,
-                    DateTransaction = dto.DateTransaction,
-                    Libelle = dto.Libelle + " compte epargne: " + dto.IdCompte,
-                    Montant = dto.Montant,
-                    Sens = courant_sens
-                };
+                // string courant_sens = dto.Sens == "debit" ? "credit" : "debit";
+                // Console.WriteLine("itooooooooooooooo e " + idCompteCourant);
+                // var transaction_courant = new TransactionCourantDto
+                // {
+                //     IdCompte = idCompteCourant,
+                //     DateTransaction = dto.DateTransaction,
+                //     Libelle = dto.Libelle + " compte epargne: " + dto.IdCompte,
+                //     Montant = dto.Montant,
+                //     Sens = courant_sens
+                // };
 
-                var created_courant = await _apiTransactionCourant.CreateAsync(transaction_courant);
+                // var created_courant = await _apiTransactionCourant.CreateAsync(transaction_courant);
 
                 await dbTransaction.CommitAsync();
 
@@ -168,6 +175,51 @@ namespace Epargne.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+        // [HttpPost]
+        // public async Task<IActionResult> Add([FromBody] TransactionEpargneCreateDto dto, [FromQuery] int idCompteCourant)
+        // {
+        //     // if (dto == null) return BadRequest();
+
+        //     await using var dbTransaction = await _service.Context.Database.BeginTransactionAsync();
+
+        //     try
+        //     {
+        //         var transaction = new TransactionEpargne
+        //         {
+        //             IdCompte = dto.IdCompte,
+        //             Libelle = dto.Libelle,
+        //             Montant = dto.Montant,
+        //             Sens = dto.Sens,
+        //             DateTransaction = dto.DateTransaction
+        //         };
+
+        //         Console.WriteLine("debugggggggggggggg" + transaction);
+
+        //         var created = await _service.AddAsync(transaction);
+
+        //         string courant_sens = dto.Sens == "debit" ? "credit" : "debit";
+        //         Console.WriteLine("itooooooooooooooo e " + idCompteCourant);
+        //         var transaction_courant = new TransactionCourantDto
+        //         {
+        //             IdCompte = idCompteCourant,
+        //             DateTransaction = dto.DateTransaction,
+        //             Libelle = dto.Libelle + " compte epargne: " + dto.IdCompte,
+        //             Montant = dto.Montant,
+        //             Sens = courant_sens
+        //         };
+
+        //         var created_courant = await _apiTransactionCourant.CreateAsync(transaction_courant);
+
+        //         await dbTransaction.CommitAsync();
+
+        //         return Ok(new { success = "Transaction reussi" });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         await dbTransaction.RollbackAsync();
+        //         return StatusCode(500, new { error = ex.Message });
+        //     }
+        // }
 
 
         // [HttpPost]

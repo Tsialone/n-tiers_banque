@@ -35,7 +35,7 @@ import java.util.List;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-@WebServlet("/transaction_courants/form")
+@WebServlet("/courants/transactions/form")
 public class TransactionCourantFormController extends HttpServlet {
 
     // @EJB(lookup =
@@ -120,12 +120,19 @@ public class TransactionCourantFormController extends HttpServlet {
 
         try {
             // hovaina
-            int xx = 1;
+            Integer idCompte = Integer.parseInt(request.getParameter("idCompte"));
+            // int xx = 1;
+            int xx = UserSession.getClient(request).getIdClient() ;
+
             List<CompteCourant> compteCourants = compteCourantServiceRemote.getComptesByClient(xx);
             List<DeviseDto> deviseDtos = changeServiceRemote.getAllDevises();
             System.out.println("devise taille" + deviseDtos.size());
             request.setAttribute("compteCourants", compteCourants);
             request.setAttribute("devises", deviseDtos);
+            request.setAttribute("idCompte", idCompte);
+
+            
+
 
         } catch (Exception e) {
 
@@ -145,9 +152,9 @@ public class TransactionCourantFormController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+                Integer idCompte = Integer.parseInt(request.getParameter("idCompte"));
         try {
             // Récupérer les paramètres du formulaire
-            Integer idCompte = Integer.parseInt(request.getParameter("idCompte"));
             String dateStr = request.getParameter("dateTransaction");
             LocalDate dateTransaction = dateStr != null && !dateStr.isEmpty()
                     ? LocalDate.parse(dateStr)
@@ -186,13 +193,13 @@ public class TransactionCourantFormController extends HttpServlet {
             Flash.set(request, "message_type", "success");
 
             // Redirection vers la liste
-            response.sendRedirect(request.getContextPath() + "/transaction_courants");
+            response.sendRedirect(request.getContextPath() + "/courants/transactions?idCompte=" + idCompte );
 
         } catch (Exception e) {
             e.printStackTrace();
             Flash.set(request, "message", "Erreur lors de la création de la transaction : " + e.getMessage());
             Flash.set(request, "message_type", "danger");
-            response.sendRedirect(request.getContextPath() + "/transaction_courants/form");
+            response.sendRedirect(request.getContextPath() + "/courants/transactions/form?idCompte="+idCompte);
         }
     }
 

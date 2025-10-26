@@ -8,14 +8,14 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 
 import com.example.models.ClientCourant;
+import com.example.models.ClientRole;
 import com.example.remotes.ClientCourantStatefulServiceRemote;
 import com.example.repositories.ClientCourantRepository;
 
 @Stateful
 @Remote(ClientCourantStatefulServiceRemote.class)
-public class ClientCourantStatefulService implements ClientCourantStatefulServiceRemote , Serializable {
-    
-    
+public class ClientCourantStatefulService implements ClientCourantStatefulServiceRemote, Serializable {
+
     @EJB
     private ClientCourantRepository repository;
 
@@ -25,13 +25,21 @@ public class ClientCourantStatefulService implements ClientCourantStatefulServic
         return client;
     }
 
-     public ClientCourant login(String email, String mdp ) throws Exception {
+    public ClientCourant login(String email, String mdp) throws Exception {
         try {
             ClientCourant clientCourant = repository.findByEmail(email);
+
             if (clientCourant == null)
                 throw new Exception("Email non trouver");
             if (!clientCourant.getMdp().equals(mdp))
                 throw new Exception("Mot de passe incorrect");
+            else {
+                clientCourant.getComptes().size();
+                clientCourant.getClientRoles().size();
+                for (ClientRole clientRole : clientCourant.getClientRoles()) {
+                    clientRole.getRole().getActionRoles().size();
+                }
+            }
             this.setClient(clientCourant);
             return clientCourant;
         } catch (Exception e) {
@@ -46,7 +54,5 @@ public class ClientCourantStatefulService implements ClientCourantStatefulServic
     public void clear() {
         client = null;
     }
-
-   
 
 }

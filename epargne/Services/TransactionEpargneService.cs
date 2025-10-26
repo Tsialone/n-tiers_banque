@@ -94,6 +94,22 @@ namespace Epargne.Services
                 Sens = t.Sens
             }).ToList();
         }
+        public async Task<List<TransactionEpargneDto>> GetByIdEpargne(int idEpargne)
+        {
+            var transactions = await _context.TransactionsEpargne
+                .Include(t => t.Compte)
+                .Where(t => t.Compte.IdCompte == idEpargne)
+                .ToListAsync();
+            return transactions.Select(t => new TransactionEpargneDto
+            {
+                IdCompte = t.IdCompte,
+                IdTransaction = t.IdTransaction,
+                DateTransaction = t.DateTransaction,
+                Libelle = t.Libelle,
+                Montant = t.Montant,
+                Sens = t.Sens
+            }).ToList();
+        }
         public async Task<List<TransactionEpargneDto>> GetByIdClient(int idClient)
         {
             var transactions = await _context.TransactionsEpargne

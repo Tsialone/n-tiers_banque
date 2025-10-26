@@ -9,6 +9,7 @@ import jakarta.ejb.Remote;
 @Remote
 public interface TransactionCourantServiceRemote {
 
+    List<TransactionCourantDto> getAllTransactionsByClientAndCourant(int idClient , int idCourant);
     TransactionCourantDto updateTransactionCourant(TransactionCourantDto transactionCourantDto );
 
     List<TransactionCourantDto> getAllTransactionsByClient(int idClient);

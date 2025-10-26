@@ -27,6 +27,16 @@ public class TransactionCourantService implements TransactionCourantServiceRemot
     public TransactionCourantDto updateTransactionCourant(TransactionCourantDto transactionCourantDto ) {
         CompteCourant compteCourant = compteCourantServiceRemote.getCompteById(transactionCourantDto.getIdCompte());
        return repository.updateByDto(transactionCourantDto  , compteCourant);
+    }   
+
+    public List<TransactionCourantDto> getAllTransactionsByClientAndCourant(int idClient , int idCourant) {
+        List<TransactionCourantDto> transactionsCourantDto = new ArrayList<>();
+        for (TransactionCourant transactionCourant : repository.getAll()) {
+            if (transactionCourant.getCompte().getClient().getIdClient().equals(idClient)  && transactionCourant.getCompte().getIdCompte().equals(idCourant) ) {
+                transactionsCourantDto.add(TransactionCourantMapper.toDto(transactionCourant));
+            }
+        }
+        return transactionsCourantDto;
     }
 
     public List<TransactionCourantDto> getAllTransactionsByClient(int idClient) {

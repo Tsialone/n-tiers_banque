@@ -14,17 +14,38 @@ import com.mashape.unirest.http.Unirest;
 @Consumes(MediaType.APPLICATION_JSON)
 public class PretApiController {
 
-        private static final String BASE_URL = "http://172.17.0.1:5000/api";
+        private static final String BASE_URL = "http://localhost:5000/api";
+
+
+        // @GET
+        // @Path("/payementPret")
+        // public Response payementPret(
+        //                 @QueryParam("idComptePret") int idComptePret,
+        //                 @QueryParam("idCompteCourant") int idCompteCourant) {
+        //         try {
+        //                 HttpResponse<String> response = Unirest.get(BASE_URL + "/Amortissement/rembourssement")
+        //                                 .queryString("idComptePret", idComptePret)
+        //                                 .queryString("idCompteCourant", idCompteCourant)
+        //                                 .asString();
+
+        //                 return Response.status(response.getStatus())
+        //                                 .entity(response.getBody())
+        //                                 .build();
+
+        //         } catch (Exception e) {
+        //                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+        //                                 .entity("Erreur GET API C# : " + e.getMessage())
+        //                                 .build();
+        //         }
+        // }
 
         @GET
         @Path("/payementPret")
         public Response payementPret(
-                        @QueryParam("idComptePret") int idComptePret,
-                        @QueryParam("idCompteCourant") int idCompteCourant) {
+                        @QueryParam("idComptePret") int idComptePret) {
                 try {
                         HttpResponse<String> response = Unirest.get(BASE_URL + "/Amortissement/rembourssement")
                                         .queryString("idComptePret", idComptePret)
-                                        .queryString("idCompteCourant",  idCompteCourant)
                                         .asString();
 
                         return Response.status(response.getStatus())
@@ -92,7 +113,7 @@ public class PretApiController {
         @GET
         @Path("/byClientSolde")
         public Response getPretByClient(
-                        @QueryParam("idClient") int idClient  , @QueryParam("date") String date ) {
+                        @QueryParam("idClient") int idClient, @QueryParam("date") String date) {
                 try {
                         HttpResponse<String> response = Unirest.get(BASE_URL + "/ComptePret/byClientSolde")
                                         .queryString("idClient", idClient)
@@ -167,8 +188,7 @@ public class PretApiController {
         @Path("/askPret")
         @Consumes(MediaType.APPLICATION_JSON)
         @Produces(MediaType.APPLICATION_JSON)
-        public Response createTransactionEpargne(String json,
-                        @QueryParam("idCompteCourant") int idCompteCourant) {
+        public Response createTransactionEpargne(String json) {
                 try {
                         // Affiche le JSON reçu
                         System.out.println(json);
@@ -176,7 +196,6 @@ public class PretApiController {
                         // Envoie directement au serveur C#
                         HttpResponse<String> response = Unirest.post(BASE_URL + "/ComptePret/askPret")
                                         .header("Content-Type", "application/json")
-                                        .queryString("idCompteCourant", idCompteCourant)
                                         .body(json)
                                         .asString();
 
@@ -190,4 +209,33 @@ public class PretApiController {
                                         .build();
                 }
         }
+
+        // @POST
+        // @Path("/askPret")
+        // @Consumes(MediaType.APPLICATION_JSON)
+        // @Produces(MediaType.APPLICATION_JSON)
+        // public Response createTransactionEpargne(String json,
+        // @QueryParam("idCompteCourant") int idCompteCourant) {
+        // try {
+        // // Affiche le JSON reçu
+        // System.out.println(json);
+        // System.out.flush();
+        // // Envoie directement au serveur C#
+        // HttpResponse<String> response = Unirest.post(BASE_URL +
+        // "/ComptePret/askPret")
+        // .header("Content-Type", "application/json")
+        // .queryString("idCompteCourant", idCompteCourant)
+        // .body(json)
+        // .asString();
+
+        // return Response.status(response.getStatus())
+        // .entity(response.getBody())
+        // .build();
+
+        // } catch (Exception e) {
+        // return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+        // .entity("Erreur POST API C# : " + e.getMessage())
+        // .build();
+        // }
+        // }
 }
