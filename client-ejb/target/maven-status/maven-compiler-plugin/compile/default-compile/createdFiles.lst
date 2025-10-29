@@ -10,6 +10,7 @@ com/example/controllers/auth/LogoutController.class
 com/example/controllers/prets/AmortissementController.class
 com/example/annotations/TablePermission.class
 com/example/api/EpargneApiController.class
+com/example/controllers/courants/TransactionCourantFormController$1.class
 com/example/controllers/home/TestController.class
 com/example/controllers/home/HomeController.class
 com/example/controllers/prets/AmortissementController$1.class

@@ -2,6 +2,7 @@ package com.example.service;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Remote;
+import jakarta.ejb.Remove;
 import jakarta.ejb.Stateful;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
@@ -24,6 +25,11 @@ public class ClientCourantStatefulService implements ClientCourantStatefulServic
     public ClientCourant getClient() {
         return client;
     }
+
+    // @Remove
+    // public void logout() {
+    //     this.client = null;
+    // }
 
     public ClientCourant login(String email, String mdp) throws Exception {
         try {

@@ -1,6 +1,7 @@
 package com.example.controllers.prets;
 
 import com.example.controllers.utils.Flash;
+import com.example.controllers.utils.UserSession;
 import com.example.dto.ComptePretDto;
 import com.example.utils.Url;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -39,14 +40,20 @@ public class PretFormController extends HttpServlet {
             throws ServletException, IOException {
 
         Flash.loadFlashMessage(request);
+        try {
+            int xx = UserSession.getClient(request).getIdClient();
+            request.setAttribute("idClient", xx);
+            request.setAttribute("dateOuverture", java.time.LocalDate.now());
 
-        // Pré-remplissage test (idClient=1)
-        request.setAttribute("idClient", 1);
-        request.setAttribute("dateOuverture", java.time.LocalDate.now());
+            request.setAttribute("content", Url.pages + "/prets/pret_form.jsp");
+            request.setAttribute("fonctionality", "Demande de prêt");
+            request.setAttribute("title", "Nouvelle demande de prêt");
+        } catch (Exception e) {
+            Flash.set(request, "message", "Erreur : " + e.getMessage());
+            Flash.set(request, "message_type", "danger");
+            response.sendRedirect(request.getContextPath() + "/prets/form");
 
-        request.setAttribute("content", Url.pages + "/prets/pret_form.jsp");
-        request.setAttribute("fonctionality", "Demande de prêt");
-        request.setAttribute("title", "Nouvelle demande de prêt");
+        }
 
         request.getRequestDispatcher(Url.layout).forward(request, response);
     }

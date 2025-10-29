@@ -5,28 +5,29 @@ import com.example.controllers.utils.UserSession;
 import com.example.dto.DeviseDto;
 import com.example.dto.TransactionCourantDto;
 import com.example.mappers.TransactionCourantMapper;
-import com.example.models.ClientCourant;
 import com.example.models.CompteCourant;
 import com.example.models.TransactionCourant;
 import com.example.remotes.ChangeServiceRemote;
-import com.example.remotes.ClientCourantServiceRemote;
-import com.example.remotes.ClientCourantStatefulServiceRemote;
 import com.example.remotes.CompteCourantServiceRemote;
 import com.example.remotes.TransactionCourantServiceRemote;
 import com.example.utils.Url;
-import com.example.views.CompteCourantView;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
-import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -38,20 +39,9 @@ import javax.naming.InitialContext;
 @WebServlet("/courants/transactions/form")
 public class TransactionCourantFormController extends HttpServlet {
 
-    // @EJB(lookup =
-    // "java:global/server-ejb/ClientCourantService!com.example.remotes.ClientCourantServiceRemote")
-    // private ClientCourantServiceRemote clientCourantServiceRemote;
+    private static final String CHANGE_API_URL = "http://localhost:9090/change-ejb/api";
 
-    // @EJB(lookup =
-    // "java:global/server-ejb/ChangeService!com.example.remotes.ChangeServiceRemote")
-    // @EJB(lookup =
-    // "java:global/change-ejb/ChangeService!com.example.remotes.ChangeServiceRemote")
-    // private ChangeServiceRemote changeServiceRemote;
-
-    // @EJB(lookup =
-    // "java:global/server-ejb/ClientCourantStatefulService!com.example.remotes.ClientCourantStatefulServiceRemote")
-    // private ClientCourantStatefulServiceRemote
-    // clientCourantStatefulServiceRemote;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @EJB(lookup = "java:global/server-ejb/CompteCourantService!com.example.remotes.CompteCourantServiceRemote")
     private CompteCourantServiceRemote compteCourantServiceRemote;
@@ -59,7 +49,15 @@ public class TransactionCourantFormController extends HttpServlet {
     @EJB(lookup = "java:global/server-ejb/TransactionCourantService!com.example.remotes.TransactionCourantServiceRemote")
     private TransactionCourantServiceRemote transactionCourantServiceRemote;
 
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
     private ChangeServiceRemote changeServiceRemote;
+
     @PostConstruct
     private void initRemoteEJB() {
         try {
@@ -82,35 +80,9 @@ public class TransactionCourantFormController extends HttpServlet {
             e.printStackTrace();
         }
     }
-    // @PostConstruct
-    // private void initRemoteEJB() {
-    // try {
-    // Hashtable<String, Object> jndiProps = new Hashtable<>();
-    // jndiProps.put(Context.INITIAL_CONTEXT_FACTORY,
-    // "org.wildfly.naming.client.WildFlyInitialContextFactory");
-    // jndiProps.put(Context.PROVIDER_URL, "remote+http://localhost:9090");
-
-    // // Ajout de l'authentification
-    // jndiProps.put(Context.SECURITY_PRINCIPAL, "ejbuser");
-    // jndiProps.put(Context.SECURITY_CREDENTIALS, "ejbpass");
-
-    // Context ctx = new InitialContext(jndiProps);
-
-    // changeServiceRemote = (ChangeServiceRemote) ctx
-    // .lookup("change-ejb/ChangeService!com.example.remotes.ChangeServiceRemote");
-
-    // System.out.println("ChangeServiceRemote initialisé avec succès !");
-    // } catch (Exception e) {
-    // System.err.println("Erreur lors de l'initialisation de
-    // ChangeServiceRemote:");
-    // e.printStackTrace();
-    // }
-    // }
 
     @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         Flash.loadFlashMessage(request);
@@ -119,40 +91,50 @@ public class TransactionCourantFormController extends HttpServlet {
         request.setAttribute("title", "Courants-Mvt");
 
         try {
-            // hovaina
             Integer idCompte = Integer.parseInt(request.getParameter("idCompte"));
-            // int xx = 1;
-            int xx = UserSession.getClient(request).getIdClient() ;
+            int clientId = UserSession.getClient(request).getIdClient();
 
-            List<CompteCourant> compteCourants = compteCourantServiceRemote.getComptesByClient(xx);
-            List<DeviseDto> deviseDtos = changeServiceRemote.getAllDevises();
-            System.out.println("devise taille" + deviseDtos.size());
+            // Récupérer les comptes courants
+            List<CompteCourant> compteCourants = compteCourantServiceRemote.getComptesByClient(clientId);
             request.setAttribute("compteCourants", compteCourants);
+            // Appel REST pour récupérer les devises
+            HttpResponse<String> devisesResponse = Unirest.get(CHANGE_API_URL + "/devises")
+                    .asString();
+            // changeServiceRemote.test();
+            List<DeviseDto> deviseDtosRest = new ArrayList<>();
+            List<DeviseDto> deviseDtos = new ArrayList<>(changeServiceRemote.getDistinct());
+            System.out.println("Méthodes disponibles dans ChangeServiceRemote :");
+            Method[] methods = changeServiceRemote.getClass().getMethods();
+            for (Method m : methods) {
+                System.out.println(m.getName());
+            }
+            if (devisesResponse.getStatus() == 200) {
+                deviseDtosRest = mapper.readValue(devisesResponse.getBody(), new TypeReference<List<DeviseDto>>() {
+                });
+            } else {
+                throw new Exception("Erreur REST ChangeService: " + devisesResponse.getBody());
+            }
+            deviseDtosRest = changeServiceRemote.getDistinct();
             request.setAttribute("devises", deviseDtos);
+            request.setAttribute("devisesRest", deviseDtosRest);
             request.setAttribute("idCompte", idCompte);
 
-            
-
-
         } catch (Exception e) {
-
+            e.printStackTrace();
             Flash.set(request, "message", "Erreur: " + e.getMessage());
             Flash.set(request, "message_type", "danger");
             response.sendRedirect(request.getContextPath() + "/home");
             return;
-
         }
 
-        String landingPage = Url.layout;
-        request.getRequestDispatcher(landingPage).forward(request, response);
-        // request.getRequestDispatcher("/login.jsp").forward(request, response);
+        request.getRequestDispatcher(Url.layout).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-                Integer idCompte = Integer.parseInt(request.getParameter("idCompte"));
+        Integer idCompte = Integer.parseInt(request.getParameter("idCompte"));
         try {
             // Récupérer les paramètres du formulaire
             String dateStr = request.getParameter("dateTransaction");
@@ -165,11 +147,11 @@ public class TransactionCourantFormController extends HttpServlet {
             String devise = request.getParameter("devise");
 
             boolean isAriary = devise.equalsIgnoreCase("ar");
-            DeviseDto deviseDto =  changeServiceRemote.getByDateBtw(dateTransaction, devise);
-            if (deviseDto == null && !isAriary ) throw new Exception("devise non trouvé "+ devise +" a cette date " + dateTransaction);
-            if (!isAriary && deviseDto != null )  montant*=deviseDto.getArriary();
-              
-            
+            DeviseDto deviseDto = changeServiceRemote.getByDateBtw(dateTransaction, devise);
+            if (deviseDto == null && !isAriary)
+                throw new Exception("devise non trouvé " + devise + " a cette date " + dateTransaction);
+            if (!isAriary && deviseDto != null)
+                montant *= deviseDto.getArriary();
 
             boolean validate = request.getParameter("validate") != null;
 
@@ -193,13 +175,13 @@ public class TransactionCourantFormController extends HttpServlet {
             Flash.set(request, "message_type", "success");
 
             // Redirection vers la liste
-            response.sendRedirect(request.getContextPath() + "/courants/transactions?idCompte=" + idCompte );
+            response.sendRedirect(request.getContextPath() + "/courants/transactions?idCompte=" + idCompte);
 
         } catch (Exception e) {
             e.printStackTrace();
             Flash.set(request, "message", "Erreur lors de la création de la transaction : " + e.getMessage());
             Flash.set(request, "message_type", "danger");
-            response.sendRedirect(request.getContextPath() + "/courants/transactions/form?idCompte="+idCompte);
+            response.sendRedirect(request.getContextPath() + "/courants/transactions/form?idCompte=" + idCompte);
         }
     }
 

@@ -17,6 +17,10 @@ public class CompteCourantService implements CompteCourantServiceRemote  {
     private CompteCourantRepository repository;
 
 
+    public String test (){
+        return "hello test";
+    }
+
 
     public List<CompteCourant> getComptesByClientAndDate(Integer idClient , LocalDate date) {
         return repository.findByClientIdAndDate(idClient , date);

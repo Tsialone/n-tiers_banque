@@ -10,6 +10,7 @@ import jakarta.ejb.Remote;
 
 @Remote
 public interface CompteCourantServiceRemote {
+    String test ();
     List<CompteCourant> getComptesByClientAndDate(Integer idClient , LocalDate date);
     CompteCourant getCompteById(Integer idCompte);
     List<CompteCourant> getComptesByClient(Integer idClient);

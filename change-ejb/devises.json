@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "libelle": "USD",
+    "dateDebut": "2025-01-01",
+    "dateFin": null,
+    "arriary": 4200
+  },
+  {
+    "id": 2,
+    "libelle": "EUR",
+    "dateDebut": "2025-01-01",
+    "dateFin": "2025-12-31",
+    "arriary": 4500
+  },
+  {
+    "id": 3,
+    "libelle": "GBP",
+    "dateDebut": "2025-03-01",
+    "dateFin": "2025-12-31",
+    "arriary": 5000
+  },
+   {
+    "id": 4,
+    "libelle": "taytay",
+    "dateDebut": "2026-01-01",
+    "dateFin": null,
+    "arriary": 9090
+  }
+]

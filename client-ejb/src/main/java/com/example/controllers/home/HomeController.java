@@ -133,6 +133,7 @@ public class HomeController extends HttpServlet {
             request.setAttribute("epargneSoldeGlobal", BigDecimal.valueOf(epargneSoldeGlobal));
             request.setAttribute("pretSoldeGlobal", BigDecimal.valueOf(pretSoldeGlobal));
             // --- Initialisation des rôles et actions ---
+            // List<ClientCourant>  clientCourants = new ArrayList<>();
             request.setAttribute("roles", clientCourant.getClientRoles());
 
             // ClientCourantStatefulServiceRemote clientCourantStatefulServiceRemote =

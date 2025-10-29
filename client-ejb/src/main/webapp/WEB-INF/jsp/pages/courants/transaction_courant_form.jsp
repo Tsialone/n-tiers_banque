@@ -7,6 +7,8 @@
 <%
     List<CompteCourant> comptes = (List<CompteCourant>) request.getAttribute("compteCourants");
     List<DeviseDto> devises = (List<DeviseDto>) request.getAttribute("devises");
+    List<DeviseDto> devisesRest = (List<DeviseDto>) request.getAttribute("devisesRest");
+
     String idCompte = request.getAttribute("idCompte") != null ? request.getAttribute("idCompte").toString() : "";
 
 %>
@@ -63,6 +65,22 @@
                 <option value="">-- Sélectionnez une devise --</option>
                 <% if (devises != null) {
                        for (DeviseDto c : devises) { %>
+                    <option value="<%= c.getLibelle() %>">
+                        <%= c.getLibelle() %>
+                    </option>
+                <%   } 
+                   } %>
+            </select>
+        </div>
+
+          <div class="mb-3">
+        
+            <label for="devise" class="form-label">Devise (REST)</label>
+            <%-- <input type="text" id="devise" name="devise" class="form-control" value="Ar" required> --%>
+            <select id="idDevise" name="" class="form-select" required>
+                <option value="">-- Sélectionnez une devise --</option>
+                <% if (devises != null) {
+                       for (DeviseDto c : devisesRest) { %>
                     <option value="<%= c.getLibelle() %>">
                         <%= c.getLibelle() %>
                     </option>

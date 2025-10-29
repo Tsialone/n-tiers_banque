@@ -1,4 +1,5 @@
-com/example/remotes/ChangeServiceRemote.class
+com/example/controllers/ChangeRestController.class
+com/example/api/RestApplication.class
 com/example/services/ChangeService$1.class
+com/example/services/ChangeService$2.class
 com/example/services/ChangeService.class
-com/example/dto/DeviseDto.class

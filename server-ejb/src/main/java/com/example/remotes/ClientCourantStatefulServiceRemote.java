@@ -8,7 +8,7 @@ import java.util.List;
 
 @Remote
 public interface ClientCourantStatefulServiceRemote {
-
+    // void logout  ();
     ClientCourant login (String email  , String mdp) throws Exception;
     // Sélectionner le client courant pour la session
     void setClient(ClientCourant client);

@@ -9,6 +9,8 @@ import java.util.List;
 
 @Remote
 public interface ChangeServiceRemote {
+    // public void test ();
+    List<DeviseDto> getDistinct ();
     DeviseDto getByDateBtw(LocalDate transactionDate , String devise);
     DeviseDto addDevise(DeviseDto devise);
     List<DeviseDto> getAllDevises();

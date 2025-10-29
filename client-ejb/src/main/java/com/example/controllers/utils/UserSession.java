@@ -32,10 +32,13 @@ public class UserSession {
 
     }
 
-    public static void destroySession(HttpServletRequest request) {
+    public static void destroySession(HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
+
+        // getSessionRemote(request).logout();
         session.removeAttribute("userSession");
         session.removeAttribute("client");
+        session.invalidate();
 
     }
 
