@@ -43,8 +43,10 @@
                     <td>
                         <a href="<%= request.getContextPath() %>/courants/transactions?idCompte=<%= c.getIdCompte() %>"
                            class="btn btn-primary btn-sm">voir transactions</a>
-                           <a href="<%= request.getContextPath() %>/courants/transactions/form?idCompte=<%= c.getIdCompte() %>"
+                        <a href="<%= request.getContextPath() %>/courants/transactions/form?idCompte=<%= c.getIdCompte() %>"
                            class="btn btn-primary btn-sm">add transaction</a>
+                        <a href="<%= request.getContextPath() %>/courants/virements/form?idCompte=<%= c.getIdCompte() %>"
+                        class="btn btn-primary btn-sm">faire un virement</a>
                     </td>
                 </tr>
             <% } } else { %>

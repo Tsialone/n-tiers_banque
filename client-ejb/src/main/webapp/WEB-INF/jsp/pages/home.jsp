@@ -1,14 +1,15 @@
-<%@page import="com.example.models.ClientCourant"  %>
-<%@page import="com.example.models.ClientRole"  %>
-<%@page import="com.example.models.Role"  %>
-<%@page import="com.example.models.ActionRole"  %>
+<%@page import="com.example.server_dtos.ClientCourantDto"  %>
+<%@page import="com.example.server_dtos.ActionRoleDto"  %>
+
+
 
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <% 
 
-ClientCourant clientCourant = (ClientCourant)session.getAttribute("client");
-List<ClientRole> roles = (List<ClientRole>) request.getAttribute("roles");
+ClientCourantDto clientCourant = (ClientCourantDto)session.getAttribute("client");
+
+List<ActionRoleDto> roles = (List<ActionRoleDto>) request.getAttribute("actionRoles");
 
 %>
 <div class="container my-5">
@@ -16,23 +17,23 @@ List<ClientRole> roles = (List<ClientRole>) request.getAttribute("roles");
     <div class="card-body">
       <%-- <h2 class="card-title mb-3">Bonjour, son nom</h2> --%>
       <h2 class="card-title mb-3">Bonjour, <%= clientCourant.getNom() %> </h2>
-      <h5 class="text-muted mb-4">Utilisateur: <%= clientCourant.getDirection().getLibelle() %> </h5>
-      <%-- <h5 class="text-muted mb-4">Utilisateur: sa direction </h5> --%>
+      <%-- <h5 class="text-muted mb-4">Utilisateur: <%= clientCourant.getDirection().getLibelle() %> </h5> --%>
+      <h5 class="text-muted mb-4">Utilisateur: sa direction </h5>
       <p class="text-secondary">Bienvenue dans notre page de Banque.</p>
-       <ul>
-                <% for (ClientRole clientRole : roles) { 
-                        Role role = clientRole.getRole();
-                %>
-                <li>
-                    <strong>Role:</strong> <%= role.getLibelle() %>
-                    <ul>
-                        <% for (ActionRole actionRole : role.getActionRoles()) { %>
-                        <li><%= actionRole.getNomTable() %> - <%= actionRole.getAction().getLibelle() %></li>
-                        <% } %>
-                    </ul>
-                </li>
-                <% } %>
-            </ul>
+        <ul>
+               <ul>
+                  <% if (roles != null) {
+                      for (ActionRoleDto ar : roles) { %>
+                  <li>
+                      <strong><%= ar.getLibelleRole() %></strong> →
+                      <%= ar.getLibelleAction() %> (<%= ar.getNomTable() %>)
+                  </li>
+                <%  }
+                    } else { %>
+                        <li>Aucune action disponible</li>
+                  <% } %>
+</ul>
+        </ul>
     </div>
   </div>
 

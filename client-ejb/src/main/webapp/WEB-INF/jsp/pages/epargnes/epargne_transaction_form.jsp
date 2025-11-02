@@ -20,7 +20,7 @@
             <input type="number" step="0.01" class="form-control" id="montant" name="montant" required>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3">  
             <label for="sens" class="form-label">Type</label>
             <select id="sens" name="sens" class="form-select">
                 <option value="credit">Crédit</option>
@@ -30,7 +30,7 @@
 
         <div class="mb-3">
             <label for="dateTransaction" class="form-label">Date</label>
-            <input type="date" id="dateTransaction" name="dateTransaction" class="form-control" required>
+            <input type="date" id="dateTransaction" name="dateTransaction" class="form-control" value="<%= request.getAttribute("dateTransaction") %>" required>
         </div>
 
         <button type="submit" class="btn btn-primary">Enregistrer</button>

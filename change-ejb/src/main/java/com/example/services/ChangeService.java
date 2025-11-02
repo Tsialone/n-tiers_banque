@@ -1,6 +1,6 @@
 package com.example.services;
 
-import com.example.dto.DeviseDto;
+import com.example.change_dtos.DeviseDto;
 import com.example.remotes.ChangeServiceRemote;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -15,7 +15,9 @@ import jakarta.ejb.Stateless;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import java.util.List;
 public class ChangeService implements ChangeServiceRemote {
 
     private final List<DeviseDto> devises = new ArrayList<>();
+
+    private final double percentCheck = 20;
 
     // private CompteCourantServiceRemote compteCourantServiceRemote;
     // @PostConstruct
@@ -80,31 +84,108 @@ public class ChangeService implements ChangeServiceRemote {
         }
     }
 
-    // @Override 
-    // public void test ()
-    // {
-    //     System.out.println("test");
-    // }
     @Override
-    public DeviseDto addDevise(DeviseDto devise) {
-        devises.add(devise);
+    public DeviseDto annulerDevise(Long id) throws Exception {
+        reloadDevises();
+
+        DeviseDto devise = getById(id);
+        if (devise == null) {
+            throw new Exception("Devise introuvable avec id=" + id);
+        }
+
+        devise.setValide(false);
+        devise.setDateValidation(LocalDate.now().toString());
+
+        saveDevises();
+        return devise;
+    }
+    @Override
+    public DeviseDto validerDevise(Long id) throws Exception {
+        reloadDevises();
+
+        DeviseDto devise = getById(id);
+        if (devise == null) {
+            throw new Exception("Devise introuvable avec id=" + id);
+        }
+
+        devise.setValide(true);
+        devise.setDateValidation(LocalDate.now().toString());
+        System.out.println("validation avec succees");
+        saveDevises();
         return devise;
     }
 
+    @Override
+    public DeviseDto getLastDeviseDto(String libelle, LocalDate date, Long excludeId) {
+        reloadDevises();
+        DeviseDto last = null;
+
+        for (DeviseDto dto : devises) {
+            if (!dto.getLibelle().equalsIgnoreCase(libelle))
+                continue;
+            if (excludeId != null && dto.getId().equals(excludeId))
+                continue;
+
+            LocalDate dateDebut = LocalDate.parse(dto.getDateDebut());
+            // On prend la dernière dont la dateDébut est AVANT ou ÉGALE à la date donnée
+            if (!dateDebut.isAfter(date)) {
+                if (last == null || LocalDate.parse(last.getDateDebut()).isBefore(dateDebut)) {
+                    last = dto;
+                }
+            }
+        }
+
+        return last;
+    }
 
     @Override
-    public List<DeviseDto> getDistinct (){
+    public DeviseDto addDevise(DeviseDto devise) throws Exception {
+        DeviseDto lastDevise = getLastDeviseDto(devise.getLibelle(), devise.getDateDebutDate(), devise.getId());
+        DeviseDto fetchIfExist = getByDateBtw(devise.getDateDebutDate(), devise.getLibelle());
+        if (fetchIfExist != null)
+            throw new Exception("Cette devise est deja presente: " + fetchIfExist.getDateDebut() + " - "
+                    + fetchIfExist.getDateFin());
+        if (lastDevise != null) {
+            double lastAr = lastDevise.getArriary();
+
+            double minAr = lastAr - (lastAr * percentCheck / 100);
+            double maxAr = lastAr + (lastAr * percentCheck / 100);
+
+            double newAr = devise.getArriary();
+
+            if (newAr < minAr || newAr > maxAr) {
+                throw new Exception(
+                        "Variation du taux trop importante (" + percentCheck + "% max autorisés). " +
+                                "Ancien: " + lastAr + ", Nouveau: " + newAr + " diff: +" + maxAr + " -" + minAr);
+            }
+        }
+        devises.add(devise);
+        saveDevises();
+        return devise;
+    }
+
+    private void saveDevises() {
+        try (Writer writer = new FileWriter("/opt/devises.json")) {
+            new Gson().toJson(devises, writer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<DeviseDto> getDistinct() {
         reloadDevises();
         List<DeviseDto> resp = new ArrayList<>();
         List<String> dejaVue = new ArrayList<>();
         for (DeviseDto deviseDto : getAllDevises()) {
-            if (!dejaVue.contains(deviseDto.getLibelle())){
+            if (!dejaVue.contains(deviseDto.getLibelle())) {
                 resp.add(deviseDto);
             }
             dejaVue.add(deviseDto.getLibelle());
         }
         return resp;
     }
+
     @Override
     public List<DeviseDto> getAllDevises() {
         reloadDevises();
@@ -113,7 +194,7 @@ public class ChangeService implements ChangeServiceRemote {
     }
 
     @Override
-    public DeviseDto getDevise(Long id) {
+    public DeviseDto getById(Long id) {
         reloadDevises();
         return devises.stream()
                 .filter(d -> d.getId().equals(id))
@@ -139,18 +220,55 @@ public class ChangeService implements ChangeServiceRemote {
 
     // @Schedule(hour = "*", minute = "*", second = "*/1", persistent = false)
     // public void refresh() {
-    //     reloadDevises();
+    // reloadDevises();
     // }
 
     @Override
-    public DeviseDto updateDevise(Long id, DeviseDto updated) {
+    public DeviseDto updateDevise(Long id, DeviseDto updated) throws Exception {
         reloadDevises();
+
+        DeviseDto existing = getById(id);
+        if (existing == null) {
+            throw new Exception("La devise avec l'ID " + id + " n'existe pas.");
+        }
+
+        DeviseDto overlapping = getByDateBtw(updated.getDateDebutDate(), updated.getLibelle());
+        if (overlapping != null && !overlapping.getId().equals(id)) {
+            throw new Exception(
+                    "Conflit détecté : une autre devise " + overlapping.getLibelle() +
+                            " couvre déjà cette période (" + overlapping.getDateDebut() +
+                            " - " + overlapping.getDateFin() + ").");
+        }
+
+        DeviseDto lastDevise = getLastDeviseDto(updated.getLibelle(), updated.getDateDebutDate(), id);
+        System.out.println("last devise " + lastDevise.getId() + " et lui " + id);
+        if (lastDevise != null && !lastDevise.getId().equals(id)) {
+            double lastAr = lastDevise.getArriary();
+
+            double minAr = lastAr - (lastAr * percentCheck / 100);
+            double maxAr = lastAr + (lastAr * percentCheck / 100);
+
+            double newAr = updated.getArriary();
+
+            System.out.println("newAr: " + newAr);
+            System.out.println("minAr: " + minAr);
+            System.out.println("maxAr: " + maxAr);
+
+            if (newAr < minAr || newAr > maxAr) {
+                throw new Exception(
+                        "Variation du taux trop importante (" + percentCheck + "% max autorisés). " +
+                                "Ancien: " + lastAr + ", Nouveau: " + newAr + " diff: +" + maxAr + " -" + minAr);
+            }
+        }
+
         for (int i = 0; i < devises.size(); i++) {
             if (devises.get(i).getId().equals(id)) {
                 devises.set(i, updated);
+                saveDevises();
                 return updated;
             }
         }
+
         return null;
     }
 

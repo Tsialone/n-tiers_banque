@@ -1,6 +1,6 @@
 package com.example.controllers;
 
-import com.example.dto.DeviseDto;
+import com.example.change_dtos.DeviseDto;
 import com.example.remotes.ChangeServiceRemote;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
@@ -26,17 +26,17 @@ public class ChangeRestController {
     @GET
     @Path("/{id}")
     public DeviseDto getById(@PathParam("id") Long id) {
-        return changeService.getDevise(id);
+        return changeService.getById(id);
     }
 
     @POST
-    public DeviseDto add(DeviseDto dto) {
+    public DeviseDto add(DeviseDto dto) throws Exception {
         return changeService.addDevise(dto);
     }
 
     @PUT
     @Path("/{id}")
-    public DeviseDto update(@PathParam("id") Long id, DeviseDto dto) {
+    public DeviseDto update(@PathParam("id") Long id, DeviseDto dto) throws Exception {
         return changeService.updateDevise(id, dto);
     }
 

@@ -2,8 +2,8 @@ package com.example.controllers.epargnes;
 
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
+import com.example.server_dtos.CompteEpargneDto;
 import com.example.utils.Url;
-import com.example.dto.CompteEpargneDto;
 import com.example.views.CompteEpargneView;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

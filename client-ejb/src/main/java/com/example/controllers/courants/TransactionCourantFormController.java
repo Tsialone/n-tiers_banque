@@ -1,15 +1,13 @@
 package com.example.controllers.courants;
 
+import com.example.change_dtos.DeviseDto;
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
-import com.example.dto.DeviseDto;
-import com.example.dto.TransactionCourantDto;
-import com.example.mappers.TransactionCourantMapper;
-import com.example.models.CompteCourant;
-import com.example.models.TransactionCourant;
 import com.example.remotes.ChangeServiceRemote;
 import com.example.remotes.CompteCourantServiceRemote;
 import com.example.remotes.TransactionCourantServiceRemote;
+import com.example.server_dtos.CompteCourantDto;
+import com.example.server_dtos.TransactionCourantDto;
 import com.example.utils.Url;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -95,7 +93,7 @@ public class TransactionCourantFormController extends HttpServlet {
             int clientId = UserSession.getClient(request).getIdClient();
 
             // Récupérer les comptes courants
-            List<CompteCourant> compteCourants = compteCourantServiceRemote.getComptesByClient(clientId);
+            List<CompteCourantDto> compteCourants = compteCourantServiceRemote.getComptesByClient(clientId);
             request.setAttribute("compteCourants", compteCourants);
             // Appel REST pour récupérer les devises
             HttpResponse<String> devisesResponse = Unirest.get(CHANGE_API_URL + "/devises")
@@ -162,13 +160,13 @@ public class TransactionCourantFormController extends HttpServlet {
             transaction.setLibelle(libelle);
             transaction.setMontant(montant);
             transaction.setSens(sens);
-            // transaction.setDevise(devise);
+            transaction.setDevise(devise);
             transaction.setValidate(validate);
-            CompteCourant compteCourant = compteCourantServiceRemote.getCompteById(idCompte);
-            TransactionCourant transactionCourant = TransactionCourantMapper.toEntity(transaction, compteCourant);
+            // CompteCourantDto compteCourant = compteCourantServiceRemote.getCompteById(idCompte);
+            // TransactionCourantDto transactionCourant = TransactionCourantMapper.toEntity(transaction, compteCourant);
 
             // Appel du service pour enregistrer la transaction
-            transactionCourantServiceRemote.saveTransaction(transactionCourant);
+            transactionCourantServiceRemote.saveTransaction(transaction);
 
             // Message flash
             Flash.set(request, "message", "Transaction créée avec succès !");

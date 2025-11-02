@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.example.dto.AmortissementDto" %>
+<%@ page import="com.example.server_dtos.AmortissementDto" %>
 
 <%
     List<AmortissementDto> amortissements = (List<AmortissementDto>) request.getAttribute("amortissements");

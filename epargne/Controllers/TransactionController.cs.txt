@@ -1,0 +1,63 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
+using Epargne.Services;
+
+namespace Epargne.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class TransactionController : ControllerBase
+    {
+        private readonly CompteEpargneService _service;
+
+        // Dictionnaire thread-safe pour stocker les transactions ouvertes par utilisateur
+        private static readonly ConcurrentDictionary<string, IDbContextTransaction> _transactions 
+            = new ConcurrentDictionary<string, IDbContextTransaction>();
+
+        public TransactionController(CompteEpargneService service)
+        {
+            _service = service;
+        }
+
+        // Ouvrir une transaction pour un utilisateur
+        [HttpPost("open")]
+        public async Task<IActionResult> OpenTransaction([FromQuery] string userId)
+        {
+            if (_transactions.ContainsKey(userId))
+                return BadRequest("Une transaction est déjà ouverte pour cet utilisateur.");
+
+            var tx = await _service.Context.Database.BeginTransactionAsync();
+            _transactions[userId] = tx;
+
+            return Ok(new { success = "Transaction ouverte", userId });
+        }
+
+        // Commit de la transaction
+        [HttpPost("commit")]
+        public async Task<IActionResult> CommitTransaction([FromQuery] string userId)
+        {
+            if (_transactions.TryGetValue(userId, out var tx))
+            {
+                await tx.CommitAsync();
+                _transactions.TryRemove(userId, out _);
+                return Ok(new { success = "Transaction commitée", userId });
+            }
+            return BadRequest("Aucune transaction ouverte pour cet utilisateur.");
+        }
+
+        // Rollback de la transaction
+        [HttpPost("rollback")]
+        public async Task<IActionResult> RollbackTransaction([FromQuery] string userId)
+        {
+            if (_transactions.TryGetValue(userId, out var tx))
+            {
+                await tx.RollbackAsync();
+                _transactions.TryRemove(userId, out _);
+                return Ok(new { success = "Transaction rollbackée", userId });
+            }
+            return BadRequest("Aucune transaction ouverte pour cet utilisateur.");
+        }
+    }
+}

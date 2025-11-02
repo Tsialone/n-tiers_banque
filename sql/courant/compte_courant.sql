@@ -64,8 +64,17 @@ CREATE TABLE transactions_courant (
     date_transaction TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     libelle VARCHAR(100) NOT NULL,
     montant NUMERIC(15,2) NOT NULL,
-    validate boolean DEFAULT false ,
+    devise VARCHAR(50) DEFAULT 'MG',
+    id_compte_dest  INT   REFERENCES comptes_courant(id_compte) ON DELETE CASCADE,
+    id_virement INT NULL ,
     sens VARCHAR(6) NOT NULL CHECK (sens IN ('debit','credit'))
+);
+
+CREATE TABLE validations (
+    id_validation SERIAL PRIMARY KEY,
+    id_transaction INT NOT NULL REFERENCES transactions_courant(id_transaction) ON DELETE CASCADE,
+    etat VARCHAR(10) NOT NULL CHECK (etat IN ('annuler', 'valider')),
+    date_validation DATE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -116,10 +125,10 @@ INSERT INTO comptes_courant (nom, capital  , id_client, decouvert_autorise)
 VALUES ('Compte principal', 100 , 1, 500.00);
 
 -- Insérer quelques transactions pour ce compte
-INSERT INTO transactions_courant (id_compte, date_transaction, libelle, montant, validate ,sens) VALUES
-(1, '2023-08-01 10:30:00', 'Salaire', 1500.00, false ,'credit'),
-(1, '2023-08-03 15:20:00', 'Achat Supermarché', 200.00,false  ,'debit'),
-(1, '2023-08-05 09:00:00', 'Remboursement ami', 100.00, false ,'debit');
+-- INSERT INTO transactions_courant (id_compte, date_transaction, libelle, montant, validate ,sens) VALUES
+-- (1, '2023-08-01 10:30:00', 'Salaire', 1500.00, false ,'credit'),
+-- (1, '2023-08-03 15:20:00', 'Achat Supermarché', 200.00,false  ,'debit'),
+-- (1, '2023-08-05 09:00:00', 'Remboursement ami', 100.00, false ,'debit');
 
 
 
@@ -136,3 +145,6 @@ JOIN roles r ON cr.id_role = r.id_role
 LEFT JOIN actions_roles ar ON r.id_role = ar.id_role
 LEFT JOIN actions a ON ar.id_action = a.id_action
 ORDER BY c.id_client, r.libelle, ar.nom_table;
+
+
+CREATE SEQUENCE seq_virement START 1;

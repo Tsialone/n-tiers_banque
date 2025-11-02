@@ -2,12 +2,9 @@ package com.example.controllers.courants;
 
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
-import com.example.models.ClientCourant;
-import com.example.models.CompteCourant;
 import com.example.remotes.ClientCourantServiceRemote;
 import com.example.remotes.CompteCourantServiceRemote;
-import com.example.dto.CompteCourantDto;
-import com.example.mappers.CompteCourantMapper;
+import com.example.server_dtos.CompteCourantDto;
 import com.example.utils.Url;
 
 import jakarta.ejb.EJB;
@@ -61,9 +58,9 @@ public class CourantFormController extends HttpServlet {
             dto.setDateOuverture(dateOuverture);
             dto.setIdClient(xx); // client fixe xx = 1
 
-            CompteCourant compte = CompteCourantMapper.toEntity(dto, clientCourantServiceRemote.getClientById(xx));
+            // CompteCourant compte = CompteCourantMapper.toEntity(dto, clientCourantServiceRemote.getClientById(xx));
 
-            compteCourantServiceRemote.saveCompte(compte);
+            compteCourantServiceRemote.saveCompte(dto);
 
             Flash.set(request, "message", "Compte courant créé avec succès !");
             Flash.set(request, "message_type", "success");

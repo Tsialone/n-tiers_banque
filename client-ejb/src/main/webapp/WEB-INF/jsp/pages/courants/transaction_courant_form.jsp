@@ -1,11 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.example.dto.TransactionCourantDto" %>
-<%@ page import="com.example.dto.DeviseDto" %>
-<%@ page import="com.example.models.CompteCourant" %>
+<%@ page import="com.example.server_dtos.TransactionCourantDto" %>
+<%@ page import="com.example.change_dtos.DeviseDto" %>
+<%@ page import="com.example.server_dtos.CompteCourantDto" %>
 
 <%
-    List<CompteCourant> comptes = (List<CompteCourant>) request.getAttribute("compteCourants");
+    List<CompteCourantDto> comptes = (List<CompteCourantDto>) request.getAttribute("compteCourants");
     List<DeviseDto> devises = (List<DeviseDto>) request.getAttribute("devises");
     List<DeviseDto> devisesRest = (List<DeviseDto>) request.getAttribute("devisesRest");
 
@@ -62,7 +62,7 @@
             <label for="devise" class="form-label">Devise</label>
             <%-- <input type="text" id="devise" name="devise" class="form-control" value="Ar" required> --%>
             <select id="idDevise" name="devise" class="form-select" required>
-                <option value="">-- Sélectionnez une devise --</option>
+                <option value="ar">-- Sélectionnez une devise --</option>
                 <% if (devises != null) {
                        for (DeviseDto c : devises) { %>
                     <option value="<%= c.getLibelle() %>">
@@ -77,7 +77,7 @@
         
             <label for="devise" class="form-label">Devise (REST)</label>
             <%-- <input type="text" id="devise" name="devise" class="form-control" value="Ar" required> --%>
-            <select id="idDevise" name="" class="form-select" required>
+            <select id="idDevise" name="" class="form-select" >
                 <option value="">-- Sélectionnez une devise --</option>
                 <% if (devises != null) {
                        for (DeviseDto c : devisesRest) { %>

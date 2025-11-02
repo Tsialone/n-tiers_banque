@@ -3,12 +3,11 @@ package com.example.controllers.courants;
 import com.example.annotations.TablePermission;
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
-import com.example.models.ClientCourant;
-import com.example.models.CompteCourant;
 import com.example.remotes.ChangeServiceRemote;
 import com.example.remotes.ClientCourantServiceRemote;
 import com.example.remotes.ClientCourantStatefulServiceRemote;
 import com.example.remotes.CompteCourantServiceRemote;
+import com.example.server_dtos.CompteCourantDto;
 import com.example.utils.Url;
 import com.example.views.CompteCourantView;
 
@@ -98,10 +97,10 @@ public class CourantController extends HttpServlet {
             if (dateStr != null && !dateStr.isEmpty())
                 date = LocalDate.parse(dateStr);
 
-            List<CompteCourant> comptes = compteCourantServiceRemote.getComptesByClientAndDate(xx, date);
+            List<CompteCourantDto> comptes = compteCourantServiceRemote.getComptesByClientAndDate(xx, date);
 
             List<CompteCourantView> comptes_views = new ArrayList<>();
-            for (CompteCourant compte_entity : comptes) {
+            for (CompteCourantDto compte_entity : comptes) {
                 CompteCourantView temp_view = new CompteCourantView();
                 double solde = clientCourantServiceRemote
                         .getSoldeByIdClientAndIdCompte(

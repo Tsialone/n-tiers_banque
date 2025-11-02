@@ -9,10 +9,12 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.classes.Virement;
+
 @Entity
 @Data
 @Table(name = "comptes_courant")
-public class CompteCourant  implements Serializable {
+public class CompteCourant implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +29,7 @@ public class CompteCourant  implements Serializable {
     private ClientCourant client;
 
     @Column(name = "date_ouverture")
-    private LocalDate dateOuverture   = LocalDate.now();
+    private LocalDate dateOuverture = LocalDate.now();
 
     @Column(name = "capital")
     private Double capital;
@@ -41,4 +43,23 @@ public class CompteCourant  implements Serializable {
     private List<TransactionCourant> transactions;
 
     // getters & setters
+
+    public Virement virer(CompteCourant compteCredit, LocalDate dateVirement, Double montant, String devise)
+            throws Exception {
+
+        Virement virement = new Virement(
+                this,
+                compteCredit,
+                dateVirement,
+                montant,
+                devise);
+
+        if (this.getIdCompte().equals(compteCredit.getIdCompte())) {
+
+            throw new Exception("Vous ne pouvez pas faire un virement a vous meme sur cet compte; debiteur: "
+                    + this.getIdCompte() + " crediteur: " + compteCredit.getIdCompte());
+        }
+
+        return virement;
+    }
 }

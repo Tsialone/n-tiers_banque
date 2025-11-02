@@ -2,11 +2,11 @@
 
     import com.example.controllers.utils.Flash;
     import com.example.controllers.utils.UserSession;
-    import com.example.models.ClientCourant;
-    import com.example.remotes.ChangeServiceRemote;
+import com.example.remotes.ChangeServiceRemote;
     import com.example.remotes.ClientCourantServiceRemote;
     import com.example.remotes.ClientCourantStatefulServiceRemote;
-    import com.example.utils.Url;
+import com.example.server_dtos.ClientCourantDto;
+import com.example.utils.Url;
 
     import jakarta.annotation.PostConstruct;
     import jakarta.ejb.EJB;
@@ -84,7 +84,8 @@
             System.out.println("hellooooo post <<<<<");
             try {
 
-                ClientCourant clientCourant = clientCourantStatefulServiceRemote.login(email, mdp);
+                ClientCourantDto clientCourant = clientCourantStatefulServiceRemote.login(email, mdp);
+            
                 // clientCourant.getDirection().getLibelle();
                 request.setAttribute("content", Url.pages + "/home.jsp");
                 request.setAttribute("fonctionality", "Home");

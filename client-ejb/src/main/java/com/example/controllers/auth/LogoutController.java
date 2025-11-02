@@ -2,7 +2,6 @@ package com.example.controllers.auth;
 
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
-import com.example.models.ClientCourant;
 import com.example.remotes.ChangeServiceRemote;
 import com.example.remotes.ClientCourantServiceRemote;
 import com.example.remotes.ClientCourantStatefulServiceRemote;

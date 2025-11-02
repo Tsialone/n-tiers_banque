@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 import com.example.annotations.TablePermission;
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
-import com.example.models.ClientCourant;
+import com.example.server_dtos.ClientCourantDto;
 
 @WebFilter("/*")
 public class AuthFilter implements Filter {
@@ -49,7 +49,7 @@ public class AuthFilter implements Filter {
         }
 
         try {
-            ClientCourant clientCourant = (ClientCourant) session.getAttribute("client");
+            ClientCourantDto clientCourant = (ClientCourantDto) session.getAttribute("client");
             if (clientCourant == null) {
                 Flash.set(req, "message", "Erreur: " + "session expiréé, veuillez vous reconnecter");
                 Flash.set(req, "message_type", "danger");

@@ -49,6 +49,8 @@ public class TransactionEpargneFormController extends HttpServlet {
         // Récupération du compte cible si fourni
         String idCompte = request.getParameter("idCompte");
         request.setAttribute("idCompte", idCompte);
+        request.setAttribute("dateTransaction", LocalDate.now());
+
 
         request.getRequestDispatcher(Url.layout).forward(request, response);
     }

@@ -1,7 +1,7 @@
 package com.example.controllers.prets;
 
 import com.example.controllers.utils.Flash;
-import com.example.dto.AmortissementDto;
+import com.example.server_dtos.AmortissementDto;
 import com.example.utils.Url;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;

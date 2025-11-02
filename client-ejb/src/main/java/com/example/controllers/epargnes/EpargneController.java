@@ -2,7 +2,7 @@ package com.example.controllers.epargnes;
 
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
-import com.example.dto.TransactionEpargneDto;
+import com.example.server_dtos.TransactionEpargneDto;
 import com.example.utils.Url;
 import com.example.views.CompteEpargneView;
 import com.fasterxml.jackson.core.type.TypeReference;

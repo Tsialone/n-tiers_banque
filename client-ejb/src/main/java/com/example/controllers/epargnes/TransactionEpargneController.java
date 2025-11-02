@@ -1,8 +1,8 @@
 package com.example.controllers.epargnes;
 
 import com.example.controllers.utils.Flash;
+import com.example.server_dtos.TransactionEpargneDto;
 import com.example.utils.Url;
-import com.example.dto.TransactionEpargneDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

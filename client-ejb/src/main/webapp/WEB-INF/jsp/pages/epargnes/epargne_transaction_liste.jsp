@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.example.dto.TransactionEpargneDto" %>
+<%@ page import="com.example.server_dtos.TransactionEpargneDto" %>
 
 <%
     List<TransactionEpargneDto> transactions = (List<TransactionEpargneDto>) request.getAttribute("transactions");

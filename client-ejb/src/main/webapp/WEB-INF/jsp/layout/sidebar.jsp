@@ -13,6 +13,14 @@
   </div>
 
   <nav class="p-3">
+  <div class="mb-4">
+        <h3 class="text-muted text-uppercase small fw-semibold mb-2">Devise(s)</h3>
+        <a href="${pageContext.request.contextPath}/devises/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Creation</a>
+        <a href="${pageContext.request.contextPath}/devises" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Changes</a>
+
+        <%-- <a href="${pageContext.request.contextPath}/epargnes/transactions" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Mouvements</a> --%>
+
+      </div>
       <%-- <a href="/user/client/filter" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Prolonge</a> --%>
      <div class="mb-4">
       <h3 class="text-muted text-uppercase small fw-semibold mb-2">Courant(s)</h3>
@@ -36,6 +44,7 @@
         <a href="${pageContext.request.contextPath}/epargnes/form" class="d-block p-2 rounded text-decoration-none text-body hover-bg-light">Creations</a>
 
       </div>
+
       
     </div>
   </nav>

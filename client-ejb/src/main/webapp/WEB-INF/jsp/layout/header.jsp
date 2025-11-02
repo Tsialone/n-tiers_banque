@@ -1,11 +1,18 @@
 <%@page import="java.util.List"  %>
-<%@page import="com.example.models.ClientCourant"  %>
+<%@page import="com.example.server_dtos.ClientCourantDto"  %>
+<%@page import="com.example.server_dtos.DirectionDto"  %>
+
+
 <%@page import="java.time.LocalDate"  %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%-- <%@ page import="s4.biblio.models.Utilisateur" %> --%>
 <%
   String fonctionality = request.getAttribute("fonctionality").toString();
-  ClientCourant clientCourant = (ClientCourant)session.getAttribute("client");
+  ClientCourantDto clientCourant = (ClientCourantDto)session.getAttribute("client");
+
+  // request
+  DirectionDto directionDto = (DirectionDto)session.getAttribute("direction");
+
 %>
 
 <header class="bg-white shadow-sm px-4 py-3 d-flex justify-content-between align-items-center border-bottom">
@@ -17,7 +24,7 @@
       <%-- <span class="badge bg-warning text-dark ms-5">son nom</span> --%>
 
       |
-      <span class="badge bg-info text-dark ms-2"><%= clientCourant.getDirection().getLibelle() %></span>
+      <span class="badge bg-info text-dark ms-2"><%= directionDto.getLibelle() %></span>
       <%-- <span class="badge bg-info text-dark ms-2">direction</span> --%>
 
     </span>

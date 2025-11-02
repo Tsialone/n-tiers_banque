@@ -2,7 +2,7 @@ package com.example.controllers.prets;
 
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
-import com.example.dto.ComptePretDto;
+import com.example.server_dtos.ComptePretDto;
 import com.example.utils.Url;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

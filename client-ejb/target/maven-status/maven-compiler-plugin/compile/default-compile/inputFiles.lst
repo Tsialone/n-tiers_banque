@@ -1,11 +1,12 @@
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/utils/UserSession.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/api/EpargneApiController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/api/PretApiController.java
-/media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/home/TestController.java
+/media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/courants/VirementCourantFormController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/courants/TransactionCourantFormController.java
-/media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/dto/ClientCourantDTO.java
+/media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/devises/DeviseFormController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/utils/ServletMethodUtils.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/utils/Url.java
+/media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/devises/DeviseAnnulationController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/courants/CourantFormController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/prets/AmortissementController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/auth/LogoutController.java
@@ -14,7 +15,9 @@
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/courants/CourantController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/home/HomeController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/prets/PretController.java
+/media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/devises/DeviseController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/auth/AuthFilter.java
+/media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/devises/DeviseValidationController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/utils/Flash.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/controllers/epargnes/TransactionEpargneController.java
 /media/tsialone/Data/ITU/L3/S5/Mr_Tahiana/temp/n-tiers_banque/client-ejb/src/main/java/com/example/utils/JsonUtil.java

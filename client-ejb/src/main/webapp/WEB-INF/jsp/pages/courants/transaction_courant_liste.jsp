@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.example.dto.TransactionCourantDto" %>
+<%@ page import="com.example.server_dtos.TransactionCourantDto" %>
 
 <%
     List<TransactionCourantDto> transactions = (List<TransactionCourantDto>) request.getAttribute("transactionCourants");
@@ -23,7 +23,8 @@
                 <th>Libellé</th>
                 <th>Montant</th>
                 <th>Sens</th>
-                <th>Validé</th>
+                <th>Devise</th>
+                <th>Etat</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -37,21 +38,17 @@
                     <td><%= t.getLibelle() %></td>
                     <td><%= t.getMontant() %>Ar</td>
                     <td><%= t.getSens() %></td>
+                    <td><%= t.getDevise() %></td>
                     <td>
-                        <% if (t.isValidate()) { %>
-                            <span class="badge bg-success">Oui</span>
-                        <% } else { %>
-                            <span class="badge bg-warning text-dark">Non</span>
-                        <% } %>
+                        <%= (t.getLastValidation() != null) ? t.getLastValidation().getEtat() : "En attente" %>
                     </td>
                     <td>
-                        <% if (!t.isValidate()) { %>
-                            <form method="post" action="<%= request.getContextPath() %>/courants/transactions">
+                           <form method="post" action="<%= request.getContextPath() %>/courants/transactions">
                                 <input type="hidden" name="idTransactionCourant" value="<%= t.getIdTransaction() %>" />
                                 <input type="hidden" name="idCompte" value="<%= t.getIdCompte() %>" />
-                                <button type="submit" class="btn btn-primary btn-sm">Valider</button>
+                                <button type="submit" name="action" value="valider" class="btn btn-primary btn-sm">Valider</button>
+                                <button type="submit" name="action" value="annuler" class="btn btn-danger btn-sm">Annuler</button>
                             </form>
-                        <% } %>
                     </td>
                 </tr>
             <% } } else { %>

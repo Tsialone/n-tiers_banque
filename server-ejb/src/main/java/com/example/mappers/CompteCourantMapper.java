@@ -1,8 +1,9 @@
 package com.example.mappers;
 
-import com.example.dto.CompteCourantDto;
 import com.example.models.ClientCourant;
 import com.example.models.CompteCourant;
+import com.example.server_dtos.ClientCourantDto;
+import com.example.server_dtos.CompteCourantDto;
 
 public class CompteCourantMapper {
 

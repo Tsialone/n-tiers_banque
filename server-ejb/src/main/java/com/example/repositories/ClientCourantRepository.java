@@ -22,19 +22,17 @@ public class ClientCourantRepository {
             LocalDate dateTransaction) {
         String jpql;
         if (dateTransaction == null) {
-
             jpql = "SELECT SUM(CASE WHEN t.sens = 'credit' THEN t.montant ELSE -t.montant END) " +
-                    "FROM TransactionCourant t " +
-                    "WHERE t.compte.idCompte = :idCompte " +
-                    "AND t.validate = true " +
-                    "AND t.compte.client.idClient = :idClient ";
-        } else {
-
-            jpql = "SELECT SUM(CASE WHEN t.sens = 'credit' THEN t.montant ELSE -t.montant END) " +
-                    "FROM TransactionCourant t " +
+                    "FROM TransactionCourant t JOIN t.validations v " +
                     "WHERE t.compte.idCompte = :idCompte " +
                     "AND t.compte.client.idClient = :idClient " +
-                    "AND t.validate = true " +
+                    "AND v.etat = 'valider'";
+        } else {
+            jpql = "SELECT SUM(CASE WHEN t.sens = 'credit' THEN t.montant ELSE -t.montant END) " +
+                    "FROM TransactionCourant t JOIN t.validations v " +
+                    "WHERE t.compte.idCompte = :idCompte " +
+                    "AND t.compte.client.idClient = :idClient " +
+                    "AND v.etat = 'valider' " +
                     "AND t.dateTransaction <= :dateTransaction";
         }
 
@@ -66,7 +64,7 @@ public class ClientCourantRepository {
                     ClientCourant.class).setParameter("email", email)
                     .getSingleResult();
         } catch (Exception e) {
-            return null; 
+            return null;
         }
     }
 

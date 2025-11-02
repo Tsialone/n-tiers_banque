@@ -11,7 +11,11 @@
     <module>change-api</module>
     <module>change-ejb</module>
 
+    <module>server-api</module>
     <module>server-ejb</module>
+
+
+
     <module>client-ejb</module>
   </modules>
 

@@ -22,7 +22,7 @@ public class TestEJBConnection {
 
         CompteCourantServiceRemote service = (CompteCourantServiceRemote) ctx.lookup(jndiName);
 
-        System.out.println("Nombre de devises: " + service.test());
+        // System.out.println("Nombre de devises: " + service.test());
         ctx.close();
     }
 }

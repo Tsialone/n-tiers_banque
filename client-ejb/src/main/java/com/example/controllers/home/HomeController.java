@@ -2,12 +2,12 @@ package com.example.controllers.home;
 
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
-import com.example.models.ClientCourant;
-import com.example.models.CompteCourant;
 import com.example.remotes.ChangeServiceRemote;
 import com.example.remotes.ClientCourantServiceRemote;
 import com.example.remotes.ClientCourantStatefulServiceRemote;
 import com.example.remotes.CompteCourantServiceRemote;
+import com.example.server_dtos.ClientCourantDto;
+import com.example.server_dtos.CompteCourantDto;
 import com.example.utils.Url;
 import com.example.views.CompteCourantView;
 import com.example.views.CompteEpargneView;
@@ -77,10 +77,10 @@ public class HomeController extends HttpServlet {
 
             // courant global
             int xx = UserSession.getClient(request).getIdClient();
-            ClientCourant clientCourant = UserSession.getClient(request);
+            ClientCourantDto clientCourant = UserSession.getClient(request);
             LocalDate date = LocalDate.now();
-            List<CompteCourant> comptes = compteCourantServiceRemote.getComptesByClientAndDate(xx, date);
-            for (CompteCourant compte_entity : comptes) {
+            List<CompteCourantDto> comptes = compteCourantServiceRemote.getComptesByClientAndDate(xx, date);
+            for (CompteCourantDto compte_entity : comptes) {
                 double solde = clientCourantServiceRemote
                         .getSoldeByIdClientAndIdCompte(
                                 compte_entity.getIdCompte(),
@@ -134,7 +134,9 @@ public class HomeController extends HttpServlet {
             request.setAttribute("pretSoldeGlobal", BigDecimal.valueOf(pretSoldeGlobal));
             // --- Initialisation des rôles et actions ---
             // List<ClientCourant>  clientCourants = new ArrayList<>();
-            request.setAttribute("roles", clientCourant.getClientRoles());
+            request.setAttribute("actionRoles", UserSession.getActionRoleDto(request));
+            request.setAttribute("direction", UserSession.getDirection(request));
+
 
             // ClientCourantStatefulServiceRemote clientCourantStatefulServiceRemote =
             // UserSession

@@ -2,16 +2,13 @@ package com.example.controllers.courants;
 
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
-import com.example.dto.TransactionCourantDto;
-import com.example.mappers.TransactionCourantMapper;
-import com.example.models.ClientCourant;
-import com.example.models.CompteCourant;
-import com.example.models.TransactionCourant;
 import com.example.remotes.ChangeServiceRemote;
 import com.example.remotes.ClientCourantServiceRemote;
 import com.example.remotes.ClientCourantStatefulServiceRemote;
 import com.example.remotes.CompteCourantServiceRemote;
 import com.example.remotes.TransactionCourantServiceRemote;
+import com.example.remotes.ValidationServiceRemote;
+import com.example.server_dtos.TransactionCourantDto;
 import com.example.utils.Url;
 import com.example.views.CompteCourantView;
 
@@ -59,6 +56,9 @@ public class TransactionCourantController extends HttpServlet {
     @EJB(lookup = "java:global/server-ejb/TransactionCourantService!com.example.remotes.TransactionCourantServiceRemote")
     private TransactionCourantServiceRemote transactionCourantServiceRemote;
 
+    @EJB(lookup = "java:global/server-ejb/ValidationService!com.example.remotes.ValidationServiceRemote")
+    private ValidationServiceRemote validationServiceRemote;
+
     // @PostConstruct
     // private void initRemoteEJB() {
     // try {
@@ -98,7 +98,7 @@ public class TransactionCourantController extends HttpServlet {
         try {
             // hovaina
             // int xx = 1;
-            int xx = UserSession.getClient(request).getIdClient() ;
+            int xx = UserSession.getClient(request).getIdClient();
 
             int idCompte = Integer.parseInt(request.getParameter("idCompte"));
             // List<TransactionCourantDto> transactionsCourantDto =
@@ -128,16 +128,24 @@ public class TransactionCourantController extends HttpServlet {
             throws ServletException, IOException {
 
         int idCompte = Integer.parseInt(request.getParameter("idCompte"));
-
+        String action = request.getParameter("action");
         try {
             if (request.getParameter("idTransactionCourant") != null) {
                 Integer idTransactionCourant = Integer.parseInt(request.getParameter("idTransactionCourant"));
-                TransactionCourant transactionCourant = transactionCourantServiceRemote
-                        .getTransactionById(idTransactionCourant);
+                // TransactionCourantDto transactionCourant = transactionCourantServiceRemote
+                // .getTransactionById(idTransactionCourant);
 
-                TransactionCourantDto transactionCourantDto = TransactionCourantMapper.toDto(transactionCourant);
-                transactionCourantDto.setValidate(true);
-                transactionCourantServiceRemote.updateTransactionCourant(transactionCourantDto);
+                // TransactionCourantDto transactionCourantDto =
+                // TransactionCourantMapper.toDto(transactionCourant);
+                // transactionCourant.setValidate(true);
+
+                // transactionCourantServiceRemote.updateTransactionCourant(transactionCourant);
+                if ("valider".equals(action)) {
+                    validationServiceRemote.saveValidation(idTransactionCourant, "valider");
+                } else if ("annuler".equals(action)) {
+                    validationServiceRemote.saveValidation(idTransactionCourant, "annuler");
+                }
+
             }
             // clientCourant.getDirection().getLibelle();
             // request.setAttribute("content", Url.pages + "/home.jsp");
