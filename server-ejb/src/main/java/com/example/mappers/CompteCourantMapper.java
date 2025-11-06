@@ -2,57 +2,40 @@ package com.example.mappers;
 
 import com.example.models.ClientCourant;
 import com.example.models.CompteCourant;
-import com.example.server_dtos.ClientCourantDto;
+import com.example.models.TypeCompte;
 import com.example.server_dtos.CompteCourantDto;
 
 public class CompteCourantMapper {
 
-    // DTO -> Entity
-    public static CompteCourant toEntity(CompteCourantDto dto, ClientCourant client) {
+    // Entité → DTO
+    public static CompteCourantDto toDto(CompteCourant compte)  {
+        CompteCourantDto dto = new CompteCourantDto();
+        dto.setIdCompte(compte.getIdCompte());
+        dto.setNom(compte.getNom());
+        dto.setIdClient(compte.getClient() != null ? compte.getClient().getIdClient() : null);
+        dto.setTypeCompte(
+                compte.getTypeCompte() != null ? TypeCompteMapper.toDto(compte.getTypeCompte(), false) : null);
+        dto.setDateOuverture(compte.getDateOuverture());
+        dto.setCapital(compte.getCapital());
         try {
-            if (dto == null) return null;
-
-            CompteCourant entity = new CompteCourant();
-            entity.setIdCompte(dto.getIdCompte());
-            entity.setNom(dto.getNom());
-            entity.setCapital(dto.getCapital());
-            entity.setDateOuverture(dto.getDateOuverture());
-            entity.setDecouvertAutorise(dto.getDecouvertAutorise());
-
-            // Associer le client (si fourni)
-            if (client != null) {
-                entity.setClient(client);
-            }
-
-            return entity;
+            dto.setSolde(compte.getSolde());
         } catch (Exception e) {
-            System.err.println("Erreur lors du mapping DTO -> Entity : " + e.getMessage());
-            e.printStackTrace();
-            return null;
+            // TODO: handle exception
         }
+        dto.setDecouvertAutorise(compte.getDecouvertAutorise());
+        return dto;
     }
 
-    // Entity -> DTO
-    public static CompteCourantDto toDto(CompteCourant entity) {
-        try {
-            if (entity == null) return null;
-
-            CompteCourantDto dto = new CompteCourantDto();
-            dto.setIdCompte(entity.getIdCompte());
-            dto.setNom(entity.getNom());
-            dto.setCapital(entity.getCapital());
-            dto.setDateOuverture(entity.getDateOuverture());
-            dto.setDecouvertAutorise(entity.getDecouvertAutorise());
-
-            if (entity.getClient() != null) {
-                dto.setIdClient(entity.getClient().getIdClient());
-            }
-
-            return dto;
-        } catch (Exception e) {
-            System.err.println("Erreur lors du mapping Entity -> DTO : " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
+    // DTO → Entité
+    public static CompteCourant toEntity(CompteCourantDto dto, ClientCourant client, TypeCompte type) {
+        CompteCourant compte = new CompteCourant();
+        compte.setIdCompte(dto.getIdCompte());
+        compte.setNom(dto.getNom());
+        compte.setClient(client);
+        compte.setTypeCompte(type);
+        compte.setDateOuverture(dto.getDateOuverture());
+        compte.setCapital(dto.getCapital());
+        compte.setDecouvertAutorise(dto.getDecouvertAutorise());
+        return compte;
     }
 }

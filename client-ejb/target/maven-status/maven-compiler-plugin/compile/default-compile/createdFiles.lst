@@ -1,3 +1,4 @@
+com/example/controllers/courants/VirementController.class
 com/example/controllers/epargnes/EpargneFormController.class
 com/example/controllers/devises/DeviseAnnulationController.class
 com/example/controllers/courants/TransactionCourantController.class
@@ -12,6 +13,7 @@ com/example/controllers/auth/LogoutController.class
 com/example/controllers/prets/AmortissementController.class
 com/example/annotations/TablePermission.class
 com/example/api/EpargneApiController.class
+com/example/controllers/courants/DepotController.class
 com/example/controllers/courants/TransactionCourantFormController$1.class
 com/example/controllers/home/HomeController.class
 com/example/controllers/prets/AmortissementController$1.class
@@ -20,6 +22,8 @@ com/example/controllers/home/HomeController$2.class
 com/example/controllers/utils/UserSession.class
 com/example/controllers/prets/PretFormController.class
 com/example/controllers/auth/AuthFilter.class
+com/example/controllers/courants/RetraitFormController.class
+com/example/controllers/utils/DateTimeUtils.class
 com/example/controllers/epargnes/TransactionEpargneFormController.class
 com/example/controllers/prets/PretPayementController.class
 com/example/api/PretApiController.class
@@ -30,6 +34,8 @@ com/example/controllers/courants/VirementCourantFormController.class
 com/example/TestEJBConnection.class
 com/example/controllers/epargnes/TransactionEpargneController$1.class
 com/example/controllers/epargnes/TransactionEpargneController.class
+com/example/controllers/courants/RetraitController.class
+com/example/controllers/courants/DepotFormController.class
 com/example/controllers/epargnes/EpargneController$1.class
 com/example/utils/JsonUtil.class
 com/example/controllers/courants/CourantController.class

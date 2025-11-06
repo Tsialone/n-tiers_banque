@@ -8,6 +8,7 @@ import com.example.remotes.ClientCourantStatefulServiceRemote;
 import com.example.remotes.CompteCourantServiceRemote;
 import com.example.remotes.TransactionCourantServiceRemote;
 import com.example.remotes.ValidationServiceRemote;
+import com.example.remotes.ValidationTransactionServiceRemote;
 import com.example.server_dtos.TransactionCourantDto;
 import com.example.utils.Url;
 import com.example.views.CompteCourantView;
@@ -56,8 +57,12 @@ public class TransactionCourantController extends HttpServlet {
     @EJB(lookup = "java:global/server-ejb/TransactionCourantService!com.example.remotes.TransactionCourantServiceRemote")
     private TransactionCourantServiceRemote transactionCourantServiceRemote;
 
-    @EJB(lookup = "java:global/server-ejb/ValidationService!com.example.remotes.ValidationServiceRemote")
-    private ValidationServiceRemote validationServiceRemote;
+    @EJB(lookup = "java:global/server-ejb/ValidationTransactionService!com.example.remotes.ValidationTransactionServiceRemote")
+    private ValidationTransactionServiceRemote validationTransactionServiceRemote;
+
+    // @EJB(lookup =
+    // "java:global/server-ejb/ValidationService!com.example.remotes.ValidationServiceRemote")
+    // private ValidationServiceRemote validationServiceRemote;
 
     // @PostConstruct
     // private void initRemoteEJB() {
@@ -105,8 +110,13 @@ public class TransactionCourantController extends HttpServlet {
             // transactionCourantServiceRemote
             // .getAllTransactionsByClient(xx);
 
+            // List<TransactionCourantDto> transactionsCourantDto =
+            // transactionCourantServiceRemote
+            // .getAllTransactionsByClientAndCourant(xx, idCompte);
+
+            request.setAttribute("idCompte", idCompte);
             List<TransactionCourantDto> transactionsCourantDto = transactionCourantServiceRemote
-                    .getAllTransactionsByClientAndCourant(xx, idCompte);
+                    .getAllByIdCompte(idCompte);
 
             request.setAttribute("transactionCourants", transactionsCourantDto);
         } catch (Exception e) {
@@ -130,6 +140,8 @@ public class TransactionCourantController extends HttpServlet {
         int idCompte = Integer.parseInt(request.getParameter("idCompte"));
         String action = request.getParameter("action");
         try {
+            int xx = UserSession.getClient(request).getIdClient();
+
             if (request.getParameter("idTransactionCourant") != null) {
                 Integer idTransactionCourant = Integer.parseInt(request.getParameter("idTransactionCourant"));
                 // TransactionCourantDto transactionCourant = transactionCourantServiceRemote
@@ -140,11 +152,7 @@ public class TransactionCourantController extends HttpServlet {
                 // transactionCourant.setValidate(true);
 
                 // transactionCourantServiceRemote.updateTransactionCourant(transactionCourant);
-                if ("valider".equals(action)) {
-                    validationServiceRemote.saveValidation(idTransactionCourant, "valider");
-                } else if ("annuler".equals(action)) {
-                    validationServiceRemote.saveValidation(idTransactionCourant, "annuler");
-                }
+                validationTransactionServiceRemote.saveValidation(idTransactionCourant, xx, action , true);
 
             }
             // clientCourant.getDirection().getLibelle();
@@ -157,7 +165,7 @@ public class TransactionCourantController extends HttpServlet {
             Flash.set(request, "message_type", "success");
             response.sendRedirect(request.getContextPath() + "/courants/transactions?idCompte=" + idCompte);
         } catch (Exception e) {
-
+            e.printStackTrace();
             Flash.set(request, "message", "Erreur: " + e.getMessage());
             Flash.set(request, "message_type", "danger");
             response.sendRedirect(request.getContextPath() + "/courants/transactions?idCompte=" + idCompte);

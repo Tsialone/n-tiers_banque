@@ -1,11 +1,13 @@
 package com.example.controllers.courants;
 
 import com.example.change_dtos.DeviseDto;
+import com.example.controllers.utils.DateTimeUtils;
 import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
 import com.example.remotes.ChangeServiceRemote;
 import com.example.remotes.CompteCourantServiceRemote;
 import com.example.remotes.TransactionCourantServiceRemote;
+import com.example.remotes.VirementServiceRemote;
 import com.example.server_dtos.VirementDto;
 import com.example.server_dtos.CompteCourantDto;
 import com.example.utils.Url;
@@ -20,6 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -35,6 +38,9 @@ public class VirementCourantFormController extends HttpServlet {
 
     @EJB(lookup = "java:global/server-ejb/TransactionCourantService!com.example.remotes.TransactionCourantServiceRemote")
     private TransactionCourantServiceRemote transactionService;
+
+    @EJB(lookup = "java:global/server-ejb/VirementService!com.example.remotes.VirementServiceRemote")
+    private VirementServiceRemote virementServiceRemote;
 
     private ChangeServiceRemote changeServiceRemote;
 
@@ -71,13 +77,14 @@ public class VirementCourantFormController extends HttpServlet {
             // int clientId = UserSession.getClient(request).getIdClient();
 
             // Récupérer les comptes du client
-            // List<CompteCourantDto> compteCourants = compteService.getComptesByClient(clientId);
+            // List<CompteCourantDto> compteCourants =
+            // compteService.getComptesByClient(clientId);
             // request.setAttribute("compteCourants", compteCourants);
 
             // Récupérer les devises
             List<DeviseDto> devises = new ArrayList<>(changeServiceRemote.getDistinct());
             request.setAttribute("devises", devises);
-
+            request.setAttribute("dateVirement", DateTimeUtils.formatForHtml(LocalDateTime.now()));
             request.setAttribute("idCompte", idCompte);
 
         } catch (Exception e) {
@@ -91,19 +98,73 @@ public class VirementCourantFormController extends HttpServlet {
         request.getRequestDispatcher(Url.layout).forward(request, response);
     }
 
+    // @Override
+    // protected void doPost(HttpServletRequest request, HttpServletResponse
+    // response)
+    // throws ServletException, IOException {
+
+    // Integer idCompteDebit =
+    // Integer.parseInt(request.getParameter("idCompteDebit"));
+    // try {
+    // // Récupérer les paramètres du formulaire
+    // Integer idCompteCredit =
+    // Integer.parseInt(request.getParameter("idCompteCredit"));
+    // LocalDateTime dateVirement =
+    // DateTimeUtils.parseDateTime(request.getParameter("dateVirement"));
+    // Double montant = Double.parseDouble(request.getParameter("montant"));
+    // String devise = request.getParameter("devise");
+
+    // // Conversion via ChangeService si nécessaire
+    // boolean isAriary = devise.equalsIgnoreCase("ar");
+    // DeviseDto deviseDto = changeServiceRemote.getByDateBtw(dateVirement, devise);
+    // if (deviseDto == null && !isAriary)
+    // throw new Exception("Devise non trouvée: " + devise + " à cette date: " +
+    // dateVirement);
+    // if (!isAriary && deviseDto != null)
+    // montant *= deviseDto.getArriary();
+
+    // VirementDto virementDto = new VirementDto();
+    // virementDto.setIdCompteDebit(idCompteDebit);
+    // virementDto.setIdCompteCredit(idCompteCredit);
+    // virementDto.setDateVirement(dateVirement);
+    // virementDto.setMontant(montant);
+    // virementDto.setDevise(devise);
+
+    // virementDto.getFrais();
+
+    // virementServiceRemote.effectuerVirement(virementDto ,
+    // deviseDto.getArriary());
+
+    // Flash.set(request, "message", "Virement effectué avec succès !");
+    // Flash.set(request, "message_type", "success");
+    // response.sendRedirect(request.getContextPath() +
+    // "/courants/virements?idCompte=" + idCompteDebit);
+
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // Flash.set(request, "message", "Erreur lors du virement : " + e.getMessage());
+    // Flash.set(request, "message_type", "danger");
+    // response.sendRedirect(request.getContextPath() +
+    // "/courants/virements/form?idCompte=" + idCompteDebit);
+    // }
+    // }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         Integer idCompteDebit = Integer.parseInt(request.getParameter("idCompteDebit"));
         try {
-            // Récupérer les paramètres du formulaire
-            Integer idCompteCredit = Integer.parseInt(request.getParameter("idCompteCredit"));
-            LocalDate dateVirement = LocalDate.parse(request.getParameter("dateVirement"));
+            // ✅ Récupération des paramètres
+            String idCompteCreditParam = request.getParameter("idCompteCredit");
+            Integer idCompteCredit = (idCompteCreditParam == null || idCompteCreditParam.isEmpty())
+                    ? null
+                    : Integer.parseInt(idCompteCreditParam);
+
+            LocalDateTime dateVirement = DateTimeUtils.parseDateTime(request.getParameter("dateVirement"));
             Double montant = Double.parseDouble(request.getParameter("montant"));
             String devise = request.getParameter("devise");
 
-            // Conversion via ChangeService si nécessaire
             boolean isAriary = devise.equalsIgnoreCase("ar");
             DeviseDto deviseDto = changeServiceRemote.getByDateBtw(dateVirement, devise);
             if (deviseDto == null && !isAriary)
@@ -111,7 +172,7 @@ public class VirementCourantFormController extends HttpServlet {
             if (!isAriary && deviseDto != null)
                 montant *= deviseDto.getArriary();
 
-            // Création du DTO pour le service
+            // ✅ Création de l’objet
             VirementDto virementDto = new VirementDto();
             virementDto.setIdCompteDebit(idCompteDebit);
             virementDto.setIdCompteCredit(idCompteCredit);
@@ -119,12 +180,32 @@ public class VirementCourantFormController extends HttpServlet {
             virementDto.setMontant(montant);
             virementDto.setDevise(devise);
 
-            // Appel du service
-            transactionService.doVirement(virementDto);
+            
+
+
+            // ✅ Si aucun compte crédit → afficher frais sans exécuter le virement
+            if (idCompteCredit == null) {
+                double frais =  virementServiceRemote.alleas(virementDto);
+                double tokonyAlefa  = frais + montant;
+                double usd = montant;
+                String devisestr ="ar";
+                if (deviseDto!=null) {
+                    devisestr  = deviseDto.getLibelle();
+                    usd = tokonyAlefa / deviseDto.getArriary();
+                }
+                
+                Flash.set(request, "message", "Les frais de ce virement sont de : " + frais + " Ar, vous devez donc envoyer " + tokonyAlefa + "Ar en " + devisestr + "= " +  usd) ;
+                Flash.set(request, "message_type", "info");
+                response.sendRedirect(request.getContextPath() + "/courants/virements/form?idCompte=" + idCompteDebit);
+                return;
+            }
+
+            // ✅ Sinon on effectue le virement normalement
+            virementServiceRemote.effectuerVirement(virementDto, deviseDto.getArriary());
 
             Flash.set(request, "message", "Virement effectué avec succès !");
             Flash.set(request, "message_type", "success");
-            response.sendRedirect(request.getContextPath() + "/courants/transactions?idCompte=" + idCompteDebit);
+            response.sendRedirect(request.getContextPath() + "/courants/virements?idCompte=" + idCompteDebit);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,4 +214,5 @@ public class VirementCourantFormController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/courants/virements/form?idCompte=" + idCompteDebit);
         }
     }
+
 }

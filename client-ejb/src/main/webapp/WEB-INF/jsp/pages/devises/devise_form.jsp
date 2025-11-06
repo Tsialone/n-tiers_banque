@@ -14,7 +14,7 @@
 
    
 
-    <form method="post" action="<%= request.getContextPath() %>/devises/form">
+    <form method="post" action="<%= request.getContextPath() %>/devises/form" enctype="multipart/form-data" >
         <input type="hidden" name="id" value="<%= devise.getId() != null ? devise.getId() : "" %>" />
 
         <div class="mb-2">
@@ -37,10 +37,14 @@
 
         <div class="mb-3">
             <label>Arriary</label>
-            <input type="number" step="0.01" name="arriary" class="form-control"
+            <input type="number" step="0.0001" name="arriary" class="form-control"
                    value="<%= devise.getArriary() %>"  />
         </div>
 
+        <div>
+            <label>Import csv</label>
+        <input type="file" name="csvFile" accept=".csv" class="form-control mb-2"  />
+        </div>
         <button type="submit" class="btn btn-success">Enregistrer</button>
         <a href="<%= request.getContextPath() %>/devises" class="btn btn-secondary">Annuler</a>
     </form>

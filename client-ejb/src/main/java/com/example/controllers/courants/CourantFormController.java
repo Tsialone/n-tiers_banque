@@ -4,7 +4,9 @@ import com.example.controllers.utils.Flash;
 import com.example.controllers.utils.UserSession;
 import com.example.remotes.ClientCourantServiceRemote;
 import com.example.remotes.CompteCourantServiceRemote;
+import com.example.remotes.TypeCompteServiceRemote;
 import com.example.server_dtos.CompteCourantDto;
+import com.example.server_dtos.TypeCompteDto;
 import com.example.utils.Url;
 
 import jakarta.ejb.EJB;
@@ -25,6 +27,9 @@ public class CourantFormController extends HttpServlet {
 
     @EJB(lookup = "java:global/server-ejb/ClientCourantService!com.example.remotes.ClientCourantServiceRemote")
     private ClientCourantServiceRemote clientCourantServiceRemote;
+
+     @EJB(lookup = "java:global/server-ejb/TypeCompteService!com.example.remotes.TypeCompteServiceRemote")
+    private TypeCompteServiceRemote typeCompteServiceRemote;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -51,11 +56,13 @@ public class CourantFormController extends HttpServlet {
             Double decouvert = Double.parseDouble(request.getParameter("decouvertAutorise"));
             LocalDate dateOuverture = LocalDate.now();
 
+            TypeCompteDto typeCompteDto = typeCompteServiceRemote.findById(1);
             CompteCourantDto dto = new CompteCourantDto();
             dto.setNom(nom);
             dto.setCapital(capital);
             dto.setDecouvertAutorise(decouvert);
             dto.setDateOuverture(dateOuverture);
+            dto.setTypeCompte(typeCompteDto);
             dto.setIdClient(xx); // client fixe xx = 1
 
             // CompteCourant compte = CompteCourantMapper.toEntity(dto, clientCourantServiceRemote.getClientById(xx));

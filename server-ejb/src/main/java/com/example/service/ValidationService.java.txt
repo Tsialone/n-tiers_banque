@@ -4,6 +4,7 @@ import com.example.remotes.ValidationServiceRemote;
 import com.example.repositories.ClientCourantRepository;
 import com.example.repositories.TransactionCourantRepository;
 import com.example.repositories.ValidationRepository;
+import com.example.mappers.CompteCourantMapper;
 import com.example.mappers.ValidationMapper;
 import com.example.models.TransactionCourant;
 import com.example.server_dtos.ValidationDto;
@@ -40,11 +41,33 @@ public class ValidationService implements ValidationServiceRemote {
         }
 
         if (etat.equals("valider")) {
+            List<TransactionCourant> transactionCourants = repository.findByVirementId(transaction.getIdVirement());
+            CompteCourantMapper debiteur = null;
+            CompteCourantMapper crediteur = null;
+            if (transaction.getCompteDest() == null && transaction.getIdVirement() != null) {
+                for (TransactionCourant transactionCourant : transactionCourants) {
+                    if (!transactionCourant.getIdTransaction().equals(transaction.getIdTransaction())) {
+                        if (transactionCourant.getCompteDest() != null
+                                && transactionCourant.getIdVirement().equals(transaction.getIdVirement())) {
+                            debiteur = transactionCourant.getCompte();
+                        }
+                    }
+                }
+            }
+            else {
+                debiteur = transaction.getCompte();
+            }
+
+            // Double clientSolde = clientCourantRepository.findSoldeByIdClientAndIdCompte(
+            // transaction.getCompte().getIdCompte(),
+            // transaction.getCompte().getClient().getIdClient(),
+            // LocalDate.now()) + transaction.getCompte().getCapital();
+
             Double clientSolde = clientCourantRepository.findSoldeByIdClientAndIdCompte(
-                    transaction.getCompte().getIdCompte(), transaction.getCompte().getClient().getIdClient(),
-                    LocalDate.now());
+                    debiteur.getIdCompte(), debiteur.getClient().getIdClient(),
+                    LocalDate.now()) + debiteur.getCapital();
             if (clientSolde < transaction.getMontant())
-                throw new Exception("Solde insuffisant: " + clientSolde + " ar vs " + transaction.getMontant());
+                throw new Exception("Solde insuffisant pour le debiteur: " + clientSolde + " ar vs " + transaction.getMontant());
             List<TransactionCourant> allTransactionCourants = repository
                     .findVirementByClientIdAndDate(transaction.getCompte().getClient().getIdClient(), LocalDate.now());
             Double sum = transaction.getMontant();

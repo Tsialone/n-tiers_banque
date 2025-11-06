@@ -102,11 +102,7 @@ public class CourantController extends HttpServlet {
             List<CompteCourantView> comptes_views = new ArrayList<>();
             for (CompteCourantDto compte_entity : comptes) {
                 CompteCourantView temp_view = new CompteCourantView();
-                double solde = clientCourantServiceRemote
-                        .getSoldeByIdClientAndIdCompte(
-                                compte_entity.getIdCompte(),
-                                xx,
-                                date);
+                double solde =  compte_entity.getSolde();
                 temp_view.setNom(compte_entity.getNom());
                 temp_view.setIdCompte(compte_entity.getIdCompte());
                 temp_view.setCapital(compte_entity.getCapital());

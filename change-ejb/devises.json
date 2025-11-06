@@ -2,28 +2,20 @@
   {
     "id": 1,
     "libelle": "USD",
-    "dateDebut": "2024-01-01",
-    "dateFin": "2024-06-30",
-    "arriary": 4100,
+    "dateDebut": "2025-11-06",
+    "dateFin": "2025-11-07",
+    "arriary": 4500,
     "valide": true,
     "dateValidation": "2024-06-30"
   },
   {
     "id": 2,
     "libelle": "USD",
-    "dateDebut": "2024-07-01",
+    "dateDebut": "2025-11-07",
     "dateFin": null,
-    "arriary": 4300,
+    "arriary": 4550,
     "valide": null,
     "dateValidation": null
-  },
-  {
-    "id": 3,
-    "libelle": "EUR",
-    "dateDebut": "2024-01-01",
-    "dateFin": "2024-12-31",
-    "arriary": 4500,
-    "valide": true,
-    "dateValidation": "2024-01-15"
   }
+
 ]

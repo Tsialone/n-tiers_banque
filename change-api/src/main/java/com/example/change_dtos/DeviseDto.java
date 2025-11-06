@@ -2,6 +2,9 @@ package com.example.change_dtos;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.example.utils.DateUtils;
 
 public class DeviseDto implements Serializable {
     private Long id;
@@ -9,6 +12,7 @@ public class DeviseDto implements Serializable {
     private String dateDebut; // String au lieu de LocalDate
     private String dateFin; // String au lieu de LocalDate
     private double arriary;
+
 
     private Boolean valide;
     private String dateValidation;
@@ -22,7 +26,10 @@ public class DeviseDto implements Serializable {
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.arriary = arriary;
+
     }
+
+   
     public String getDateValidation() {
         return dateValidation;
     }
@@ -78,7 +85,7 @@ public class DeviseDto implements Serializable {
 
     public void setDateFin(String dateFin) throws Exception {
         if (dateFin != null && !dateFin.isEmpty()) {
-            LocalDate finDate = LocalDate.parse(dateFin);
+            LocalDateTime finDate =  DateUtils.parseDateTimeOrDate(dateFin);
             if (finDate.isBefore(getDateDebutDate())) {
                 throw new Exception(
                         "Date debut: " + getDateDebutDate() + " doit etre apres date fin: " + getDateFinDate());
@@ -97,19 +104,19 @@ public class DeviseDto implements Serializable {
         this.arriary = arriary;
     }
 
-    public LocalDate getDateFinDate() {
+    public LocalDateTime getDateFinDate() {
         if (dateFin == null || dateFin.isEmpty()) {
             return null;
         }
-        return LocalDate.parse(dateFin);
+        return  DateUtils.parseDateTimeOrDate(dateFin);
     }
 
-    public LocalDate getDateDebutDate() {
+    public LocalDateTime getDateDebutDate() {
         if (dateDebut == null || dateDebut.isEmpty()) {
             System.out.println("itooooooooooooooo e " + dateDebut);
             return null;
         }
-        return LocalDate.parse(dateDebut);
+        return  DateUtils.parseDateTimeOrDate(dateDebut);
     }
 
     // @Override

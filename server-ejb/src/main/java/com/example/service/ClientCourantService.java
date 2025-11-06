@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.example.models.CompteCourant;
 import com.example.models.Direction;
 import com.example.remotes.ClientCourantServiceRemote;
 import com.example.remotes.ClientCourantStatefulServiceRemote;
@@ -118,8 +117,10 @@ public class ClientCourantService implements ClientCourantServiceRemote {
         try {
 
             CompteCourantDto compteCourant = compteCourantService.getCompteById(idCompte);
-            return repository.findSoldeByIdClientAndIdCompte(idCompte, idClient, dateTransaction)
-                    + compteCourant.getCapital();
+            // return repository.findSoldeByIdClientAndIdCompte(compteCourant.ges, idClient, dateTransaction)
+            //         + compteCourant.getCapital();
+
+                    return 0.0;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }

@@ -18,7 +18,7 @@
         <thead class="table-light">
             <tr>
                 <th>ID</th>
-                <th>Compte</th>
+                <th>Source</th>
                 <th>Date</th>
                 <th>Libellé</th>
                 <th>Montant</th>
@@ -33,19 +33,19 @@
                    for (TransactionCourantDto t : transactions) { %>
                 <tr>
                     <td><%= t.getIdTransaction() %></td>
-                    <td><%= t.getIdCompte() %></td>
+                    <td><%= t.getSource() %></td>
                     <td><%= t.getDateTransaction() %></td>
                     <td><%= t.getLibelle() %></td>
                     <td><%= t.getMontant() %>Ar</td>
                     <td><%= t.getSens() %></td>
                     <td><%= t.getDevise() %></td>
                     <td>
-                        <%= (t.getLastValidation() != null) ? t.getLastValidation().getEtat() : "En attente" %>
+                        <%= (t.getLastValidation() != null) ? t.getLastValidation().getEtat().getLibelle() : "En attente" %>
                     </td>
                     <td>
                            <form method="post" action="<%= request.getContextPath() %>/courants/transactions">
                                 <input type="hidden" name="idTransactionCourant" value="<%= t.getIdTransaction() %>" />
-                                <input type="hidden" name="idCompte" value="<%= t.getIdCompte() %>" />
+                                <input type="hidden" name="idCompte" value="<%= request.getAttribute("idCompte") %>" />
                                 <button type="submit" name="action" value="valider" class="btn btn-primary btn-sm">Valider</button>
                                 <button type="submit" name="action" value="annuler" class="btn btn-danger btn-sm">Annuler</button>
                             </form>

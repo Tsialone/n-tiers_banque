@@ -1,7 +1,5 @@
 package com.example.repositories;
 
-import com.example.models.CompteCourant;
-
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -9,6 +7,8 @@ import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import com.example.models.CompteCourant;
 
 @Stateless
 public class CompteCourantRepository {
@@ -52,7 +52,10 @@ public class CompteCourantRepository {
 
     public void save(CompteCourant compte) {
         if (compte.getIdCompte() == null) {
-            em.persist(compte);
+            if (compte.getIdObject() == null || compte.getIdObject().isEmpty()) {
+                compte.setIdObject(generateIdObject());
+                em.persist(compte);
+            }
         } else {
             em.merge(compte);
         }
@@ -60,5 +63,11 @@ public class CompteCourantRepository {
 
     public void delete(CompteCourant compte) {
         em.remove(em.contains(compte) ? compte : em.merge(compte));
+    }
+
+    public String generateIdObject() {
+        TypedQuery<Long> query = em.createQuery("SELECT COUNT(c) FROM CompteCourant c", Long.class);
+        Long count = query.getSingleResult();
+        return "cpmt_" + (count + 1);
     }
 }

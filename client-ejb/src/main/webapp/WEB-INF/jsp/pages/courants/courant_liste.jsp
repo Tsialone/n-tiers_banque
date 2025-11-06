@@ -47,6 +47,23 @@
                            class="btn btn-primary btn-sm">add transaction</a>
                         <a href="<%= request.getContextPath() %>/courants/virements/form?idCompte=<%= c.getIdCompte() %>"
                         class="btn btn-primary btn-sm">faire un virement</a>
+                         <a href="<%= request.getContextPath() %>/courants/virements?idCompte=<%= c.getIdCompte() %>"
+                        class="btn btn-primary btn-sm">voir virement</a>
+
+
+                          <a href="<%= request.getContextPath() %>/courants/depots?idCompte=<%= c.getIdCompte() %>"
+                        class="btn btn-primary btn-sm">voir depots</a>
+
+                         <a href="<%= request.getContextPath() %>/courants/depots/form?idCompte=<%= c.getIdCompte() %>"
+                        class="btn btn-primary btn-sm">faire depot</a>
+
+
+
+                          <a href="<%= request.getContextPath() %>/courants/retraits?idCompte=<%= c.getIdCompte() %>"
+                        class="btn btn-primary btn-sm">voir retraits</a>
+
+                         <a href="<%= request.getContextPath() %>/courants/retraits/form?idCompte=<%= c.getIdCompte() %>"
+                        class="btn btn-primary btn-sm">faire retrait</a>
                     </td>
                 </tr>
             <% } } else { %>

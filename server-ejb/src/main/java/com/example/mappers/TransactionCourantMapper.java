@@ -1,62 +1,44 @@
 package com.example.mappers;
 
 import java.util.stream.Collectors;
-
-import com.example.models.ClientCourant;
-import com.example.models.CompteCourant;
 import com.example.models.TransactionCourant;
-import com.example.server_dtos.CompteCourantDto;
 import com.example.server_dtos.TransactionCourantDto;
 
 public class TransactionCourantMapper {
 
-    // DTO → Entité
-    public static TransactionCourant toEntity(TransactionCourantDto dto, CompteCourant compteCourant , CompteCourant compteDest) {
-        TransactionCourant transaction = new TransactionCourant();
-
-        if (dto.getIdTransaction() != null) {
-            transaction.setIdTransaction(dto.getIdTransaction());
-        }
-        // System.out.println(dto);
-        // Récupérer le compte depuis l'ID
-        transaction.setCompte(compteCourant);
-        transaction.setCompteDest(compteDest);
-        transaction.setLibelle(dto.getLibelle());
-        transaction.setMontant(dto.getMontant());
-        transaction.setSens(dto.getSens());
-        transaction.setDevise(dto.getDevise());
-        transaction.setValidate(dto.isValidate());
-        transaction.setDateTransaction(dto.getDateTransaction() != null
-                ? dto.getDateTransaction()
-                : java.time.LocalDate.now());
-
-        return transaction;
-    }
-
-    // Entité → DTO
-    public static TransactionCourantDto toDto(TransactionCourant transaction) {
+    public static TransactionCourantDto toDto(TransactionCourant entity) {
+        if (entity == null) return null;
         TransactionCourantDto dto = new TransactionCourantDto();
-        dto.setIdTransaction(transaction.getIdTransaction());
-        dto.setIdCompte(transaction.getCompte().getIdCompte());
-        dto.setLibelle(transaction.getLibelle());
-        dto.setMontant(transaction.getMontant());
-        dto.setSens(transaction.getSens());
-        dto.setValidate(transaction.isValidate());
-        dto.setDateTransaction(transaction.getDateTransaction());
-        dto.setDevise(transaction.getDevise());
-        if (transaction.getCompteDest() != null) dto.setIdCompteDest(transaction.getCompteDest().getIdCompte());
-        
-        
+        dto.setIdTransaction(entity.getIdTransaction());
+        dto.setSource(entity.getSource());
+        dto.setDateTransaction(entity.getDateTransaction());
+        dto.setLibelle(entity.getLibelle());
+        dto.setMontant(entity.getMontant());
+        dto.setSens(entity.getSens());
+        dto.setDevise(entity.getDevise());
 
-        if (transaction.getValidations() != null) {
-            dto.setValidations(transaction.getValidations().stream()
-                    .map(ValidationMapper::toDto)
+        if (entity.getValidations() != null) {
+            dto.setValidations(entity.getValidations().stream()
+                    .map(ValidationTransactionMapper::toDto)
                     .collect(Collectors.toList()));
         }
 
-        if (transaction.getLastValidation() != null) {
-            dto.setLastValidation(ValidationMapper.toDto(transaction.getLastValidation()));
+        if (entity.getLastValidation() != null) {
+            dto.setLastValidation(ValidationTransactionMapper.toDto(entity.getLastValidation()));
         }
+
         return dto;
+    }
+
+    public static TransactionCourant toEntity(TransactionCourantDto dto) {
+        if (dto == null) return null;
+        TransactionCourant entity = new TransactionCourant();
+        entity.setIdTransaction(dto.getIdTransaction());
+        entity.setSource(dto.getSource());
+        entity.setDateTransaction(dto.getDateTransaction());
+        entity.setLibelle(dto.getLibelle());
+        entity.setMontant(dto.getMontant());
+        entity.setSens(dto.getSens());
+        return entity;
     }
 }

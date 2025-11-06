@@ -1,15 +1,25 @@
 package com.example.server_dtos;
 
-import java.io.Serializable;
-import java.time.LocalDate;
+
+
 import lombok.Data;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class VirementDto implements Serializable {
-
-    private Integer idCompteDebit;   
-    private Integer idCompteCredit;  
-    private LocalDate dateVirement;
-    private String devise = "MG";
+    private Integer idVirement;
+    private String idObject;
+    private Integer idCompteDebit;
+    private Integer idCompteCredit;
+    private LocalDateTime dateVirement;
     private Double montant;
+    private Double taux;
+    private String devise;
+
+
+    private Double frais; 
+    private List<ValidationVirementDto> validations;
+    private ValidationVirementDto lastValidation;
 }

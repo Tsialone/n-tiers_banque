@@ -2,6 +2,7 @@ package com.example.services;
 
 import com.example.change_dtos.DeviseDto;
 import com.example.remotes.ChangeServiceRemote;
+import com.example.utils.DateUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -20,6 +21,7 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,7 +118,7 @@ public class ChangeService implements ChangeServiceRemote {
     }
 
     @Override
-    public DeviseDto getLastDeviseDto(String libelle, LocalDate date, Long excludeId) {
+    public DeviseDto getLastDeviseDto(String libelle, LocalDateTime date, Long excludeId) {
         reloadDevises();
         DeviseDto last = null;
 
@@ -126,10 +128,10 @@ public class ChangeService implements ChangeServiceRemote {
             if (excludeId != null && dto.getId().equals(excludeId))
                 continue;
 
-            LocalDate dateDebut = LocalDate.parse(dto.getDateDebut());
+            LocalDateTime dateDebut =  DateUtils.parseDateTimeOrDate(dto.getDateDebut());
             // On prend la dernière dont la dateDébut est AVANT ou ÉGALE à la date donnée
             if (!dateDebut.isAfter(date)) {
-                if (last == null || LocalDate.parse(last.getDateDebut()).isBefore(dateDebut)) {
+                if (last == null || DateUtils.parseDateTimeOrDate(last.getDateDebut()).isBefore(dateDebut)) {
                     last = dto;
                 }
             }
@@ -241,7 +243,7 @@ public class ChangeService implements ChangeServiceRemote {
         }
 
         DeviseDto lastDevise = getLastDeviseDto(updated.getLibelle(), updated.getDateDebutDate(), id);
-        System.out.println("last devise " + lastDevise.getId() + " et lui " + id);
+        // System.out.println("last devise " + lastDevise.getId() + " et lui " + id);
         if (lastDevise != null && !lastDevise.getId().equals(id)) {
             double lastAr = lastDevise.getArriary();
 
@@ -279,14 +281,14 @@ public class ChangeService implements ChangeServiceRemote {
     }
 
     @Override
-    public DeviseDto getByDateBtw(LocalDate transactionDate, String devise) {
+    public DeviseDto getByDateBtw(LocalDateTime transactionDate, String devise) {
         reloadDevises();
         for (DeviseDto dto : devises) {
-            LocalDate dateDebut = LocalDate.parse(dto.getDateDebut());
-            LocalDate dateFin;
+            LocalDateTime dateDebut =  DateUtils.parseDateTimeOrDate(dto.getDateDebut());
+            LocalDateTime dateFin;
 
             if (dto.getDateFin() != null && !dto.getDateFin().isEmpty()) {
-                dateFin = LocalDate.parse(dto.getDateFin());
+                dateFin = DateUtils.parseDateTimeOrDate(dto.getDateFin());
             } else {
                 dateFin = dateDebut.plusYears(10);
             }

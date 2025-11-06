@@ -24,7 +24,7 @@
         <!-- Date du virement -->
         <div class="mb-3">
             <label for="dateVirement" class="form-label">Date du Virement</label>
-            <input type="date" id="dateVirement" name="dateVirement" class="form-control" value="<%= java.time.LocalDate.now() %>" >
+            <input type="datetime-local" id="dateVirement" name="dateVirement" class="form-control" value="<%= request.getAttribute("dateVirement") %>" >
         </div>
 
         <!-- Montant -->

@@ -15,7 +15,6 @@ rm -f $DEPLOYMENTS/client-ejb.war
 
 cp server-ejb/target/server-ejb.war $DEPLOYMENTS/
 cp server-api/target/server-api.jar $DEPLOYMENTS/
-
 cp client-ejb/target/client-ejb.war $DEPLOYMENTS/
 
 docker cp change-ejb/devises.json change-server:/opt/devises.json

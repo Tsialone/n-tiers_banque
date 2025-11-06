@@ -4,9 +4,11 @@ import com.example.mappers.ClientCourantMapper;
 import com.example.mappers.CompteCourantMapper;
 import com.example.models.ClientCourant;
 import com.example.models.CompteCourant;
+import com.example.models.TypeCompte;
 import com.example.remotes.CompteCourantServiceRemote;
 import com.example.repositories.ClientCourantRepository;
 import com.example.repositories.CompteCourantRepository;
+import com.example.repositories.TypeCompteRepository;
 import com.example.server_dtos.CompteCourantDto;
 
 import jakarta.ejb.EJB;
@@ -24,6 +26,9 @@ public class CompteCourantService implements CompteCourantServiceRemote {
 
     @EJB
     private ClientCourantRepository clientCourantRepository;
+
+    @EJB
+    private TypeCompteRepository typeCompteRepository;
 
     @Override
     public List<CompteCourantDto> getComptesByClientAndDate(Integer idClient, LocalDate date) {
@@ -68,7 +73,8 @@ public class CompteCourantService implements CompteCourantServiceRemote {
     @Override
     public CompteCourantDto saveCompte(CompteCourantDto compte) {
         ClientCourant clientCourant = clientCourantRepository.findById(compte.getIdClient());
-        repository.save(CompteCourantMapper.toEntity(compte, clientCourant));
+         TypeCompte typeCompte =  typeCompteRepository.findById(compte.getTypeCompte().getIdTypeCompte());
+        repository.save(CompteCourantMapper.toEntity(compte, clientCourant , typeCompte));
         return compte;
     }
 

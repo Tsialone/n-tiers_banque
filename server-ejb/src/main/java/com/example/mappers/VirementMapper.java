@@ -1,36 +1,49 @@
 package com.example.mappers;
 
-import com.example.classes.Virement;
-import com.example.models.CompteCourant;
-import com.example.server_dtos.VirementDto;
+import com.example.models.*;
+import com.example.server_dtos.*;
+import java.util.stream.Collectors;
 
 public class VirementMapper {
 
-    public static Virement toEntity(VirementDto dto, CompteCourant compteDebit, CompteCourant compteCredit) throws Exception {
-        if (dto == null) {
-            return null;
-        }
+    public static Virement toEntity(VirementDto dto, CompteCourant debit, CompteCourant credit) throws Exception {
+        Virement v = new Virement();
+        v.setIdVirement(dto.getIdVirement());
+        v.setIdObject(dto.getIdObject());
+        v.setCompteDebit(debit);
+        v.setCompteCredit(credit);
+        v.setDateVirement(dto.getDateVirement());
+        v.setMontant(dto.getMontant());
+        v.setDevise(dto.getDevise());
+        v.setTaux(dto.getTaux());
 
-        return new Virement(
-                compteDebit,         
-                compteCredit,          
-                dto.getDateVirement(),
-                dto.getMontant(),
-                dto.getDevise()
-        );
+        
+        return v;
     }
 
-    public static VirementDto toDto(Virement virement) {
-        if (virement == null) {
-            return null;
+    public static VirementDto toDto(Virement v) throws Exception {
+        VirementDto dto = new VirementDto();
+        dto.setIdVirement(v.getIdVirement());
+        dto.setIdObject(v.getIdObject());
+        dto.setIdCompteDebit(v.getCompteDebit().getIdCompte());
+        dto.setIdCompteCredit(v.getCompteCredit().getIdCompte());
+        dto.setDateVirement(v.getDateVirement());
+        dto.setMontant(v.getMontant());
+        dto.setDevise(v.getDevise());
+        dto.setTaux(v.getTaux());
+        dto.setFrais(v.getFrais().getFraisValue(v.getMontant()));
+
+        // dto.setFrais(v.getFraisValue());
+
+        if (v.getValidations() != null) {
+            dto.setValidations(v.getValidations().stream()
+                    .map(ValidationVirementMapper::toDto)
+                    .collect(Collectors.toList()));
         }
 
-        VirementDto dto = new VirementDto();
-        dto.setIdCompteDebit(virement.getCompteDebit() != null ? virement.getCompteDebit().getIdCompte() : null);
-        dto.setIdCompteCredit(virement.getCompteCredit() != null ? virement.getCompteCredit().getIdCompte() : null);
-        dto.setDateVirement(virement.getDateVirement());
-        dto.setMontant(virement.getMontant());
-        dto.setDevise(virement.getDevise());
+        if (v.getLastValidation() != null) {
+            dto.setLastValidation(ValidationVirementMapper.toDto(v.getLastValidation()));
+        }
 
         return dto;
     }

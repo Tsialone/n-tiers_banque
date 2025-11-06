@@ -16,35 +16,29 @@ public class ClientCourantRepository {
     @PersistenceContext(unitName = "ejbPU")
     private EntityManager em;
 
-    public Double findSoldeByIdClientAndIdCompte(
-            Integer idCompte,
-            Integer idClient,
-            LocalDate dateTransaction) {
+    public Double getSoldeTransactions(String source, LocalDate dateTransaction) {
         String jpql;
         if (dateTransaction == null) {
             jpql = "SELECT SUM(CASE WHEN t.sens = 'credit' THEN t.montant ELSE -t.montant END) " +
                     "FROM TransactionCourant t JOIN t.validations v " +
-                    "WHERE t.compte.idCompte = :idCompte " +
-                    "AND t.compte.client.idClient = :idClient " +
-                    "AND v.etat = 'valider'";
+                    "WHERE t.source = :source " +
+                    "AND v.etat.libelle = 'valider'";
         } else {
             jpql = "SELECT SUM(CASE WHEN t.sens = 'credit' THEN t.montant ELSE -t.montant END) " +
                     "FROM TransactionCourant t JOIN t.validations v " +
-                    "WHERE t.compte.idCompte = :idCompte " +
-                    "AND t.compte.client.idClient = :idClient " +
-                    "AND v.etat = 'valider' " +
+                    "WHERE t.source = :source " +
+                    "AND v.etat.libelle = 'valider' " +
                     "AND t.dateTransaction <= :dateTransaction";
         }
 
-        Query query = em.createQuery(jpql);
-        query.setParameter("idCompte", idCompte);
-        query.setParameter("idClient", idClient);
+        TypedQuery<Double> query = em.createQuery(jpql, Double.class);
+        query.setParameter("source", source);
         if (dateTransaction != null) {
             query.setParameter("dateTransaction", dateTransaction);
         }
 
-        Double solde = (Double) query.getSingleResult();
-        return solde != null ? solde : 0.0;
+        Double result = query.getSingleResult();
+        return result != null ? result : 0.0;
     }
 
     public ClientCourant findById(Integer id) {

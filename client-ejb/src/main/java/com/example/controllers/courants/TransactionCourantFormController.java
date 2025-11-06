@@ -27,6 +27,7 @@ import kong.unirest.Unirest;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -136,9 +137,9 @@ public class TransactionCourantFormController extends HttpServlet {
         try {
             // Récupérer les paramètres du formulaire
             String dateStr = request.getParameter("dateTransaction");
-            LocalDate dateTransaction = dateStr != null && !dateStr.isEmpty()
-                    ? LocalDate.parse(dateStr)
-                    : LocalDate.now();
+            LocalDateTime dateTransaction = dateStr != null && !dateStr.isEmpty()
+                    ? LocalDateTime.parse(dateStr)
+                    : LocalDateTime.now();
             String libelle = request.getParameter("libelle");
             Double montant = Double.parseDouble(request.getParameter("montant"));
             String sens = request.getParameter("sens");
@@ -154,19 +155,19 @@ public class TransactionCourantFormController extends HttpServlet {
             boolean validate = request.getParameter("validate") != null;
 
             // Créer le DTO ou l'entité TransactionCourant
-            TransactionCourantDto transaction = new TransactionCourantDto();
-            transaction.setIdCompte(idCompte);
-            transaction.setDateTransaction(dateTransaction);
-            transaction.setLibelle(libelle);
-            transaction.setMontant(montant);
-            transaction.setSens(sens);
-            transaction.setDevise(devise);
-            transaction.setValidate(validate);
+            // TransactionCourantDto transaction = new TransactionCourantDto();
+            // transaction.setIdCompte(idCompte);
+            // transaction.setDateTransaction(dateTransaction);
+            // transaction.setLibelle(libelle);
+            // transaction.setMontant(montant);
+            // transaction.setSens(sens);
+            // transaction.setDevise(devise);
+            // transaction.setValidate(validate);
             // CompteCourantDto compteCourant = compteCourantServiceRemote.getCompteById(idCompte);
             // TransactionCourantDto transactionCourant = TransactionCourantMapper.toEntity(transaction, compteCourant);
 
             // Appel du service pour enregistrer la transaction
-            transactionCourantServiceRemote.saveTransaction(transaction);
+            // transactionCourantServiceRemote.saveTransaction(transaction);
 
             // Message flash
             Flash.set(request, "message", "Transaction créée avec succès !");
