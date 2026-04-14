@@ -125,6 +125,7 @@ CREATE TABLE virements (
     id_compte_cred INT REFERENCES comptes_courant(id_compte) ON DELETE CASCADE,
     date_virement TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     montant NUMERIC(15,2) NOT NULL,
+    frais_montant NUMERIC(15,2) NOT NULL,
     taux NUMERIC (15,2) NOT NULL , 
     id_frais INT REFERENCES frais(id_frais) ON DELETE CASCADE,
     devise VARCHAR(50) DEFAULT 'MG'

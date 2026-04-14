@@ -101,7 +101,7 @@ public class RetraitFormController extends HttpServlet {
             retraitDto.setIdCompteDebit(idCompte);
             retraitDto.setMontant(montant);
             retraitDto.setDevise(devise);
-            retraitDto.setTaux(deviseDto.getArriary());
+            retraitDto.setTaux(deviseDto != null ? deviseDto.getArriary() : 1.0);
             // retraitDto.setDateRetrait(dateRetrait);
 
             retraitServiceRemote.create(retraitDto);
