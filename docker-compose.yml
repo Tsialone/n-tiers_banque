@@ -49,31 +49,31 @@ services:
   #   restart: unless-stopped
 
 
-  postgres-epargne:
-    image: postgres:16
-    container_name: postgres-epargne
-    environment:
-      POSTGRES_DB: epargne_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata_epargne:/var/lib/postgresql/data
-    restart: unless-stopped
+  # postgres-epargne:
+  #   image: postgres:16
+  #   container_name: postgres-epargne
+  #   environment:
+  #     POSTGRES_DB: epargne_db
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pgdata_epargne:/var/lib/postgresql/data
+  #   restart: unless-stopped
 
-  postgres-pret:
-    image: postgres:16
-    container_name: postgres-pret
-    environment:
-      POSTGRES_DB: pret_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5433:5432"
-    volumes:
-      - pgdata_pret:/var/lib/postgresql/data
-    restart: unless-stopped
+  # postgres-pret:
+  #   image: postgres:16
+  #   container_name: postgres-pret
+  #   environment:
+  #     POSTGRES_DB: pret_db
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   ports:
+  #     - "5433:5432"
+  #   volumes:
+  #     - pgdata_pret:/var/lib/postgresql/data
+  #   restart: unless-stopped
   postgres-ejb:
     image: postgres:16
     container_name: postgres-ejb
