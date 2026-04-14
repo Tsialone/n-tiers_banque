@@ -909,9 +909,7 @@ bruno collection.bru
 
 ![Liste Transactions](docs/images/transaction_courant_liste.jpg)
 
-**Screenshot 13 - Détail Transaction**:
 
-![Détail Transaction](docs/images/transaction_courant_detail.jpg)
 
 ---
 
@@ -935,28 +933,16 @@ bruno collection.bru
 **Screenshots à capturer**:
 
 **Screenshot 14 - Liste Devises**:
-```
-[À AJOUTER: Capture de devise_liste.jsp]
-- Tableau des devises
-- Colonnes: Code, Libelle, Arriary (Taux), Valide, Date Validation
-- Bouton "Ajouter Devise"
-- Au moins 5 devises listées
-```
+
+![Liste Devises](docs/images/devise_liste.jpg)
 
 **Screenshot 15 - Formulaire Ajout Devise**:
-```
-[À AJOUTER: Capture de devise_form.jsp]
-- Champs: Code (CHF), Libelle, Arriary, Date Début, Date Fin
-- Case à cocher "Valide"
-- Bouton "Enregistrer"
-```
+
+![Formulaire Devise](docs/images/devise_form.jpg)
 
 **Screenshot 16 - Confirmation Devise Ajoutée**:
-```
-[À AJOUTER: Confirmation d'ajout]
-- Message: "Devise ajoutée avec succès"
-- Nouvelle devise visible dans liste_devise.jsp
-```
+
+![Confirmation Devise](docs/images/devise_confirmation.jpg)
 
 ---
 
