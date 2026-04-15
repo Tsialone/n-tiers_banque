@@ -41,30 +41,26 @@
                     <td><%= c.getDateOuverture() %></td>
                     <td><%= c.getSolde() %> Ar</td>
                     <td>
-                        <a href="<%= request.getContextPath() %>/courants/transactions?idCompte=<%= c.getIdCompte() %>"
-                           class="btn btn-primary btn-sm">voir transactions</a>
-                        <a href="<%= request.getContextPath() %>/courants/transactions/form?idCompte=<%= c.getIdCompte() %>"
-                           class="btn btn-primary btn-sm">add transaction</a>
-                        <a href="<%= request.getContextPath() %>/courants/virements/form?idCompte=<%= c.getIdCompte() %>"
-                        class="btn btn-primary btn-sm">faire un virement</a>
-                         <a href="<%= request.getContextPath() %>/courants/virements?idCompte=<%= c.getIdCompte() %>"
-                        class="btn btn-primary btn-sm">voir virement</a>
-
-
-                          <a href="<%= request.getContextPath() %>/courants/depots?idCompte=<%= c.getIdCompte() %>"
-                        class="btn btn-primary btn-sm">voir depots</a>
-
-                         <a href="<%= request.getContextPath() %>/courants/depots/form?idCompte=<%= c.getIdCompte() %>"
-                        class="btn btn-primary btn-sm">faire depot</a>
-
-
-
-                          <a href="<%= request.getContextPath() %>/courants/retraits?idCompte=<%= c.getIdCompte() %>"
-                        class="btn btn-primary btn-sm">voir retraits</a>
-
-                         <a href="<%= request.getContextPath() %>/courants/retraits/form?idCompte=<%= c.getIdCompte() %>"
-                        class="btn btn-primary btn-sm">faire retrait</a>
-                    </td>
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Actions
+        </button>
+        <ul class="dropdown-menu shadow">
+            <li><h6 class="dropdown-header">Historique</h6></li>
+            <li><a class="dropdown-item" href="<%= request.getContextPath() %>/courants/transactions?idCompte=<%= c.getIdCompte() %>">Transactions</a></li>
+            <li><a class="dropdown-item" href="<%= request.getContextPath() %>/courants/virements?idCompte=<%= c.getIdCompte() %>">Virements</a></li>
+            <li><a class="dropdown-item" href="<%= request.getContextPath() %>/courants/depots?idCompte=<%= c.getIdCompte() %>">Dépôts</a></li>
+            <li><a class="dropdown-item" href="<%= request.getContextPath() %>/courants/retraits?idCompte=<%= c.getIdCompte() %>">Retraits</a></li>
+            
+            <li><hr class="dropdown-divider"></li>
+            <li><h6 class="dropdown-header">Opérations</h6></li>
+            <li><a class="dropdown-item text-primary" href="<%= request.getContextPath() %>/courants/transactions/form?idCompte=<%= c.getIdCompte() %>">+ Nouvelle Transaction</a></li>
+            <li><a class="dropdown-item text-success" href="<%= request.getContextPath() %>/courants/depots/form?idCompte=<%= c.getIdCompte() %>">📥 Faire un dépôt</a></li>
+            <li><a class="dropdown-item text-danger" href="<%= request.getContextPath() %>/courants/retraits/form?idCompte=<%= c.getIdCompte() %>">📤 Faire un retrait</a></li>
+            <li><a class="dropdown-item text-info" href="<%= request.getContextPath() %>/courants/virements/form?idCompte=<%= c.getIdCompte() %>">🔄 Effectuer virement</a></li>
+        </ul>
+    </div>
+</td>
                 </tr>
             <% } } else { %>
                 <tr>

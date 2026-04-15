@@ -95,13 +95,14 @@ import com.example.utils.Url;
                 UserSession.setSessionRemote(request, clientCourantStatefulServiceRemote);
 
             } catch (Exception e) {
-
+                e.printStackTrace();
                 Flash.set(request, "message", "Erreur: " + e.getMessage());
                 Flash.set(request, "message_type", "danger");
                 response.sendRedirect(request.getContextPath() + "/");
 
             }
             response.sendRedirect(request.getContextPath() + "/home");
+            return;
         }
 
         // @Override

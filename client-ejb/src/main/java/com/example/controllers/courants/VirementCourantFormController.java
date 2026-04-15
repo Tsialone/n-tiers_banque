@@ -201,7 +201,7 @@ public class VirementCourantFormController extends HttpServlet {
             }
 
             // ✅ Sinon on effectue le virement normalement
-            virementServiceRemote.effectuerVirement(virementDto, deviseDto.getArriary());
+            virementServiceRemote.effectuerVirement(virementDto, deviseDto != null ? deviseDto.getArriary() : 1.0);
 
             Flash.set(request, "message", "Virement effectué avec succès !");
             Flash.set(request, "message_type", "success");
